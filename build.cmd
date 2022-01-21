@@ -1,0 +1,8 @@
+@set BUILD_STATUS = 0
+
+:: DONT REMOVE THIS CHANGE DIRECTORY
+@cd "C:\Program Files\BroncoDrome"
+
+@echo "ADD BUILD INSTRUCTIONS HERE"
+
+@exit(%BUILD_STATUS%)

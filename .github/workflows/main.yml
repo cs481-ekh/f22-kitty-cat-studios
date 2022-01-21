@@ -1,0 +1,44 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI for BroncoDrome
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch, we can switch this to develop once we set up the git-flow pattern. - Mikey
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  # We will have two workflows... build_linux and build_windows
+  build_linux:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks out our code
+      - uses: actions/checkout@v2
+
+      # Runs an Unreal docker image and mounts our codebase as a source. For questions on this ask Mikey
+      - name: Ubuntu Build
+        run: |
+          ls
+          docker pull adamrehn/ue4-runtime:latest
+          docker run --mount type=bind,source=$(pwd),target=/home/ue4 adamrehn/ue4-runtime:latest /bin/bash -c "cd /home/ue4 && . ./build.sh"
+  build_windows:
+    # IMPORTANT ** This verison of windows may need to switch (It also may not have to, I don't have the depth of knowledge in this domain to know the answer - Mikey)
+    runs-on: windows-2019
+    steps:
+      - uses: actions/checkout@v2
+      - name: Windows Build
+        run: |
+          docker pull adamrehn/ue4-build-prerequisites:ltsc2019
+          docker run --mount type=bind,source="D:\a\BroncoDrome\BroncoDrome",target="C:\Program Files\BroncoDrome" adamrehn/ue4-build-prerequisites:ltsc2019 Cmd.exe /C "C:\Program Files\BroncoDrome\build.cmd"
+    # I am assuming we will make a build.bat and a clean.bat
+    # DO we need a windows docker here, or should we force github actions to download unreal EVERY TIME IT WANTS TO RUN MUAHHAHAHAH (But really though, we are using git lfs, we could just import a binary/libraries needed for aspecific version of windows and run off of that.. IDK, you decide) -Mikey
+      

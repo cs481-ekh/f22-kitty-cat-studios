@@ -1,0 +1,1 @@
+docker run -itd -v '/home/jenkins:/var/jenkins_home:rw' -v '/home/michaelkrentz/UnrealEngine:/var/unreal_home:rw' unreal-agent:latest ./startup.sh
