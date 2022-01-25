@@ -1,7 +1,7 @@
 # BroncoDrome
 BroncoDrome is a 3rd person vehicular combat game being developed using Unreal Engine 4. This project was created to satisfy the requirements of CS 481 - Senior Design, but it will likely be the start of a multi-semester project that new groups will incrementally take over. This project will be an opportunity for CS students who are interested in game design careers to work on a relevant project for their capstone. 
 
-## Contributors Fall 2021
+## Contributors
 
 | Name            | Role                              |
 | --------------- | --------------------------------- |
@@ -14,21 +14,6 @@ BroncoDrome is a 3rd person vehicular combat game being developed using Unreal E
 | Connor Wood     | Mapping and AI Programmer         |
 | Joey Sacino     | Texture and UI Artist             |
 | Tj Davis        | Audio Producer                    |
-
-## Contributors Spring 2022
-
-| Name            | Role                              |
-| --------------- | --------------------------------- |
-| Doug McEwen     | Audio Programmer / Nerd Wrangler  |
-|                 |                                   |
-|                 |                                   |
-|                 |                                   |
-|                 |                                   |
-|                 |                                   |
-|                 |                                   |
-|                 |                                   |
-|                 |                                   |
-
 
 ## Project Setup
 
