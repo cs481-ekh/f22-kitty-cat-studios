@@ -1,1 +1,31 @@
 Minutes of the team meetings go here:
+
+1/28
+
+Present: Joey, Saulo, Ben, DJ, Marie, Doug
+Absent: Ross
+Scribe: Joey
+
+Talked about using Empty Actors for spawning.
+Issue may be not spawners, but may be Players/Enemies. Reason? We can't find a blueprint for players/enemies.
+Some of us still having building issues.
+Found C++ file for menu hud
+Discussed Sponsor meeting agenda and filled out our "script"
+
+
+
+Morning meeting 1/27
+
+~10 minutes
+
+Ben, Ross, Saulo, Doug
+
+Scribe: Joey
+
+Planning for sponsor meeting
+M1: get it running
+M2: add xyz feature
+M3: having tasks completed
+M4: have the full project completed (refinement)
+People in similar work areas should keep an eye on each other.
+May have to drop some features to work on other, more important details. 
