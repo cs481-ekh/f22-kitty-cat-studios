@@ -22,10 +22,10 @@ BroncoDrome is a 3rd person vehicular combat game being developed using Unreal E
 | Doug McEwen      | Audio Programmer / Nerd Wrangler  |
 | Ben Bettencourt  | Game Loop / Mechanics Programmer  |
 | DJ Roychoudhury  | Game Loop / Mechanics Programmer  |
+| Ross Rippee      | Game Loop / Mechanics Programmer  |
 | Saulo Gragg      | Programmer / Modeler              |
 | Joseph Kitzhaber | Programmer                        |
 | Marie Phelan     | AI Programmer                     |
-| Ross Rippee      | Programmer                        |
 
 
 ## Project Setup
