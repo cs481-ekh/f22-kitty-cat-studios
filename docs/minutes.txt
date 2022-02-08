@@ -1,5 +1,27 @@
 Minutes of the team meetings go here:
 
+Afternoon Meeting 2/8
+
+Present: Marie, DJ
+Absent: 
+Scribe: Marie
+
+~45 minutes
+
+Broke down the AI project road map. Decided what will be done in each sprint for AI. 
+
+Whole Team Meeting 2/4 
+
+Present: Everyone
+Absent: No one
+Scribe: Ross/Marie
+
+~2 hours
+
+We spent about 45 minutes troubleshooting environment issues and ensuring that everyone was set up for sprint 0.
+
+The rest of the meeting was spent going through the project plan section by section to ensure that it would be ready by the due date. 
+
 Morning meeting 2/1 (Week 4)
 
 Present: Joey, Saulo, Ben, Doug, Ross
