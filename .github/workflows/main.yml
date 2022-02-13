@@ -63,3 +63,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # this will make it so the linter will only look at the newly commited files
           VALIDATE_ALL_CODEBASE: false
+          # lint was throwing spellcheck errors on this file for "run", which is dumb, so we're ignoring changes on this
+          VALIDATE_GITHUB_ACTIONS: false
