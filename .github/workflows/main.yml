@@ -15,7 +15,7 @@ on:
 
 jobs:
   # We will have two workflows... build_linux and build_windows
-  build_linux:
+  build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -30,16 +30,18 @@ jobs:
           ls
           docker pull adamrehn/ue4-runtime:latest
           docker run --mount type=bind,source=$(pwd),target=/home/ue4 adamrehn/ue4-runtime:latest /bin/bash -c "cd /home/ue4 && . ./build.sh"
-  build_windows:
+ ### NOTE: I'm removing build_windows because it is eating too much time to debug and figure out how to get to work.
+ ### This might be a good project for future semesters who know more about this than us. -Ben
+ # build_windows:
     # IMPORTANT ** This verison of windows may need to switch (It also may not have to, I don't have the depth of knowledge in this domain to know the answer - Mikey)
     # Switched windows-2019 to windows-latest to avoid what Mikey was talking about above
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Windows Build
-        run: |
-         docker pull adamrehn/ue4-build-prerequisites:ltsc2019
-         docker run --mount type=bind,source="D:\a\BroncoDrome\BroncoDrome",target="C:\Program Files\BroncoDrome" adamrehn/ue4-build-prerequisites:ltsc2019 Cmd.exe /C "C:\Program Files\BroncoDrome\build.cmd"
+ #   runs-on: windows-latest
+ #   steps:
+ #     - uses: actions/checkout@v2
+ #     - name: Windows Build
+ #       run: |
+ #        docker pull adamrehn/ue4-build-prerequisites:ltsc2019
+ #        docker run --mount type=bind,source="D:\a\BroncoDrome\BroncoDrome",target="C:\Program Files\BroncoDrome" adamrehn/ue4-build-prerequisites:ltsc2019 Cmd.exe /C "C:\Program Files\BroncoDrome\build.cmd"
     # I am assuming we will make a build.bat and a clean.bat
     # DO we need a windows docker here, or should we force github actions to download unreal EVERY TIME IT WANTS TO RUN MUAHHAHAHAH (But really though, we are using git lfs, we could just import a binary/libraries needed for aspecific version of windows and run off of that.. IDK, you decide) -Mikey
       
