@@ -6,9 +6,9 @@ name: CI for BroncoDrome
 on:
   # Triggers the workflow on push or pull request events but only for the main branch, we can switch this to develop once we set up the git-flow pattern. - Mikey
   push:
-    branches: [ main CICD ]
+    branches: [ main ]
   pull_request:
-    branches: [ main CICD ]
+    branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -55,3 +55,5 @@ jobs:
         # this should allow access to whole repo
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # this will make it so the linter will only look at the newly commited files
+          VALIDATE_ALL_CODEBASE: false
