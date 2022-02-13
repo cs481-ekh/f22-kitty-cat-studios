@@ -42,3 +42,16 @@ jobs:
     # I am assuming we will make a build.bat and a clean.bat
     # DO we need a windows docker here, or should we force github actions to download unreal EVERY TIME IT WANTS TO RUN MUAHHAHAHAH (But really though, we are using git lfs, we could just import a binary/libraries needed for aspecific version of windows and run off of that.. IDK, you decide) -Mikey
       
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out our code
+      - uses: actions/checkout@v2
+      
+      # add the linter
+      - name: Super-Linter
+        uses: github/super-linter@v4.8.7
+        # this should allow access to whole repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
