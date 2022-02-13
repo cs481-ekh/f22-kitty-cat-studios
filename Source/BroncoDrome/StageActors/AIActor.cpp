@@ -129,6 +129,30 @@ FVector AAIActor::GetDirection() {
 		}
 	}
 
+	FHitResult* backward = Raycast(-GetActorForwardVector() * max_distance);
+	if (backward) {
+		if (backward->Distance + fwd_dist < closest) {
+			closest = backward->Distance + fwd_dist;
+			result = Fvector::BackwardVector;
+		}
+	}
+
+	//FHitResult* bright = Raycast((GetActorRightVector() + (-GetActorForwardVector())) * max_distance);
+	//if (bright) {
+	//	if (bright->Distance < closest) {
+	//		closest = bright->Distance;
+	//		result = (FVector::RightVector + FVector::BackwardVector);
+	//	}
+	//}
+
+	//FHitResult* bleft = Raycast(((-GetActorRightVector()) + (-GetActorForwardVector)) * max_distance);
+	//if (bleft) {
+	//	if (bleft->Distance < closest) {
+	//		closest = bleft->Distance;
+	//		result = (FVector::LeftVector + FVector::BackwardVector);
+	//	}
+	//}
+
 	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::SanitizeFloat(closest));
 	return result;
 }
@@ -186,8 +210,8 @@ void AAIActor::MoveDecision() {
 		Mover->SetSteeringInput(0.0f);
 	}
 	else {
-
-		MoveAwayFromPlayer(player_location, player_direction);
+		//Marie commented out so they won't move away
+		//MoveAwayFromPlayer(player_location, player_direction);
 		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Away"), *GetDebugName(this)));
 	}
 }
