@@ -199,6 +199,10 @@ void AAIActor::ShotDecision() {
 	}
 	shotCount = 0; //Reset timer
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AI shot action called..."), *GetDebugName(this)));
+	Fire();
+}
+void AAIActor::Fire() {
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AI FIRE SHOT"), *GetDebugName(this)));
 }
 
 void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direction) {

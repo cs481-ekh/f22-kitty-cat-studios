@@ -50,6 +50,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	//Projectile to use
+	//UPROPERTY(EditAnywhere, Category = Projectile)
+	//TSubclassOf<class AOrbProjectile> ProjectileClass;
 
 public:	
 	// Called every frame
@@ -63,6 +66,6 @@ public:
 	void ShotDecision(); //called in Tick to make a shot decision every 30 frames
 private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
-
+	void Fire();
 };
 
