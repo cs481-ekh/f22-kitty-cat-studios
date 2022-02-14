@@ -53,7 +53,7 @@ void AAIActor::Tick(float DeltaTime)
 		}
 
 		MoveDecision();
-
+		ShotDecision();
 		last_location = location;
 		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Moving"), *GetDebugName(this)));
 	}
@@ -190,6 +190,15 @@ void AAIActor::MoveDecision() {
 		MoveAwayFromPlayer(player_location, player_direction);
 		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Away"), *GetDebugName(this)));
 	}
+}
+
+void AAIActor::ShotDecision() {
+	if (shotCount != shot_rate) { //shot timer (currently set to one shot every 30 frames
+		shotCount++;
+		return;
+	}
+	shotCount = 0; //Reset timer
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AI shot action called..."), *GetDebugName(this)));
 }
 
 void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direction) {

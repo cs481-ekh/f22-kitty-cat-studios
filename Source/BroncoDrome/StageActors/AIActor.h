@@ -39,6 +39,9 @@ public:
 
 	int count = 0;
 	int update_rate = 3;
+	int shotCount = 0; //acts as a timer for AI shot function
+	int shot_rate = 30; //interval for AI shots
+
 	AAIActor();
 
 	void UpdateLocation(FVector point);
@@ -54,10 +57,10 @@ public:
 
 	FHitResult* Raycast(FVector to);
 	FVector GetDirection();
-	void MoveDecision();
+	void MoveDecision(); //called in Tick to make move decision every 3 frames
 	void MoveAwayFromPlayer(FVector player_location, FRotator player_direction);
 	void MoveTowardsPlayer(FVector player_location, FRotator player_direction);
-
+	void ShotDecision(); //called in Tick to make a shot decision every 30 frames
 private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
 
