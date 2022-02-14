@@ -414,7 +414,7 @@ void ARunner::AddToHealth(int newHealth) {
 		health = 100;
 	}
 	if (health <= 0) {
-		health = 0; 
+		Destroy();
 	}
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->SetHealth(health);
@@ -422,9 +422,9 @@ void ARunner::AddToHealth(int newHealth) {
 }
 
 void ARunner::AddToScore(int newScore) {
-	score += 0;	// No new score 
+	score += newScore;
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
-		HUD->AddToScore(0);	// No new score
+		HUD->AddToScore(newScore);
 	} 
 }
 
