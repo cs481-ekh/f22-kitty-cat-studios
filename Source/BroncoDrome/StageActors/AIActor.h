@@ -9,6 +9,7 @@
 
 #include "../Runner/Runner.h"
 #include "../StageActors/RunnerObserver.h"
+#include "../StageActors/OrbProjectile.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -51,8 +52,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	//Projectile to use
-	//UPROPERTY(EditAnywhere, Category = Projectile)
-	//TSubclassOf<class AOrbProjectile> ProjectileClass;
+	UPROPERTY(EditAnywhere, Category = Projectile)
+	TSubclassOf<class AOrbProjectile> AIProjectileClass;
 
 public:	
 	// Called every frame

@@ -198,11 +198,38 @@ void AAIActor::ShotDecision() {
 		return;
 	}
 	shotCount = 0; //Reset timer
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AI shot action called..."), *GetDebugName(this)));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AI shot action called..."), *GetDebugName(this)));
 	Fire();
 }
 void AAIActor::Fire() {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AI FIRE SHOT"), *GetDebugName(this)));
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AI FIRE SHOT"), *GetDebugName(this)));
+	if (AIProjectileClass) {
+		auto World = GetWorld();
+		if (!World) return;
+		//else GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("getWorld error"), *GetDebugName(this)));
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+
+		const auto rot = BlasterBase->GetComponentRotation();
+		const auto loc = BlasterBase->GetComponentLocation() + 150.0 * (rot.Vector());	//150 is to account for the length of the barrel
+
+		AOrbProjectile* Projectile = World->SpawnActor<AOrbProjectile>(AIProjectileClass, loc, rot, SpawnParams);
+		if (Projectile) {
+			//PlaySound(laserAudioCue);
+			Projectile->FireOrbInDirection(rot.Vector(), this);
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your weapon."), *GetDebugName(this)));
+			//AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),
+				//BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
+
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Projectile init error"), *GetDebugName(this)));
+		}
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ProjectileClass error"), *GetDebugName(this)));
+	}
 }
 
 void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direction) {
