@@ -414,7 +414,8 @@ void ARunner::AddToHealth(int newHealth) {
 		health = 100;
 	}
 	if (health <= 0) {
-		Destroy();
+		Destroy();	// A runner with no more health should die
+		BeginPlay();
 	}
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->SetHealth(health);
