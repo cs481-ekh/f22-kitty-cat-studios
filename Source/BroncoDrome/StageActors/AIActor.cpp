@@ -133,7 +133,7 @@ FVector AAIActor::GetDirection() {
 	if (backward) {
 		if (backward->Distance + fwd_dist < closest) {
 			closest = backward->Distance + fwd_dist;
-			result = Fvector::BackwardVector;
+			result = FVector::BackwardVector;
 		}
 	}
 
