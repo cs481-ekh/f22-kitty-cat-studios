@@ -41,7 +41,8 @@ public:
 	int count = 0;
 	int update_rate = 3;
 	int shotCount = 0; //acts as a timer for AI shot function
-	int shot_rate = 30; //interval for AI shots
+
+	int shot_rate = 90; //interval for AI shots
 
 	AAIActor();
 
