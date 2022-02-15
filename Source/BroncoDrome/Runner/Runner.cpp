@@ -314,8 +314,10 @@ void ARunner::LockOn()
 
 void ARunner::Fire()
 {
-	if (!ProjectileClass) return;
-
+	if (!ProjectileClass) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("===ProjectileClass not initialized - shot failed==="), *GetDebugName(this)));
+		return;
+	}
 	auto World = GetWorld();
 	if (!World) return;
 

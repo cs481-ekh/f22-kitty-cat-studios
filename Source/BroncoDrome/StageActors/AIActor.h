@@ -9,6 +9,7 @@
 
 #include "../Runner/Runner.h"
 #include "../StageActors/RunnerObserver.h"
+#include "../StageActors/OrbProjectile.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -39,6 +40,10 @@ public:
 
 	int count = 0;
 	int update_rate = 3;
+	int shotCount = 0; //acts as a timer for AI shot function
+
+	int shot_rate = 90; //interval for AI shots
+
 	AAIActor();
 
 	void UpdateLocation(FVector point);
@@ -47,6 +52,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	//Projectile to use
+	UPROPERTY(EditAnywhere, Category = Projectile)
+	TSubclassOf<class AOrbProjectile> AIProjectileClass;
 
 public:	
 	// Called every frame
@@ -54,12 +62,12 @@ public:
 
 	FHitResult* Raycast(FVector to);
 	FVector GetDirection();
-	void MoveDecision();
+	void MoveDecision(); //called in Tick to make move decision every 3 frames
 	void MoveAwayFromPlayer(FVector player_location, FRotator player_direction);
 	void MoveTowardsPlayer(FVector player_location, FRotator player_direction);
-
+	void ShotDecision(); //called in Tick to make a shot decision every 30 frames
 private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
-
+	void Fire();
 };
 
