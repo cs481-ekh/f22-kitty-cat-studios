@@ -1,5 +1,57 @@
 Minutes of the team meetings go here:
 
+## Whole Team Meeting 2-11
+Present: Everyone
+Absent:
+Scribe: Ross
+
+Meeting started at 1:33pm on Friday, February 11th
+
+Joey will be Scrum Master
+
+Ross will be Product Owner
+
+DJ will be Scribe
+
+Ben, Doug, Marie, and Saulo are Devs
+
+These roles will last until Friday, February 18th. 
+
+This is our official Scrum planning meeting
+
+Sprint Goal: have a deliverable version of the game containing whatever features were added during this sprint.
+
+Adding a linter for the C++ will be adequate for the CI/CD setup.
+
+Definition of Done: Everyone is responsible for making a new
+branch when starting work on a task. Everyone submits pull requests when they are
+ready to merge their branch into master. Two people must review the request. Priority will be put on getting
+other members of your section to review your work before other members of the group. The code should be
+adequately commented according to the group's agreed-upon commenting structure.
+
+Because we have members from multiple sections, we will have our sprints end on Fridays instead of Tuesdays to
+accomodate not being able to all meet together on Tuesdays.
+
+Marie suggested that instead of having our own branches, we make branches for every task.
+
+Doug's goal: get the music assets into the game, even if they are never referenced by the code
+
+Ross's goal: player death and respawn
+
+Joey's goal: when you hit a certain amount of points, the game stops, you're prompted that you won, and are
+asked if you want to start over
+
+DJ's goal: the AI can aim at the player and shoot
+
+Marie's goal: the AI can move around differently
+
+Ben's goal: the main menu works (accomplished), implement C++ linter, stretch goal of displaying high-score
+
+Saulo's goal: implement something similar to a power-up that increases damage, & update the models and textures 
+
+Sprint retrospective planned on the Fridays.
+
+Meeting ended at 2:05
 
 ## Afternoon Meeting 2/8
 
