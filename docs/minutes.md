@@ -1,6 +1,7 @@
 Minutes of the team meetings go here:
 
-Afternoon Meeting 2/8
+
+## Afternoon Meeting 2/8
 
 Present: Marie, DJ
 Absent: 
@@ -10,7 +11,7 @@ Scribe: Marie
 
 Broke down the AI project road map. Decided what will be done in each sprint for AI. 
 
-Whole Team Meeting 2/4 
+## Whole Team Meeting 2/4 
 
 Present: Everyone
 Absent: No one
@@ -22,7 +23,7 @@ We spent about 45 minutes troubleshooting environment issues and ensuring that e
 
 The rest of the meeting was spent going through the project plan section by section to ensure that it would be ready by the due date. 
 
-Morning meeting 2/1 (Week 4)
+## Morning meeting 2/1 (Week 4)
 
 Present: Joey, Saulo, Ben, Doug, Ross
 Absent: DJ, Marie
@@ -36,7 +37,7 @@ Discussed what was left to do for the project setup:
 We are going to reuse the previously made license
 Saulo may take responsibility for designing the second level if the powerups don't take too long
 
-Sponsor meeting 1/29 (Week 3)
+## Sponsor meeting 1/29 (Week 3)
 
 Present: All
 Scribe: Ross
@@ -76,7 +77,7 @@ Asked questions about sponsor's expectations:
     - Just an executable version of the (playable) game [sponsor only, our teacher also wants our source code] by 
     April 27
 
-Team meeting 1/28 (Week 3)
+## Team meeting 1/28 (Week 3)
 
 Present: Joey, Saulo, Ben, DJ, Marie, Doug
 Absent: Ross
@@ -90,7 +91,7 @@ Discussed Sponsor meeting agenda and filled out our "script"
 
 
 
-Morning meeting 1/27 (Week 3)
+## Morning meeting 1/27 (Week 3)
 
 ~10 minutes
 
