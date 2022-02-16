@@ -1,6 +1,81 @@
 Minutes of the team meetings go here:
 
-Morning meeting 2/1 (Week 4)
+## Whole Team Meeting 2-11
+Present: Everyone
+Absent:
+Scribe: Ross
+
+Meeting started at 1:33pm on Friday, February 11th
+
+Joey will be Scrum Master
+
+Ross will be Product Owner
+
+DJ will be Scribe
+
+Ben, Doug, Marie, and Saulo are Devs
+
+These roles will last until Friday, February 18th. 
+
+This is our official Scrum planning meeting
+
+Sprint Goal: have a deliverable version of the game containing whatever features were added during this sprint.
+
+Adding a linter for the C++ will be adequate for the CI/CD setup.
+
+Definition of Done: Everyone is responsible for making a new
+branch when starting work on a task. Everyone submits pull requests when they are
+ready to merge their branch into master. Two people must review the request. Priority will be put on getting
+other members of your section to review your work before other members of the group. The code should be
+adequately commented according to the group's agreed-upon commenting structure.
+
+Because we have members from multiple sections, we will have our sprints end on Fridays instead of Tuesdays to
+accomodate not being able to all meet together on Tuesdays.
+
+Marie suggested that instead of having our own branches, we make branches for every task.
+
+Doug's goal: get the music assets into the game, even if they are never referenced by the code
+
+Ross's goal: player death and respawn
+
+Joey's goal: when you hit a certain amount of points, the game stops, you're prompted that you won, and are
+asked if you want to start over
+
+DJ's goal: the AI can aim at the player and shoot
+
+Marie's goal: the AI can move around differently
+
+Ben's goal: the main menu works (accomplished), implement C++ linter, stretch goal of displaying high-score
+
+Saulo's goal: implement something similar to a power-up that increases damage, & update the models and textures 
+
+Sprint retrospective planned on the Fridays.
+
+Meeting ended at 2:05
+
+## Afternoon Meeting 2/8
+
+Present: Marie, DJ
+Absent: 
+Scribe: Marie
+
+~45 minutes
+
+Broke down the AI project road map. Decided what will be done in each sprint for AI. 
+
+## Whole Team Meeting 2/4 
+
+Present: Everyone
+Absent: No one
+Scribe: Ross/Marie
+
+~2 hours
+
+We spent about 45 minutes troubleshooting environment issues and ensuring that everyone was set up for sprint 0.
+
+The rest of the meeting was spent going through the project plan section by section to ensure that it would be ready by the due date. 
+
+## Morning meeting 2/1 (Week 4)
 
 Present: Joey, Saulo, Ben, Doug, Ross
 Absent: DJ, Marie
@@ -14,7 +89,7 @@ Discussed what was left to do for the project setup:
 We are going to reuse the previously made license
 Saulo may take responsibility for designing the second level if the powerups don't take too long
 
-Sponsor meeting 1/29 (Week 3)
+## Sponsor meeting 1/29 (Week 3)
 
 Present: All
 Scribe: Ross
@@ -54,7 +129,7 @@ Asked questions about sponsor's expectations:
     - Just an executable version of the (playable) game [sponsor only, our teacher also wants our source code] by 
     April 27
 
-Team meeting 1/28 (Week 3)
+## Team meeting 1/28 (Week 3)
 
 Present: Joey, Saulo, Ben, DJ, Marie, Doug
 Absent: Ross
@@ -68,7 +143,7 @@ Discussed Sponsor meeting agenda and filled out our "script"
 
 
 
-Morning meeting 1/27 (Week 3)
+## Morning meeting 1/27 (Week 3)
 
 ~10 minutes
 

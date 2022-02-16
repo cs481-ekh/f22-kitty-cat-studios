@@ -314,8 +314,10 @@ void ARunner::LockOn()
 
 void ARunner::Fire()
 {
-	if (!ProjectileClass) return;
-
+	if (!ProjectileClass) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("===ProjectileClass not initialized - shot failed==="), *GetDebugName(this)));
+		return;
+	}
 	auto World = GetWorld();
 	if (!World) return;
 
@@ -414,7 +416,7 @@ void ARunner::AddToHealth(int newHealth) {
 		health = 100;
 	}
 	if (health <= 0) {
-		health = 0; 
+		Destroy();	// A runner that has lost all of its health should die
 	}
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->SetHealth(health);
@@ -422,7 +424,7 @@ void ARunner::AddToHealth(int newHealth) {
 }
 
 void ARunner::AddToScore(int newScore) {
-	score += newScore; 
+	score += newScore;
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->AddToScore(newScore);
 	} 
