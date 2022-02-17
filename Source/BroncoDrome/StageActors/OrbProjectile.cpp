@@ -42,14 +42,14 @@ AOrbProjectile::AOrbProjectile()
 	if(!ProjectileMeshComponent){
 		//Create mesh
 		ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Assets/Blaster/Sphere.Sphere"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Assets/Blaster/PlasmaBall")); //Orginal in case something breaks Game/Assets/Blaster/Sphere.Sphere
 
 		if(Mesh.Succeeded()){
 			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
 		}
 
 		//Add material
-		static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Engine/MapTemplates/Materials/BasicAsset02.BasicAsset02"));
+		static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Game/Assets/Blaster/MaterialAndTextures/Plasma")); //Orginal in case something breaks /Engine/MapTemplates/Materials/BasicAsset02.BasicAsset02
 		if(Material.Succeeded()){
 			ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
 		}
@@ -90,13 +90,27 @@ void AOrbProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor
 {
     if (OtherActor != this && OtherComponent->IsSimulatingPhysics()){
 		if (ARunner* runner = Cast<ARunner, AActor>(OtherActor)) {
-			runner->AddToHealth(-20);
+			runner->AddToHealth(-20); //Default
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hit a runner."), *GetDebugName(this)));
 			Cast<ARunner, AActor>(RunnerParent)->AddToScore(10);
 		}
 
 		Destroy();
     }
+
+}
+//Added new method so nothing breaks;
+void AOrbProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit, int damage)
+{
+	if (OtherActor != this && OtherComponent->IsSimulatingPhysics()) {
+		if (ARunner* runner = Cast<ARunner, AActor>(OtherActor)) {
+			runner->AddToHealth(damage * (-1)); //Custom damage
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hit a runner."), *GetDebugName(this)));
+			Cast<ARunner, AActor>(RunnerParent)->AddToScore(10);
+		}
+
+		Destroy();
+	}
 
 }
 
