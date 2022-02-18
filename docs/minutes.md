@@ -1,5 +1,53 @@
 Minutes of the team meetings go here:
 
+## Whole Team Meeting 2-18
+Sprint: 1  
+Present: Ben, Doug, DJ, Joey, Marie, Saulo, Ross  
+Absent: [N/A]  
+Scribe: DJ  
+  
+Scrum Master: Joey  
+Product Owner: Ross  
+Devs: Ben, Doug, DJ, Marie, Saulo  
+Time: 1330-1405 (35 minutes)    
+
+
+*Sprint 0 Recap:
+- Ross: if runner gets to zero health, it dies
+- Ben: CICD debugging, Linux build working, comment Windows for now, added linter and docs to main.yml
+- Marie: backwards movement added
+- DJ: AI can shoot bullets 
+- Doug: codebase research - sound
+- Saulo: modeling of blaster turret
+- Joey: codebase research - win conditions  
+
+
+*Sprint 1 Update:
+- Marie: Movement decisions
+- DJ: locate player, aim target laser
+- Ross: on death- teleports to specific location, restores health
+- Ben: CICD debugging- Linux build working, comment out Windows for now, added linter and docs to main.yml
+- Doug: dynamic soundtrack, research on implementation
+- Saulo: refactoring powerup function
+- Joey: game stops when condition reached, working on high score screen/widget with Ben  
+
+
+*Sprint 1 ToDo:
+- Joey: win conditions
+- DJ: shoot at player
+- Marie: movement decisions
+- Saulo: powerup master class, children with different attributes
+- Ross: delay in respawn, random locations
+- Ben: high score and win conditions
+- Doug: implement dynamic sounds  
+
+
+Suggestions:
+- modify shots so that ricocheted bullets do not damage the runner that shot it.
+- 'tweaks' channel/tasks for bugs and issues that can be solved when anyone gets a chance
+- have the AI spawn at a fixed location for ease of testing
+- useful resources in google doc in shared folder  
+
 ## Whole Team Meeting 2-11
 Present: Everyone
 Absent:
