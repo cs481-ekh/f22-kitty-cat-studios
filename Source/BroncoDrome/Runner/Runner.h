@@ -153,6 +153,10 @@ public:
 	void AddToHealth(int newHealth);
 	void AddToScore(int newScore); 
 
+//Displays for winning and losing
+private:
+	void WinScreen();
+
 private: // Sound Functions
 	void PlaySound(USoundCue* cue);
 

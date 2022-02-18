@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "RunnerWidgets.h"
 #include "PauseWidgets.h"
+#include "WinWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "ARunnerHUD.generated.h"
 
@@ -35,12 +36,18 @@ public:		// Blueprint variables
 	UPROPERTY(EditDefaultsOnly, Category = "Pause")
 	TSubclassOf<UUserWidget> PauseWidgetsClass;
 
+	//WinBP Variables
+	UPROPERTY(EditDefaultsOnly, Category = "WinWidget")
+	TSubclassOf<UUserWidget> WinWidgetClass;
+
 	bool paused = false; 
 
 private:	// Members
 
 	URunnerWidgets* m_Widgets;
 	UPauseWidgets* m_PauseWidgets; 
+	//Widget for the win screen
+	UWinWidget* m_WinWidget;
 
 public:		// Interface
 
@@ -53,4 +60,6 @@ public:		// Interface
 public: 
 	void Pause();
 	void HideHUD(bool option);
+	//For Win Condition
+	void YouWin();
 };

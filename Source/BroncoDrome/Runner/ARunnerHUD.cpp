@@ -39,6 +39,14 @@ void ARunnerHUD::BeginPlay()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
 	}
+	//Enable Win Widget
+	if (WinWidgetClass) {
+		m_WinWidget = CreateWidget<UWinWidget>(GetWorld(), WinWidgetClass); 
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
+	}
 }
 
 void ARunnerHUD::DrawHUD()
@@ -66,4 +74,13 @@ void ARunnerHUD::Pause() {
 		m_PauseWidgets->RemoveFromViewport();
 	}
 	
+}
+
+//Win Condition Call
+void ARunnerHUD::YouWin(){
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
+	//SHOULD display win widget, is causing an error
+	//m_WinWidget->AddToViewport();
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("You Win Function Reached"), *GetDebugName(this)));
+
 }

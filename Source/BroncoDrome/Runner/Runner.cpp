@@ -427,8 +427,16 @@ void ARunner::AddToScore(int newScore) {
 	score += newScore;
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->AddToScore(newScore);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Added To Score."), *GetDebugName(this)));
 	} 
+	//WIN CONDITION
+	if (score >= 50){
+		//SetGlobalTimeDilation(2);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Win!!"), *GetDebugName(this)));
+		HUD->YouWin();
+	}
 }
+
 
 bool ARunner::IsGrounded()
 {
