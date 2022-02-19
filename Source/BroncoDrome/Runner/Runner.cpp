@@ -424,8 +424,8 @@ void ARunner::AddToHealth(int newHealth) {
 }
 
 void ARunner::AddToScore(int newScore) {
-	score += newScore;
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
+		score += newScore;
 		HUD->AddToScore(newScore);
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Added To Score."), *GetDebugName(this)));
 	} 
