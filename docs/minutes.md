@@ -1,6 +1,6 @@
 Minutes of the team meetings go here:
 
-## Whole Team Meeting 2-18
+## Whole Team Meeting 2-18 (Week 6)
 Sprint: 1  
 Present: Ben, Doug, DJ, Joey, Marie, Saulo, Ross  
 Absent: [N/A]  
@@ -48,7 +48,7 @@ Suggestions:
 - have the AI spawn at a fixed location for ease of testing
 - useful resources in google doc in shared folder  
 
-## Whole Team Meeting 2-11
+## Whole Team Meeting 2-11 (Week 5)
 Present: Everyone
 Absent:
 Scribe: Ross
@@ -101,7 +101,7 @@ Sprint retrospective planned on the Fridays.
 
 Meeting ended at 2:05
 
-## Afternoon Meeting 2/8
+## Afternoon Meeting 2/8 (Week 5)
 
 Present: Marie, DJ
 Absent: 
@@ -111,7 +111,7 @@ Scribe: Marie
 
 Broke down the AI project road map. Decided what will be done in each sprint for AI. 
 
-## Whole Team Meeting 2/4 
+## Whole Team Meeting 2/4 (Week 4)
 
 Present: Everyone
 Absent: No one
@@ -122,6 +122,18 @@ Scribe: Ross/Marie
 We spent about 45 minutes troubleshooting environment issues and ensuring that everyone was set up for sprint 0.
 
 The rest of the meeting was spent going through the project plan section by section to ensure that it would be ready by the due date. 
+
+## Morning meeting 2/3 (Week 4)
+Present: Joey, Saulo, Ben, Doug, Ross
+Absent: DJ, Marie
+Scribe: Ross
+
+~20 minutes
+
+Discussed the policy of having individual branches
+Discussed the structure of the github's Project layout
+Decided that tomorrow's meeting will focus on making sure everyone has a working, testable version of the game. We will help anyone
+still having issues. We will also decide on the new roles.
 
 ## Morning meeting 2/1 (Week 4)
 
