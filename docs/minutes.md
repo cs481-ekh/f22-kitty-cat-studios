@@ -1,5 +1,46 @@
 Minutes of the team meetings go here:
 
+## Whole Team Meeting 2-25 (Week 7)
+Sprint: 1  
+Present: Ben, Doug, DJ, Joey, Marie, Saulo, Ross  
+Absent: [N/A]  
+Scribe: DJ  
+  
+Scrum Master: Joey  
+Product Owner: Ross  
+Devs: Ben, Doug, DJ, Marie, Saulo  
+Time: 1330-1400 (30 minutes)    
+  
+
+*Sprint 1 Update:  
+--SPRINT ENDS 2/1  
+- Marie: continued development on AI movement  
+- DJ: aim function works, needs to aim blaster at player  
+- Ross: death and respawn- currently resets health and teleports to specific area in map  
+- Ben: make a level based on main menu, added quit button to menu, created high score screen  
+- Doug: horizontal/vertical slice on music, works on day map  
+- Saulo: health, speed, individual power ups spawn  
+- Joey: removed gravity, projectiles vanish on hit, explosions, win widgets  
+  
+
+*Sprint 1 ToDo:  
+- Joey: further development on widgets, explosions  
+- DJ: pivot blaster, fire at player  
+- Marie: AI movement decision implementation  
+- Saulo: make separate spawner to spawn specific power ups in specific spots on map  
+- Ross: no respawn after 3 deaths, random spawn location  
+- Ben: transition to win screen, gameover screen  
+- Doug: sounds working on other maps, sound work    
+  
+
+*New roles for sprint 2:  
+- Starting 2/1  
+- Scrum master: Ben  
+- Product owner: Marie  
+- Scribe: Joey  
+- Devs: DJ, Joey, Ben, Saulo, Ross   
+
+
 ## Whole Team Meeting 2-18 (Week 6)
 Sprint: 1  
 Present: Ben, Doug, DJ, Joey, Marie, Saulo, Ross  
