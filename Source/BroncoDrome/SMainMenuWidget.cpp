@@ -22,6 +22,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	const FText PlayDayText = LOCTEXT("PlayGameDay", "Play During the Day");
 	const FText PlayNightText = LOCTEXT("PlayGameNight", "Play at Night");
 	const FText PlayRainText = LOCTEXT("PlayGameRain", "Play in the Rain :)");
+	const FText HighScoreText = LOCTEXT("HighScores","High Score Screen");
 	const FText	QuitText = LOCTEXT("QuitGame", "Quit Game");
 
 	FSlateFontInfo ButtonTextStyle = FCoreStyle::Get().GetFontStyle("EmbossedText");
@@ -101,6 +102,22 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 					    .ColorAndOpacity(FColor::Orange)
 					]
 
+					]
+				//High Score Button
+				+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+
+					[
+						SNew(SButton)
+						.OnClicked(this, &SMainMenuWidget::OnQuitClicked)
+					.ButtonColorAndOpacity(FColor::Blue)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+						.Text(HighScoreText)
+						.Justification(ETextJustify::Center)
+						.ColorAndOpacity(FColor::Orange)
+					]
 					]
 				
 				//Quit Game Button Text
