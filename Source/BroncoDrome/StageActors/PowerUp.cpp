@@ -87,20 +87,30 @@ bool bFromSweep, const FHitResult& SweepResult)
 		SetActorTickEnabled(true);
 		GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUp::HideActor, 1.5f, true);
 		RotationScale = 600.0f;
+
+		//Add various calls to car methods in this switch statement to accomplish power up stuff.
 		switch (powerTypeIndex)
 		{
-		case 0:
-			dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20);
-			break; //Add various calls to car methods in this switch statement to accomplish power up stuff.
-		case 1: 
-			dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f);
+			case 0:
+				dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20); //Health
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
+			break;
+			case 1:
+				dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f); //Speed
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
+			break;
+			case 2:
+				dynamic_cast<ARunner*>(OtherActor)->AddToDamage(10); //Damage
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
 			break;
 		}
+	
 
-		AParticleSpawner::SpawnParticle(BigPoof, GetActorLocation(), FVector(), 1.f);
+		AParticleSpawner::SpawnParticle(BigPoof, GetActorLocation(), FVector(), 1.f); //Poof it is gone
 	}
 	else
 	{
+		//Deals with relocating powerups
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Power spawned in wall, relocating..."), *GetDebugName(this)));
 		UpdateLocation(FVector(FMath::RandRange(ASpawner::GetBounds().Min.X, ASpawner::GetBounds().Max.X), FMath::RandRange(ASpawner::GetBounds().Min.Y, ASpawner::GetBounds().Max.Y), -70));
 	}
@@ -108,7 +118,7 @@ bool bFromSweep, const FHitResult& SweepResult)
 
 int APowerUp::GetTimeTillExpiration()
 {
-	return 20 - (FDateTime::Now() - spawnTime).GetTotalSeconds();
+	return 20 - (FDateTime::Now() - spawnTime).GetTotalSeconds(); //This doesn't seem to change the time they stay
 }
 
 void APowerUp::UpdateLocation(FVector point)
@@ -117,7 +127,7 @@ void APowerUp::UpdateLocation(FVector point)
 	SetActorLocation(point, false, 0, ETeleportType::None);
 	timeTracker = 1.0f;
 	GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUp::ShowExpiration, 9.0f, false);
-	powerTypeIndex = FMath::RandRange(0, 1);
+	powerTypeIndex = FMath::RandRange(0, 2); //Randomly assigns powerup ability. Range needs to be updated when adding new powers
 	spawnTime = FDateTime::Now();
 	RotationScale = 90.0f;
 	

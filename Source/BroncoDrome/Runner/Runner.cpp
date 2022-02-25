@@ -436,6 +436,11 @@ void ARunner::AddToScore(int newScore) {
 		HUD->YouWin();
 	}
 }
+//PowerUps can call this to change player damage
+void ARunner::AddToDamage(int addedDamage) {
+	playerDamage += addedDamage;
+}
+
 
 
 bool ARunner::IsGrounded()

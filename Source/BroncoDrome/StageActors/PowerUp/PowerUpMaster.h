@@ -1,19 +1,17 @@
-// // Copyright (C) Dromies 2021. All Rights Reserved.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PowerUp.generated.h"
+#include "PowerUpMaster.generated.h"
 
 UCLASS()
-class BRONCODROME_API APowerUp : public AActor
+class BRONCODROME_API APowerUpMaster : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
-	APowerUp();
+	APowerUpMaster();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -22,13 +20,14 @@ public:
 
 	int GetTimeTillExpiration();
 
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* Mesh;
+		class UStaticMeshComponent* Mesh;
 
 	FTimerHandle PowerUpStatusHandler;
 
-	float timeTracker = 0.75f;
+	float timeTracker = 1.5f; //This is the value for the time the power up lasts
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		float BobTimeScale = 2.5f;
@@ -36,6 +35,9 @@ public:
 		float BobDistanceScale = 0.25f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		float RotationScale = 90.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUpAbility, meta = (AllowPrivateAccess = "true"))
+		int powerTypeIndex; //What power it is. This is changed in the Unreal Engine Editor, not code.
+
 
 private:
 	void HideActor();
@@ -45,20 +47,17 @@ private:
 	void ShowExpiration();
 
 	UFUNCTION()
-	void ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-		bool bFromSweep, const FHitResult& SweepResult);
-
+		void ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+			bool bFromSweep, const FHitResult& SweepResult);
+	
 private:
 	bool hidden = false;
 
 	bool gotten = false;
-
-	int powerTypeIndex; //What power it is. currently randomly made
 
 	FDateTime spawnTime;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 };

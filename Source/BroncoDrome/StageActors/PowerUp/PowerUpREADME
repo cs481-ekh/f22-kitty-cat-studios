@@ -1,0 +1,46 @@
+//From the Spring 2022 Class PowerUp Directer ... I guess. It is just me here.
+
+The original team 2021 made the first power up system. It was one file that randomly assigned itself what power it was.
+It used a switch statement to call the methods of the runner class to do its power.
+It was then randomly spawned by the Spawner file across the map.
+This works and it was easy to create new power ups. Add to the switch and increase the random num range.
+
+But this didn't leave a lot for later. For instance, they are shared the same model so players never knew what they got. 
+Good for Mario Kart but not for a game that might what to include spawners for specific powers.
+
+So I made the PowerUpMaster class. It would hold the variables and functions like how long the power ups stayed on the field, 
+animation and make it disappear. Each power up would then be a child of this class and hold their own code for what it did.
+This means that the power ups could have their own models, last times, and in the future, their own children of power intensity(Health I, II, III etc) 
+as well as let maps be customizable to where select powers spawn.
+
+This document was made to tell the future teams what the powerups are like. 
+
+First a warning: I AM NEW TO ALL OF THIS!
+
+The code in the PowerUpMaster class is most likly all done by the previous team. I copied it over from the orginal PowerUp.cpp and .h files to avoid breaking something.
+I had to move some things around to get stuff to work, public vs private and make the powerTypeIndex a UPROPERTY, but otherwise I did nothing dramatic there.
+
+When creating a brand new powerup:
+	- Create a child of the PowerUpMasterClass Blueprint in Unreal Engine. Change only the mesh model and the PowerTypeIndex variable in the Class Defaults menu.
+		Double click the child blueprint to open the menu up, don't use the right bottom side menu options under the World Outliner. 
+		If you place a power up and try to change that one's index from the side menu, it seems to change all, including other different powerups
+			on the field for some reason. I don't know why, it just did for me.
+		When you change the PowerTypeIndex variable in the Class Defaults menu it will set any Actor with this class to that power up and not change any others.
+		You can now drag the blueprint anywhere on the level to spawn the new powerup.
+
+	- Next, follow the collision settings of the PowerUpMasterClass found in the UnrealEngine PowerUps folder. 
+		Again only in the Class Defaults menu, make sure the new blueprint follows the settings in the PowerUpMasterClass. Since it
+			was made as a child of the PowerUpMasterClass, your new blueprint should already be setup. I just included this in case it was not.
+			I had to follow the orignal code's setup to get it to work. It could be spawned and animated but not interacted with otherwise.
+
+	- Go to the PowerUpMaster.cpp file and create the new affect for the powerup.
+		Find void APowerUpMaster::ExecuteFunction. In the switch statement, add the new case and call the needed functions for your powerup.
+		If you have not already, you might have to create those as well for whatever you are trying to do.
+
+When placing any powerup on the level.
+	- Find the DONOTDELETEME!!PleaseKeepMeForAReferenceToTheSettupOfAPowerUpCollisionAndFloorPlacement object in the Unreal Engine Day level.
+		For the strangest reason, the new power ups, despite not being really different from the original, float above where they are spawned.
+		If you place the power up on the ground level, it will fly up to a point where the Runner can not grab it. Again don't know why, the originals
+			stay where they are.
+		So use the above creatively named object to use as a reference to how far you should spawn your powerups below so they fly to a correct level.
+		

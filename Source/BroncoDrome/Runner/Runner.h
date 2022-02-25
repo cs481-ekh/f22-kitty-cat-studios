@@ -105,6 +105,7 @@ public: // Attributes
 
 	int score = 0;
 	int health = 100; // out of 100
+	int playerDamage = 20; //Default damage
 
 	FTimerHandle RunnerStatusHandler;
 
@@ -152,6 +153,7 @@ public:
 	void FixRotation();
 	void AddToHealth(int newHealth);
 	void AddToScore(int newScore); 
+	void AddToDamage(int addedDamage); //Can change damage with power ups
 
 //Displays for winning and losing
 private:

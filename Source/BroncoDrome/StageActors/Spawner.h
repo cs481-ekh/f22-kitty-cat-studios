@@ -41,7 +41,7 @@ private:
 
 	FTimerHandle SpawnerTimerHandler;
 
-	TArray<APowerUp*> powerups;
+	TArray<APowerUp*> powerups; //Array of PowerUps
 
 	int actorLocationIndex = 0;
 
