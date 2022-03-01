@@ -137,23 +137,23 @@ FVector AAIActor::GetDirection() {
 		}
 	}
 
-	//FHitResult* bright = Raycast((GetActorRightVector() + (-GetActorForwardVector())) * max_distance);
-	//if (bright) {
-	//	if (bright->Distance < closest) {
-	//		closest = bright->Distance;
-	//		result = (FVector::RightVector + FVector::BackwardVector);
-	//	}
-	//}
+	FHitResult* bright = Raycast((GetActorRightVector() + (-GetActorForwardVector())) * max_distance);
+	if (bright) {
+		if (bright->Distance < closest) {
+			closest = bright->Distance;
+			result = (FVector::RightVector + FVector::BackwardVector);
+		}
+	}
 
-	//FHitResult* bleft = Raycast(((-GetActorRightVector()) + (-GetActorForwardVector)) * max_distance);
-	//if (bleft) {
-	//	if (bleft->Distance < closest) {
-	//		closest = bleft->Distance;
-	//		result = (FVector::LeftVector + FVector::BackwardVector);
-	//	}
-	//}
+	FHitResult* bleft = Raycast(((-GetActorRightVector()) + (-GetActorForwardVector())) * max_distance);
+	if (bleft) {
+		if (bleft->Distance < closest) {
+			closest = bleft->Distance;
+			result = (FVector::LeftVector + FVector::BackwardVector);
+		}
+	}
 
-	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::SanitizeFloat(closest));
+	 GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::SanitizeFloat(closest));
 	return result;
 }
 
@@ -209,6 +209,9 @@ void AAIActor::MoveDecision() {
 		// MoveTowardsPlayer(player_location, player_direction);
 		Mover->SetSteeringInput(0.0f);
 	}
+	else if (defensive) {
+		MoveAwayFromPlayer(player_location, player_direction);
+	}
 	else {
 		//Marie commented out so they won't move away
 		//MoveAwayFromPlayer(player_location, player_direction);
@@ -261,9 +264,9 @@ void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direc
 	auto curr_direction = GetActorRotation();
 
 	// FOR RANDOM MOVES IF WE WANT
-	FNavLocation ResultLocation = FNavLocation();
-	auto radius = 500.0;
-	NavSys->GetRandomReachablePointInRadius(player_location, radius, ResultLocation);
+	//FNavLocation ResultLocation = FNavLocation();
+	//auto radius = 500.0;
+	//NavSys->GetRandomReachablePointInRadius(player_location, radius, ResultLocation);
 
 	auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(player_location, curr_location);
 	auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);

@@ -44,6 +44,8 @@ public:
 
 	int shot_rate = 90; //interval for AI shots
 
+	bool defensive = true;
+
 	AAIActor();
 
 	void UpdateLocation(FVector point);
