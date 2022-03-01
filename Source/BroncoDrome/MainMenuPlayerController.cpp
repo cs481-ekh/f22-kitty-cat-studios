@@ -22,6 +22,6 @@ void AMainMenuPlayerController::OpenMenu()
 {
 	if (AMenuHUD* MenuHUD = Cast<AMenuHUD>(GetHUD()))
 	{
-		MenuHUD->ShowMenu();
+		MenuHUD->ShowMenu(0);
 	}
 }

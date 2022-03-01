@@ -28,6 +28,8 @@ public:
 	FReply OnPlayNightClicked() const;
 	FReply OnPlayRainClicked() const;
 	FReply OnQuitClicked() const;
+	FReply OnHScoreClicked() const;
+	FReply OnReturnToMainClicked() const;
 	 
 	TWeakObjectPtr<class AMenuHUD> OwningHUD;
 	TWeakObjectPtr<class UTexture2D> broncyImage;

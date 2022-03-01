@@ -22,12 +22,14 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	void ShowMenu();
+	int mainOrHScore;
+	void ShowMenu(int i);
 	void RemoveMenu();
 	AMenuHUD();
 
 private:
 	UPROPERTY()
 	UTexture2D* BroncyImage;
+	UTexture2D* HScoreImage;
 	
 };

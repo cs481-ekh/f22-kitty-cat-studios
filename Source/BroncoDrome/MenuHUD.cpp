@@ -11,7 +11,9 @@
 AMenuHUD::AMenuHUD() {
 	
 	static ConstructorHelpers::FObjectFinder<UTexture2D> BroncyImagePath(TEXT("Texture2D'/Game/Assets/Screenshots/broncy.broncy'"));
-	BroncyImage = BroncyImagePath.Object;
+	BroncyImage = BroncyImagePath.Object; //This is the image for the main menu
+	static ConstructorHelpers::FObjectFinder<UTexture2D> HScoreImagePath(TEXT("Texture2D'/Game/Assets/Screenshots/hscore.hscore'"));
+	HScoreImage = HScoreImagePath.Object; //This is the image for the high score screen
 }
 
 void AMenuHUD::BeginPlay()
@@ -19,16 +21,22 @@ void AMenuHUD::BeginPlay()
 
 	Super::BeginPlay();
 
-	ShowMenu();
+	ShowMenu(0); //0 makes it show the main menu screen intially
 
 
 }
 
-void AMenuHUD::ShowMenu()
+void AMenuHUD::ShowMenu(int i)
 {
+	mainOrHScore = i; //SMainMenuWidget needs to know what this number is -> 0=main menu | 1=high score
 	if (GEngine && GEngine->GameViewport)
 	{
-		MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(BroncyImage);
+		//IF we want to show the main menu
+		if(!i)
+			MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(BroncyImage); //This will load SMainMenuWidget with the main menu image
+		//ELSE IF we want show the high score screen
+		else if (i)
+			MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(HScoreImage); //This will load SMainMenuWidget with the high score image
 		GEngine->GameViewport->AddViewportWidgetContent(SAssignNew(MenuWidgetContainer, SWeakWidget).PossiblyNullContent(MenuWidget.ToSharedRef()));
 
 		if (PlayerOwner)
