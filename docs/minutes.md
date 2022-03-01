@@ -13,7 +13,7 @@ Time: 1330-1400 (30 minutes)
   
 
 *Sprint 1 Update:  
---SPRINT ENDS 2/1  
+--SPRINT ENDS 3/1  
 - Marie: continued development on AI movement  
 - DJ: aim function works, needs to aim blaster at player  
 - Ross: death and respawn- currently resets health and teleports to specific area in map  
