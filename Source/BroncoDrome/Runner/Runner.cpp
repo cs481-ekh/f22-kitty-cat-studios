@@ -415,8 +415,18 @@ void ARunner::AddToHealth(int newHealth) {
 	if (health >= 100) {
 		health = 100;
 	}
-	if (health <= 0) {
-		Destroy();	// A runner that has lost all of its health should die
+	/* This is when a runner has lost all of its health */
+	else if (health <= 0) {
+		health = 100;	// Reset to full health
+		/* This is when the runner is an AI rather than the player */
+		if (GetController() != GetWorld()->GetFirstPlayerController()) {
+			lives--;	// The AI loses a life when they lose all their health (initially 3 lives)
+			if (lives <= 0)	Destroy();	// When an AI loses all three lives, they are permanently destroyed
+		}
+		const FVector newLocation = { 1750, -3000, 300 };	// Coordinate to be teleported to (temporary value around the center of the map on the left side for the day map, high in the air)
+		const FRotator newOrientation = { 0, 0, 0 };	// Orientation to be set to
+		TeleportTo(newLocation, newOrientation);	// This runner is teleported to this location with this orientation
+		HUD->SetHealth(health);
 	}
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->SetHealth(health);
@@ -430,7 +440,7 @@ void ARunner::AddToScore(int newScore) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Added To Score."), *GetDebugName(this)));
 	} 
 	//WIN CONDITION
-	if (score >= 50){
+	if (score >= 5000){
 		//SetGlobalTimeDilation(2);
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Win!!"), *GetDebugName(this)));
 		HUD->YouWin();

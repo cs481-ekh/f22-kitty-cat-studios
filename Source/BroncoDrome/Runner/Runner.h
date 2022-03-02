@@ -105,6 +105,7 @@ public: // Attributes
 
 	int score = 0;
 	int health = 100; // out of 100
+	int lives = 3;	// out of 3
 	int playerDamage = 20; //Default damage
 
 	FTimerHandle RunnerStatusHandler;
