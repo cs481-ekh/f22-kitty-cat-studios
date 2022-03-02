@@ -137,23 +137,23 @@ FVector AAIActor::GetDirection() {
 		}
 	}
 
-	//FHitResult* bright = Raycast((GetActorRightVector() + (-GetActorForwardVector())) * max_distance);
-	//if (bright) {
-	//	if (bright->Distance < closest) {
-	//		closest = bright->Distance;
-	//		result = (FVector::RightVector + FVector::BackwardVector);
-	//	}
-	//}
+	FHitResult* bright = Raycast((GetActorRightVector() + (-GetActorForwardVector())) * max_distance);
+	if (bright) {
+		if (bright->Distance < closest) {
+			closest = bright->Distance;
+			result = (FVector::RightVector + FVector::BackwardVector);
+		}
+	}
 
-	//FHitResult* bleft = Raycast(((-GetActorRightVector()) + (-GetActorForwardVector)) * max_distance);
-	//if (bleft) {
-	//	if (bleft->Distance < closest) {
-	//		closest = bleft->Distance;
-	//		result = (FVector::LeftVector + FVector::BackwardVector);
-	//	}
-	//}
+	FHitResult* bleft = Raycast(((-GetActorRightVector()) + (-GetActorForwardVector())) * max_distance);
+	if (bleft) {
+		if (bleft->Distance < closest) {
+			closest = bleft->Distance;
+			result = (FVector::LeftVector + FVector::BackwardVector);
+		}
+	}
 
-	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::SanitizeFloat(closest));
+	 GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::SanitizeFloat(closest));
 	return result;
 }
 
