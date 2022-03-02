@@ -5,6 +5,8 @@
 #include "ChaosWheeledVehicleMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
+#include "DrawDebugHelpers.h"
+
 
 
 // Sets default values
@@ -42,7 +44,21 @@ void AAIActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (IsGrounded()) {
 		// Mover->SetThrottleInput(1.0f);
-		auto location = GetActorLocation();
+		auto location = GetActorLocation(); //Obtains the (x,y,z) vector loction of the AI
+		//FOR AIMING AT PLAYER
+		FHitResult AIRayHit; //For raycasting from AI to player
+		FVector RayStart; //origin point of ray cast
+		RayStart = location; //set ray origin to match AI location
+		// RayStart.Z += 50.f; //move ray up in actor
+		// RayStart.X += 200.f; //move ray away so it doesn't collide with self
+		FVector RayForwardVector = GetActorForwardVector(); //make sure line is coming from front
+		FVector RayEnd = ((RayForwardVector * 2000.f) + RayStart); //defines end point of line
+		FCollisionQueryParams RayCollisionParams; //to detect what the line is hitting
+		DrawDebugLine(GetWorld(), RayStart, RayEnd, FColor::Green, false, 0.03, 0, 5); //draws the ray line
+		if (ActorLineTraceSingle(AIRayHit, RayStart, RayEnd, ECC_WorldStatic, RayCollisionParams)) {
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("AI ray is hitting : %s"), *AIRayHit.GetComponent()->GetName()));
+		}
+		//END AIMING AT PLAYER
 
 		curr_speed = FVector::Distance(location, last_location) / DeltaTime;
 		if (curr_speed < max_speed && !reverse) {
