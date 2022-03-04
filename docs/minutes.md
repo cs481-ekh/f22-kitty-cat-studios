@@ -1,5 +1,35 @@
 Minutes of the team meetings go here:
 
+## Morning Meeting 3-1 (Week 8)
+Present: Doug, Joey, Ben, Saulo
+Absent: Ross (sick)
+Scribe: Joey
+Started at 9:28
+Ended at 10:10
+
+Began by talking about how we thought we did. I (joey) felt like I fell behind a little. I was not alone in this feeling though.
+Ben addressed how he went through making the hi-score screen, and talked about instead of making checklists for tasks, we can make more tasks.
+This is Saulo’s first big project to use GitHub.
+Talked about restoring branches to recover dates.
+Brought up putting task number in pull request description to properly close a task.
+Merged our pending pull requests before the end of sprint 1.
+Did a bit of troubleshooting post-merge regarding the hi-score screen.
+Review what we got done:
+-Fixed projectiles
+-debugging ai spawn issues
+-saulo updated blaster models
+-Doug got sound skeleton implemented
+-Ross prevented ai from contributing to scores
+-unsure of respawn progress
+Still want to implement a better scoring system, like losing points for getting hit, or time based points.
+Brought up potential of more power-up types
+Successfully got the high score screen working.
+Asked about more proper ways to test and verify a pull request.
+Began to set up Sprint 2.
+Saulo says he may need to communicate with the AI team regarding a power up
+Potential level redesign, current one feels a little clunky.
+Playtesting should be happening with each person.
+
 ## Whole Team Meeting 2-25 (Week 7)
 Sprint: 1  
 Present: Ben, Doug, DJ, Joey, Marie, Saulo, Ross  
