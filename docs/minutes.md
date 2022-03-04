@@ -1,5 +1,41 @@
 Minutes of the team meetings go here:
 
+## Friday Group Meeting 3-4 
+Attendees: Ross, Ben, Joey, DJ, Marie, Saulo, Doug
+Absent: None
+Commenced: 1:30
+Scribe: Joey
+
+Ben: High Score screen placeholder, took a while, tried to make it build when clicked, not making a whole new
+level.
+Ben: Plans on testing night and rain map
+DJ: Using blueprints as an intermediary before transfering to C++, as blueprints can be very finnicky and not
+great for permanent additions
+Doug: Has been using blueprints for some aspects of the music, but has to call them from C++.
+-Youtube tutorials should be great for AI and Music with transfering from blueprints to C++.
+Joey: Wants to redo the arena, make it more engaging and less boring. Wants to implement win screen still, but
+issues are still ongoing. Unsure of what to do in specifics, would happily take small tasks off others hands.
+Saulo: Bug? AI is invisible?
+Ross: We should pull up the sponsor meeting and project plan so we can get a better feel for what we need.
+Suggested to Joey that map design should be put on hold and instead revise the sponsor meeting for better ideas
+on what to work on. 
+Ben & Ross: Should play like OG deathdrome.
+Joey: It's possible to make invisible collision, but that's bad for our project.
+Ross & Joey: Runs into invisible walls/AI on occasion.
+Joey: Can look through the models to see if theres any accidental invisibility.
+Saulo: Talked about potential of making an explosion effect to orbs hitting a wall/AI.
+Saulo: Added extra damage power-up
+Saulo: Multi-shot power-up possible
+Saulo: Idea of new types of projectiles.
+Ross: BUG! Bullets still hitting self. (Resolved)
+Ross: Having issues with pulling, we helped walk him through it.
+Doug: Found Screenshots of original deathdrome powerups.
+Ross: Wants to test new respawn features now that he's pulled properly.
+Marie: Continuing with AI Movement, might use blueprints but hopes to mainly use C++.
+Marie: Implemented Offense/Defense, but needs to refine it as she isn't sure it's working as intended.
+Ross: Advised Doug to hopefully have most, if not all of the soundtrack done by this sprint.
+Ross: May ask Joey for help with explosion on death, or game modes.
+
 ## Morning Meeting 3-1 (Week 8)
 Present: Doug, Joey, Ben, Saulo
 Absent: Ross (sick)
