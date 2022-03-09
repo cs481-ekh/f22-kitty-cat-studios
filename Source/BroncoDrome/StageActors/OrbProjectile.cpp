@@ -53,6 +53,8 @@ AOrbProjectile::AOrbProjectile()
 	}
 	//Despawn after 5s
 	InitialLifeSpan = 5.0f;
+	//Damage
+	shotDamage = 20; //Can now set damage
 }
 void AOrbProjectile::FireOrbInDirection(const FVector& Direction, AActor* Runner)
 {
@@ -79,22 +81,13 @@ void AOrbProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor
 {
     if (OtherActor != this && OtherComponent->IsSimulatingPhysics()){
 		if (ARunner* runner = Cast<ARunner, AActor>(OtherActor)) {
-			runner->AddToHealth(-20); //Default
+			runner->hitMe(shotDamage * (-1));//(Make it negative) //hitMe function lets runner deal with the powerups
+			//runner->AddToHealth(shotDamage * (- 1)); //(Make it negative) Left here incase something breaks
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hit a runner."), *GetDebugName(this)));
 			Cast<ARunner, AActor>(RunnerParent)->AddToScore(10);
 		}
 		Destroy();
     }
 }
-//Added new method so nothing breaks;
-void AOrbProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit, int damage)
-{
-	if (OtherActor != this && OtherComponent->IsSimulatingPhysics()) {
-		if (ARunner* runner = Cast<ARunner, AActor>(OtherActor)) {
-			runner->AddToHealth(damage * (-1)); //Custom damage
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hit a runner."), *GetDebugName(this)));
-			Cast<ARunner, AActor>(RunnerParent)->AddToScore(10);
-		}
-		Destroy();
-	}
-}
+
+

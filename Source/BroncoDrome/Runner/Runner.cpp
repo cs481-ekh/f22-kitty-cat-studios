@@ -100,6 +100,12 @@ ARunner::ARunner()
 	engineAudioComponent->SetupAttachment(GetRootComponent());
 	engineAudioComponent->AutoAttachParent = GetRootComponent();
 	engineAudioComponent->bAllowSpatialization = true;
+
+	//Weapons
+	extraDamage = false;
+	extraDamageShots = 0;
+
+
 }
 
 void ARunner::BeginPlay()
@@ -328,15 +334,38 @@ void ARunner::Fire()
 	const auto rot = BlasterBase->GetComponentRotation();
 	const auto loc = BlasterBase->GetComponentLocation() + 150.0 * (rot.Vector());	//150 is to account for the length of the barrel
 
-	AOrbProjectile* projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams);
+
+	AOrbProjectile* projectile; // = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams);;
+	//check for extra damage
+	if (extraDamage) {
+		// Spawn new orb
+		projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams);
+		
+		//Fires shot and turn off if we run out of shots
+		extraDamageShots--;
+		if (extraDamageShots <= 0) {
+			extraDamage = false;
+		}
+	}
+	else {
+		projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams); //Regular orb
+	}
+
+	//AOrbProjectile* projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams);
 	if (projectile) {
-		PlaySound(laserAudioCue);
+		//Projectile variables
 		projectile->FireOrbInDirection(rot.Vector(), this);
+		projectile->shotDamage = playerDamage; //Set damage of shot to the players damage
+		//Debug
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your weapon."), *GetDebugName(this)));
+		//Effects
+		PlaySound(laserAudioCue);
 		AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(), 
 			BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
 
 	}
+
+
 }
 
 void ARunner::QueryLockOnEngage()
@@ -450,8 +479,30 @@ void ARunner::AddToScore(int newScore) {
 void ARunner::AddToDamage(int addedDamage) {
 	playerDamage += addedDamage;
 }
+//PowerUps call this to use ShotAbsorb and add hits
+void ARunner::obstainShotAbsorbPower(int hits) {
+	shotAbsorbOn = true;
+	shotAbsorbHits = shotAbsorbHits + hits; //This powerup stacks
+}
 
+//Orbs call this function when they hit the runner
+//Holds the needed steps to deal damage based on current powerups
+void ARunner::hitMe(int damage) {
+	
+	//Powerups may change or negate the damage done to the runner
 
+	//Invisibity first (Time constrainted)
+	//Shield second (Damage constrainted and technically would be outside the runner to be hit first)
+	if (shotAbsorbOn) { //ShotAbsorb third (Not timed or damage constrainted but is shot constrainted instead) 
+		shotAbsorbHits = shotAbsorbHits - 1;
+		if (shotAbsorbHits <= 0) {
+			shotAbsorbOn = false;
+		}
+	} else { //No power ups prevent the Shot from hitting runner
+		AddToHealth(damage); //Damage should be negative when passed into function
+	}
+
+} 
 
 bool ARunner::IsGrounded()
 {

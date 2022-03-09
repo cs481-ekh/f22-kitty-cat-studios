@@ -1,5 +1,5 @@
 // // Copyright (C) Dromies 2021. All Rights Reserved.
-
+// // Copyright (C) Team Gregg 2022. All Rights Reserved.
 #pragma once
 
 #include "CoreMinimal.h"
@@ -69,6 +69,7 @@ protected:
 	//Projectile to use
 	UPROPERTY(EditAnywhere, Category = Projectile)
 	TSubclassOf<class AOrbProjectile> ProjectileClass;
+	//TSubclassOf<class AOrbProjectile> ExtraDamageProjectileClass;
 
 private: // Constants
 	// Camera
@@ -107,6 +108,13 @@ public: // Attributes
 	int health = 100; // out of 100
 	int lives = 3;	// out of 3
 	int playerDamage = 20; //Default damage
+
+	//Weapons
+	bool extraDamage;
+	int extraDamageShots;
+	//ShotAbsorb
+	bool shotAbsorbOn;
+	int shotAbsorbHits;
 
 	FTimerHandle RunnerStatusHandler;
 
@@ -152,9 +160,14 @@ private:
 public:
 	bool IsGrounded();
 	void FixRotation();
-	void AddToHealth(int newHealth);
-	void AddToScore(int newScore); 
-	void AddToDamage(int addedDamage); //Can change damage with power ups
+	
+	void AddToScore(int newScore);  //Changes score
+
+	//Power ups
+	void hitMe(int damage); //Holds the needed steps to deal damage based on current powerups
+	void AddToHealth(int newHealth); //Changes health
+	void AddToDamage(int addedDamage); //Can change damage
+	void obstainShotAbsorbPower(int hits); //ShotAbsorb 
 
 //Displays for winning and losing
 private:

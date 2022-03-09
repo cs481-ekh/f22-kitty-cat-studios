@@ -28,7 +28,10 @@ public:
 	//Handler to call when we hit an object. (will) deal damage to runners it impacts.
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit, int damage); //Added copy of method so as to not break anything yet
+	//Can set damage based on players damage
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ShotDamage, meta = (AllowPrivateAccess = "true"))
+	int shotDamage;
+	
 	//Collision
 	UPROPERTY(VisibleDefaultsOnly, Category = Projectile)
 	USphereComponent* CollisionComponent;
