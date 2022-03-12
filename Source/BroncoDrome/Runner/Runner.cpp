@@ -110,6 +110,7 @@ ARunner::ARunner()
 
 void ARunner::BeginPlay()
 {
+	ChangeMIntensity(0);
 	Super::BeginPlay();
 	SetActorHiddenInGame(true);
 	DisableInput(GetWorld()->GetFirstPlayerController());
@@ -412,6 +413,7 @@ void ARunner::AimBlaster(const ARunner* targetRunner, const float deltaTime)
 
 	if (targetRunner)
 	{
+		ChangeMIntensity(1);
 		// Aim blaster towards target runner
 		const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
 			BlasterBase->GetComponentLocation(), targetRunner->GetActorLocation());
@@ -423,6 +425,7 @@ void ARunner::AimBlaster(const ARunner* targetRunner, const float deltaTime)
 	}
 	else
 	{
+		ChangeMIntensity(0);
 		// Aim blaster towards front of runner
 		blasterSlerpedLookAt = UKismetMathLibrary::RLerp(BlasterBase->GetComponentRotation(),
 			GetActorForwardVector().Rotation(), LOCK_ON_BLASTER_RPS * deltaTime, true);
@@ -436,6 +439,7 @@ void ARunner::AimBlaster(const ARunner* targetRunner, const float deltaTime)
 }
 
 void ARunner::Pause() {
+	ChangeMIntensity(0);
 	HUD->Pause(); 
 }
 
@@ -446,6 +450,7 @@ void ARunner::AddToHealth(int newHealth) {
 	}
 	/* This is when a runner has lost all of its health */
 	else if (health <= 0) {
+		ChangeMIntensity(2);
 		health = 100;	// Reset to full health
 		/* This is when the runner is an AI rather than the player */
 		if (GetController() != GetWorld()->GetFirstPlayerController()) {
@@ -477,6 +482,7 @@ void ARunner::AddToScore(int newScore) {
 }
 //PowerUps can call this to change player damage
 void ARunner::AddToDamage(int addedDamage) {
+	ChangeMIntensity(1);
 	playerDamage += addedDamage;
 }
 //PowerUps call this to use ShotAbsorb and add hits
@@ -553,6 +559,11 @@ void ARunner::FixRotation()
 void ARunner::PlaySound(USoundCue* cue) {
 	UGameplayStatics::PlaySoundAtLocation(GetWorld(), cue, GetActorLocation(), FRotator::ZeroRotator, 1.0, 1.0, 0.0f, attenuation, nullptr, this);
 }
+
+
+//void ARunner::ChangeMIntensity(int intensity) {
+	
+//}
 
 // State machine ------------------------------------------------------------------------------------------------
 

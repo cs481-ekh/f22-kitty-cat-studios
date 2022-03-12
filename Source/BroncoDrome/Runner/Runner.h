@@ -134,6 +134,9 @@ public: // Sound
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
 	class USoundAttenuation *attenuation;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Audio")
+	void ChangeMIntensity(int intensity);
+
 private: // HUD
 	ARunnerHUD *HUD;
 	float speedUpdateTimer = 0; 
@@ -175,6 +178,10 @@ private:
 
 private: // Sound Functions
 	void PlaySound(USoundCue* cue);
+
+public: // Sound Variables
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int MusicIntensity = 1;
 
 private: // State machines
 	void InitStateMachines();
