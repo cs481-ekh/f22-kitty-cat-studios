@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include <Runtime\Engine\Public\ImageUtils.h>
+#include "Misc/FileHelper.h"
 
 #define LOCTEXT_NAMESPACE "MainMenu"
 
@@ -16,7 +17,8 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 
 	OwningHUD = InArgs._OwningHUD;
 
-	const FMargin ContentPadding = FMargin(500.f, 300.f); 
+	const FMargin ContentPadding = FMargin(500.f, 300.f);
+	const FMargin ScorePadding = FMargin(550.f, 200.f);
 	const FMargin HScoreContentPadding = FMargin();
 	const FMargin ButtonPadding = FMargin(10.f); //This is the space between buttons
 
@@ -26,6 +28,8 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	const FText HighScoreText = LOCTEXT("HighScores","High Score Screen");
 	const FText	QuitText = LOCTEXT("QuitGame", "Quit Game");
 	const FText ReturnMain = LOCTEXT("Return","Return to Main Menu");
+
+	const int NUMSCORES = 10; //Only need 10 scores
 
 	FSlateFontInfo ButtonTextStyle = FCoreStyle::Get().GetFontStyle("EmbossedText");
 	ButtonTextStyle.Size = 25.f;
@@ -150,6 +154,36 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	//ELSE IF mainOrHScore is 1
 	else if (OwningHUD->mainOrHScore) { //I'm being overly explicit here just in case anyone adds more screens later
 		//THEN build the high score screen
+
+		//Need to pull the current high scores before building screen
+		UE_LOG(LogTemp, Warning, TEXT("LOADING SCORES"));
+		FString file = FPaths::ProjectConfigDir();
+		file.Append(TEXT("highScores.txt"));
+		IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
+		TArray<FString> Result;
+		if (FileManager.FileExists(*file)) {
+			if (FFileHelper::LoadFileToStringArray(Result, *file, FFileHelper::EHashOptions::None)) {
+				UE_LOG(LogTemp, Warning, TEXT("Score Array Loaded"));
+			}
+			else {
+				UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Did not Load Scores"));
+			}
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("FileManipulation: ERROR: Can not read the file because it was not found."));
+			UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Expected file location: %s"), *file);
+		}
+		FText score0 = FText::FromString(Result[0]);
+		FText score1 = FText::FromString(Result[1]);
+		FText score2 = FText::FromString(Result[2]);
+		FText score3 = FText::FromString(Result[3]);
+		FText score4 = FText::FromString(Result[4]);
+		FText score5 = FText::FromString(Result[5]);
+		FText score6 = FText::FromString(Result[6]);
+		FText score7 = FText::FromString(Result[7]);
+		FText score8 = FText::FromString(Result[8]);
+		FText score9 = FText::FromString(Result[9]);
+
 		ChildSlot[
 			SNew(SOverlay)
 				+ SOverlay::Slot()
@@ -159,52 +193,147 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 					SNew(SImage)
 					.Image(BroncyImage)
 				]
+			+ SOverlay::Slot()
+				.HAlign(HAlign_Right)
+				.VAlign(VAlign_Top)
+				.Padding(ScorePadding)
+				[
+					SNew(SVerticalBox)
 
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(score0) //these need to be FText not FString
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(score1) //these need to be FText not FString
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					+ SVerticalBox::Slot() 
+					.Padding(ButtonPadding)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(score2) //these need to be FText not FString
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(score3) //these need to be FText not FString
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(score4) //these need to be FText not FString
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(score5) //these need to be FText not FString
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(score6) //these need to be FText not FString
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(score7) //these need to be FText not FString
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(score8) //these need to be FText not FString
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(score9) //these need to be FText not FString
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+
+			]
 			+ SOverlay::Slot()
 				.HAlign(HAlign_Right)
 				.VAlign(VAlign_Bottom)
 				.Padding(HScoreContentPadding)
 				[
 
-					//Title Text
-					SNew(SVerticalBox)
+				//Title Text
+				SNew(SVerticalBox)
 
-					// Play during day text
+				// Main Menu Button
 				+ SVerticalBox::Slot()
-				.Padding(ButtonPadding)
-				[
-					SNew(SButton)
-					.OnClicked(this, &SMainMenuWidget::OnReturnToMainClicked)
-				.ButtonColorAndOpacity(FColor::Blue)
-				[
-					SNew(STextBlock)
-					.Font(ButtonTextStyle)
-				.Text(ReturnMain)
-				.Justification(ETextJustify::Center)
-				.ColorAndOpacity(FColor::Orange)
-				]
+					.Padding(ButtonPadding)
+					[
+						SNew(SButton)
+						.OnClicked(this, &SMainMenuWidget::OnReturnToMainClicked)
+					.ButtonColorAndOpacity(FColor::Blue)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+						.Text(ReturnMain)
+						.Justification(ETextJustify::Center)
+						.ColorAndOpacity(FColor::Orange)
+					]
 
-				]
+					]
 
-			//Quit Game Button Text
-			+ SVerticalBox::Slot()
-				.Padding(ButtonPadding)
+				//Quit Game Button
+				+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
 
-				[
+					[
 					SNew(SButton)
 					.OnClicked(this, &SMainMenuWidget::OnQuitClicked)
-				.ButtonColorAndOpacity(FColor::Blue)
-				[
+					.ButtonColorAndOpacity(FColor::Blue)
+					[
 					SNew(STextBlock)
 					.Font(ButtonTextStyle)
-				.Text(QuitText)
-				.Justification(ETextJustify::Center)
-				.ColorAndOpacity(FColor::Orange)
-				]
-
-				]
-
-
+					.Text(QuitText)
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					]
 				]
 		];
 	}
