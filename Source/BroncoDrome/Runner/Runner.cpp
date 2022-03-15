@@ -385,9 +385,9 @@ void ARunner::Fire()
 			AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),
 				BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
 
+
 		}
 	}
-
 }
 
 void ARunner::QueryLockOnEngage()
@@ -476,23 +476,24 @@ void ARunner::AddToHealth(int newHealth) {
 		/* This is when the runner is an AI rather than the player */
 		if (GetController() != GetWorld()->GetFirstPlayerController()) {
 			lives--;	// The AI loses a life when they lose all their health (initially 3 lives)
-			if (lives <= 0)	Destroy();	// When an AI loses all three lives, they are permanently destroyed
+			if (lives <= 0) {
+				Destroy();	// When an AI loses all three lives, they are permanently destroyed
+				return;
+			}	// Leave the function immediately to prevent trying to respawn a runner that should no longer exist
 		}
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("I AM SUPPOSED TO TELEPORT NOW!!!"), *GetDebugName(this)));
-		FVector CurrentLocation = GetActorLocation();
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Current Co-ordinates: X - %d, Y - %d, Z - %d"), CurrentLocation.X, CurrentLocation.Y, CurrentLocation.Z, *GetDebugName(this)));
-		FVector newLocation = { 1750, -3000, 300 };	// Coordinate to be teleported to (temporary value around the center of the map on the left side for the day map, high in the air)
-		const FRotator newOrientation = { 0, 0, 0 };	// Orientation to be set to
-		while (TeleportTo(newLocation, newOrientation) == false) {
-			newLocation.X = rand() % 3500 - 1750;
-			newLocation.Y = rand() % 6000 - 3000;
-		}	// This runner is teleported to this location with this orientation
-		/*
-		while (GetActorLocation() != newLocation) {
-			TeleportTo(newLocation, newOrientation);
+		FVector CurrentLocation = GetActorLocation();	// We want to keep track of where the runner was when it died
+		int respawnAttemptCounter = 0;	// Keep track of how many times respawning has failed. If it's failed more than 5 times, it's probably stuck in an infinite loop so just give up
+		while (GetActorLocation() == CurrentLocation) {	// Continue attempting to relocate the runner until it has been moved to a respawn point
+			if (respawnAttemptCounter > 5) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning has been attempted multiple times without success, aborting respawn attempts to prevent an infinite loop!"), *GetDebugName(this)));
+				return;
+			}
+			int selectedPoint = rand() % 4;	// Grab a random number 0 - 3, each number represents one of the map's corners
+			const FVector newLocation = { (float)(4700 * (pow(-1, ((selectedPoint + 1) / 2)))) , (float)(3600 * (pow(-1, (selectedPoint / 2)))), (float)(0) };	// Use math to pick the location of the chosen corner
+			const FRotator newOrientation = { (float)(0), (float)(225 + 90 * selectedPoint) , (float)(0) };	// Use math to rotate the runner the amount that is appropriate for the selected corner
+			TeleportTo(newLocation, newOrientation);	// Try to teleport to the calculated corner with the calculated rotation
+			respawnAttemptCounter++;
 		}
-		*/
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("New Co-ordinates: X - %d, Y - %d, Z - %d"), CurrentLocation.X, CurrentLocation.Y, CurrentLocation.Z, *GetDebugName(this)));
 		HUD->SetHealth(health);
 	}
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {

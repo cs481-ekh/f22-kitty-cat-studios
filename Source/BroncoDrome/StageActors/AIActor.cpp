@@ -169,7 +169,7 @@ FVector AAIActor::GetDirection() {
 		}
 	}
 
-	 GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::SanitizeFloat(closest));
+	 //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::SanitizeFloat(closest));
 	return result;
 }
 
