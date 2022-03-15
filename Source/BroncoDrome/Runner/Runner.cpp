@@ -457,14 +457,30 @@ void ARunner::AddToHealth(int newHealth) {
 			lives--;	// The AI loses a life when they lose all their health (initially 3 lives)
 			if (lives <= 0)	Destroy();	// When an AI loses all three lives, they are permanently destroyed
 		}
-		const FVector newLocation = { 1750, -3000, 300 };	// Coordinate to be teleported to (temporary value around the center of the map on the left side for the day map, high in the air)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("I AM SUPPOSED TO TELEPORT NOW!!!"), *GetDebugName(this)));
+		FVector CurrentLocation = GetActorLocation();
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Current Co-ordinates: X - %d, Y - %d, Z - %d"), CurrentLocation.X, CurrentLocation.Y, CurrentLocation.Z, *GetDebugName(this)));
+		FVector newLocation = { 1750, -3000, 300 };	// Coordinate to be teleported to (temporary value around the center of the map on the left side for the day map, high in the air)
 		const FRotator newOrientation = { 0, 0, 0 };	// Orientation to be set to
-		TeleportTo(newLocation, newOrientation);	// This runner is teleported to this location with this orientation
+		while (TeleportTo(newLocation, newOrientation) == false) {
+			newLocation.X = rand() % 3500 - 1750;
+			newLocation.Y = rand() % 6000 - 3000;
+		}	// This runner is teleported to this location with this orientation
+		/*
+		while (GetActorLocation() != newLocation) {
+			TeleportTo(newLocation, newOrientation);
+		}
+		*/
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("New Co-ordinates: X - %d, Y - %d, Z - %d"), CurrentLocation.X, CurrentLocation.Y, CurrentLocation.Z, *GetDebugName(this)));
 		HUD->SetHealth(health);
 	}
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->SetHealth(health);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player's health is now: %d"), health, *GetDebugName(this)));
 	} 
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AI's health is now: %d"), health, *GetDebugName(this)));
+	}
 }
 
 void ARunner::AddToScore(int newScore) {
