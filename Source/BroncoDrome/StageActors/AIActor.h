@@ -32,7 +32,7 @@ public:
 	FVector last_location;
 	float curr_speed = 0.0;
 	float max_speed = 450.0f;
-	float max_distance = 450.0f;
+	float max_distance = 1050.0f; //was 450.0f
 	float fwd_dist = 30.0f;
 	float car_distance = 1000.0f;
 	float dont_care_distance = 3000.0f;

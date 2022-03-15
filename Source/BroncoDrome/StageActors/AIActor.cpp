@@ -216,15 +216,15 @@ void AAIActor::MoveDecision() {
 			ThrottleInput(-1.0f);
 		}
 	}
-	else if (FVector::Distance(player_location, curr_location) > dont_care_distance) {
-		Mover->SetSteeringInput(0.0f);
-	}
-	else if (FVector::Distance(player_location, curr_location) > car_distance) {
+	//else if (FVector::Distance(player_location, curr_location) > dont_care_distance) {
+	//	Mover->SetSteeringInput(0.0f);
+	//}
+	//else if (FVector::Distance(player_location, curr_location) > car_distance) {
 
-		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Towards"), *GetDebugName(this)));
-		// MoveTowardsPlayer(player_location, player_direction);
-		Mover->SetSteeringInput(0.0f);
-	}
+	//	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Towards"), *GetDebugName(this)));
+	//	// MoveTowardsPlayer(player_location, player_direction);
+	//	Mover->SetSteeringInput(0.0f);
+	//}
 	else if (defensive) {
 		MoveAwayFromPlayer(player_location, player_direction);
 	}
@@ -233,9 +233,6 @@ void AAIActor::MoveDecision() {
 		//MoveAwayFromPlayer(player_location, player_direction);
 		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Away"), *GetDebugName(this)));
 		MoveTowardsPlayer(player_location, player_direction);
-	}
-	if (!defensive) {
-		ShotDecision();
 	}
 }
 
