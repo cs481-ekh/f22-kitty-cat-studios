@@ -146,7 +146,7 @@ private:
 	void Fire();
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
-	void AimBlaster(const class ARunner *targetRunner, const float deltaTime);
+	//void AimBlaster(const class ARunner *targetRunner, const float deltaTime);
 	void Pause(); 
 
 public:
@@ -155,7 +155,7 @@ public:
 	void AddToHealth(int newHealth);
 	void AddToScore(int newScore); 
 	void AddToDamage(int addedDamage); //Can change damage with power ups
-
+	void AimBlaster(const class ARunner* targetRunner, const float deltaTime);
 //Displays for winning and losing
 private:
 	void WinScreen();
