@@ -1,5 +1,54 @@
 Minutes of the team meetings go here:
 
+## Friday Professor Meeting 3-11
+Attendees: Ross, Ben, Joey, DJ, Marie, Saulo, Doug
+Absent: None
+Commenced: 2:00
+Ended: 2:40
+Scribe: Joey
+
+Eric went over our team assessment and our scores.
+Wanted to make sure we were working together properly. 
+Doug: Mentioned our issues with git/unreal and their interactions. 
+Eric requested seeing a demo of our current game, and Ben put up his screen.
+We're missing a few things, skipping cinematic and a health value of the bar.
+No balls!!!
+Saulo showed off the powerup models as well as explained their purpose.
+Eric went through the sprint boards one by one
+Eric says workflow should be go in, pick task, drag it to in progress, then start working.
+Tasks should be bite-sized pieces so we can track time that we spend on the project.
+
+## Friday Group Meeting 3-11
+Attendees: Ross, Ben, Joey, DJ, Marie, Saulo, Doug
+Absent: None
+Commenced: 1:30
+Ended: 1:55
+Scribe: Joey
+
+
+Ben: High scores are showing, we will need to be able to update these values.
+DJ: Invisible wall is fixed! A little more complex than he thought, but collision was very oddly offset.
+	For AI, shooting is going well. When we implement the other AI types, we can have 1 main class, then
+	have subclasses for each.
+Doug: In order to implement the music in C++, it would be incredibly complicated, but intensity changing is working!
+Joey: Pause menu was improved with restart buttons. Went over trying to resolve win screen with Ross and Ben, but
+	it's still not properly working.
+Marie: Working on AI movement. Environment or programming may have issues? Her AI may not be changing when she makes
+	changes. 
+Ross: Respawn code is rather inconsistent, sometimes doesn't respawn. Hopefully, Respawning/Teleporation should be
+	successful upon death now. 
+Saulo: Worked on powerup spawner, following code based on the orb projectile. Couldn't get it to work, so swapped to
+	making new power ups. Got the damage increase to work. Plans on leaving a "freeze ball" for later groups.
+	Wanted to implement a "kill ball" that instantly kills another player/AI. Made a shot absorb/shield. Can tank
+	up to 5 shots with no damage. 
+Ben: Everyone is having issues with git and unreal with improper pulling. Currently no easy fix, as sponsor wants
+	us using git. A 3-initial high score menu would be great, like a classic arcade style.
+DJ: Player controls should be implemented. Lock-on has issues with multiple AI.
+Joey & Ben: Thinks the Lock on should either be removed, or have it be an upgrade. 
+Joey: Thinks we should implement a bounce off walls based on the dot product of hitting it. That way gameplay
+	is smoother and less clunky. 
+Ben: Original deathdrome has no camera controls, it's fixed behind the car. Will ask about it in the meeting.
+
 ## Friday Group Meeting 3-4 
 Attendees: Ross, Ben, Joey, DJ, Marie, Saulo, Doug
 Absent: None

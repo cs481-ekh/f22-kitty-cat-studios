@@ -12,7 +12,10 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Sound/SoundCue.h"
 
+//Orbs
 #include "../StageActors/OrbProjectile.h"
+#include "../StageActors/PowerUp/KillBallProjectile.h"
+
 #include "../StageActors/RunnerObserver.h"
 #include "../StageActors/ParticleSpawner.h"
 
@@ -101,9 +104,12 @@ ARunner::ARunner()
 	engineAudioComponent->AutoAttachParent = GetRootComponent();
 	engineAudioComponent->bAllowSpatialization = true;
 
-	//Weapons
-	extraDamage = false;
-	extraDamageShots = 0;
+	//KillBall PowerUp
+	killBallOn = false;
+	killBallShots = 0;
+	//ShotAbsorb PowerUp
+	shotAbsorbOn = false;
+	shotAbsorbHits = 0;
 
 
 }
@@ -321,10 +327,16 @@ void ARunner::LockOn()
 
 void ARunner::Fire()
 {
+	//classes set in Unreal Class Defaults of Runners 
 	if (!ProjectileClass) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("===ProjectileClass not initialized - shot failed==="), *GetDebugName(this)));
 		return;
 	}
+	if (!KillBallProjectileClass) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("===KillBallProjectileClass not initialized - shot failed==="), *GetDebugName(this)));
+		return;
+	}
+
 	auto World = GetWorld();
 	if (!World) return;
 
@@ -335,38 +347,47 @@ void ARunner::Fire()
 	const auto rot = BlasterBase->GetComponentRotation();
 	const auto loc = BlasterBase->GetComponentLocation() + 150.0 * (rot.Vector());	//150 is to account for the length of the barrel
 
-
-	AOrbProjectile* projectile; // = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams);;
-	//check for extra damage
-	if (extraDamage) {
-		// Spawn new orb
-		projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams);
+	//check for Kill Ball
+	if (killBallOn) {
+		
+		AKillBallProjectile* projectile = World->SpawnActor<AKillBallProjectile>(KillBallProjectileClass, loc, rot, SpawnParams); // Spawn KillBal
 		
 		//Fires shot and turn off if we run out of shots
-		extraDamageShots--;
-		if (extraDamageShots <= 0) {
-			extraDamage = false;
+		killBallShots--;
+		if (killBallShots <= 0) {
+			killBallOn = false;
+		}
+
+		if (projectile) {
+			//Projectile variables
+			projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
+			//Debug
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your KillBall weapon."), *GetDebugName(this)));
+			//Effects
+			PlaySound(laserAudioCue);
+			AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),
+				BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("KILLBALL FAILED"), *GetDebugName(this)));
 		}
 	}
-	else {
-		projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams); //Regular orb
+	else { //Fire a regular orb ball
+		AOrbProjectile*  projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams); //Regular orb
+		if (projectile) {
+			//Projectile variables
+			projectile->FireOrbInDirection(rot.Vector(), this);
+			projectile->shotDamage = playerDamage; //Set damage of shot to the players damage
+			//Debug
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your regular weapon."), *GetDebugName(this)));
+			//Effects
+			PlaySound(laserAudioCue);
+			AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),
+				BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
+
+
+		}
 	}
-
-	//AOrbProjectile* projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams);
-	if (projectile) {
-		//Projectile variables
-		projectile->FireOrbInDirection(rot.Vector(), this);
-		projectile->shotDamage = playerDamage; //Set damage of shot to the players damage
-		//Debug
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your weapon."), *GetDebugName(this)));
-		//Effects
-		PlaySound(laserAudioCue);
-		AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(), 
-			BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
-
-	}
-
-
 }
 
 void ARunner::QueryLockOnEngage()
@@ -455,16 +476,33 @@ void ARunner::AddToHealth(int newHealth) {
 		/* This is when the runner is an AI rather than the player */
 		if (GetController() != GetWorld()->GetFirstPlayerController()) {
 			lives--;	// The AI loses a life when they lose all their health (initially 3 lives)
-			if (lives <= 0)	Destroy();	// When an AI loses all three lives, they are permanently destroyed
+			if (lives <= 0) {
+				Destroy();	// When an AI loses all three lives, they are permanently destroyed
+				return;
+			}	// Leave the function immediately to prevent trying to respawn a runner that should no longer exist
 		}
-		const FVector newLocation = { 1750, -3000, 300 };	// Coordinate to be teleported to (temporary value around the center of the map on the left side for the day map, high in the air)
-		const FRotator newOrientation = { 0, 0, 0 };	// Orientation to be set to
-		TeleportTo(newLocation, newOrientation);	// This runner is teleported to this location with this orientation
+		FVector CurrentLocation = GetActorLocation();	// We want to keep track of where the runner was when it died
+		int respawnAttemptCounter = 0;	// Keep track of how many times respawning has failed. If it's failed more than 5 times, it's probably stuck in an infinite loop so just give up
+		while (GetActorLocation() == CurrentLocation) {	// Continue attempting to relocate the runner until it has been moved to a respawn point
+			if (respawnAttemptCounter > 5) {
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning has been attempted multiple times without success, aborting respawn attempts to prevent an infinite loop!"), *GetDebugName(this)));
+				return;
+			}
+			int selectedPoint = rand() % 4;	// Grab a random number 0 - 3, each number represents one of the map's corners
+			const FVector newLocation = { (float)(4700 * (pow(-1, ((selectedPoint + 1) / 2)))) , (float)(3600 * (pow(-1, (selectedPoint / 2)))), (float)(0) };	// Use math to pick the location of the chosen corner
+			const FRotator newOrientation = { (float)(0), (float)(225 + 90 * selectedPoint) , (float)(0) };	// Use math to rotate the runner the amount that is appropriate for the selected corner
+			TeleportTo(newLocation, newOrientation);	// Try to teleport to the calculated corner with the calculated rotation
+			respawnAttemptCounter++;
+		}
 		HUD->SetHealth(health);
 	}
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->SetHealth(health);
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player's health is now: %d"), health, *GetDebugName(this)));
 	} 
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AI's health is now: %d"), health, *GetDebugName(this)));
+	}
 }
 
 void ARunner::AddToScore(int newScore) {
@@ -485,10 +523,17 @@ void ARunner::AddToDamage(int addedDamage) {
 	ChangeMIntensity(1);
 	playerDamage += addedDamage;
 }
+
 //PowerUps call this to use ShotAbsorb and add hits
 void ARunner::obstainShotAbsorbPower(int hits) {
 	shotAbsorbOn = true;
 	shotAbsorbHits = shotAbsorbHits + hits; //This powerup stacks
+}
+
+//PowerUps call this to use KillBall and add hits
+void ARunner::obstainKillBallPower(int hits) {
+	killBallOn = true;
+	killBallShots = killBallShots + hits; //This powerup indeed stacks
 }
 
 //Orbs call this function when they hit the runner

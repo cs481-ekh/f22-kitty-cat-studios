@@ -66,10 +66,12 @@ public: // Components
 	class UStaticMeshComponent *BlasterCannon;
 
 protected:
-	//Projectile to use
+	//Projectiles to use
 	UPROPERTY(EditAnywhere, Category = Projectile)
-	TSubclassOf<class AOrbProjectile> ProjectileClass;
-	//TSubclassOf<class AOrbProjectile> ExtraDamageProjectileClass;
+		TSubclassOf<class AOrbProjectile> ProjectileClass; //Regular orb whose damage is set by the player's damage (affected by power ups)
+	UPROPERTY(EditAnywhere, Category = Projectile) 
+		TSubclassOf<class AKillBallProjectile> KillBallProjectileClass; //A one shot orb to kill any unguarded runner
+
 
 private: // Constants
 	// Camera
@@ -109,9 +111,9 @@ public: // Attributes
 	int lives = 3;	// out of 3
 	int playerDamage = 20; //Default damage
 
-	//Weapons
-	bool extraDamage;
-	int extraDamageShots;
+	//KillBall
+	bool killBallOn;
+	int killBallShots;
 	//ShotAbsorb
 	bool shotAbsorbOn;
 	int shotAbsorbHits;
@@ -171,6 +173,8 @@ public:
 	void AddToHealth(int newHealth); //Changes health
 	void AddToDamage(int addedDamage); //Can change damage
 	void obstainShotAbsorbPower(int hits); //ShotAbsorb 
+	void obstainKillBallPower(int shots); //KillBall
+
 
 //Displays for winning and losing
 private:

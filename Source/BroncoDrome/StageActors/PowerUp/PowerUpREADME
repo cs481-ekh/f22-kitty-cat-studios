@@ -38,9 +38,10 @@ When creating a brand new powerup:
 		If you have not already, you might have to create those as well for whatever you are trying to do.
 
 When placing any powerup on the level.
-	- Find the DONOTDELETEME!!PleaseKeepMeForAReferenceToTheSettupOfAPowerUpCollisionAndFloorPlacement object in the Unreal Engine Day level.
-		For the strangest reason, the new power ups, despite not being really different from the original, float above where they are spawned.
+	- For the strangest reason, the new power ups, despite not being really different from the original, float above where they are spawned.
 		If you place the power up on the ground level, it will fly up to a point where the Runner can not grab it. Again don't know why, the originals
 			stay where they are.
-		So use the above creatively named object to use as a reference to how far you should spawn your powerups below so they fly to a correct level.
+	- PowerUpSpawner is not yet completed but this (could) help with the flying issue
 		
+When creating a new projectile
+	- Make sure to set the Class Defaults in the runner for each new projectile
