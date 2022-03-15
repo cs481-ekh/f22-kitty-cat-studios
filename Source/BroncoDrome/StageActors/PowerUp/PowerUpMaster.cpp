@@ -85,22 +85,29 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 		RotationScale = 600.0f;
 
 		//Add various calls to car methods in this switch statement to accomplish power up stuff.
-		switch (powerTypeIndex)
-		{
-		case 0:
-			dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20); //Health
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
-			break;
-		case 1:
-			dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f); //Speed
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
-			break;
-		case 2:
-			dynamic_cast<ARunner*>(OtherActor)->AddToDamage(10); //Damage
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
-			break;
-		}
+		switch (powerTypeIndex) {
+			case 0:
+				dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20); //Health
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
+				break;
+			case 1:
+				dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f); //Speed
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
+				break;
+			case 2:
+				dynamic_cast<ARunner*>(OtherActor)->AddToDamage(10); //Damage
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
+				break;
+			case 3:
+				dynamic_cast<ARunner*>(OtherActor)->obstainShotAbsorbPower(5); //ShotAbsorb default 5
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power ShotAbsorb"), *GetDebugName(this)));
+				break;
+			case 4:
+				dynamic_cast<ARunner*>(OtherActor)->obstainKillBallPower(1); //KillBall default 1
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power KillBall!"), *GetDebugName(this)));
+				break;
 
+		}
 
 		AParticleSpawner::SpawnParticle(BigPoof, GetActorLocation(), FVector(), 1.f); //Poof it is gone
 	}

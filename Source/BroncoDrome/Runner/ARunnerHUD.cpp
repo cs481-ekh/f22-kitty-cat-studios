@@ -63,14 +63,23 @@ void ARunnerHUD::HideHUD(bool option)
 }
 
 void ARunnerHUD::Pause() {
+	class APlayerController* Mouse;
+	Mouse = GetWorld()->GetFirstPlayerController();
+	
 	if (!paused) {
 		paused = true; 
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		Mouse->bShowMouseCursor = true;
+		Mouse->bEnableClickEvents = true;
+		Mouse->bEnableMouseOverEvents = true;
 		m_PauseWidgets->AddToViewport();
 	}
 	else {
 		paused = false; 
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		Mouse->bShowMouseCursor = false;
+		Mouse->bEnableClickEvents = false;
+		Mouse->bEnableMouseOverEvents = false;
 		m_PauseWidgets->RemoveFromViewport();
 	}
 	

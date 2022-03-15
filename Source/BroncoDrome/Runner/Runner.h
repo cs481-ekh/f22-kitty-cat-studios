@@ -1,5 +1,5 @@
 // // Copyright (C) Dromies 2021. All Rights Reserved.
-
+// // Copyright (C) Team Gregg 2022. All Rights Reserved.
 #pragma once
 
 #include "CoreMinimal.h"
@@ -66,9 +66,12 @@ public: // Components
 	class UStaticMeshComponent *BlasterCannon;
 
 protected:
-	//Projectile to use
+	//Projectiles to use
 	UPROPERTY(EditAnywhere, Category = Projectile)
-	TSubclassOf<class AOrbProjectile> ProjectileClass;
+		TSubclassOf<class AOrbProjectile> ProjectileClass; //Regular orb whose damage is set by the player's damage (affected by power ups)
+	UPROPERTY(EditAnywhere, Category = Projectile) 
+		TSubclassOf<class AKillBallProjectile> KillBallProjectileClass; //A one shot orb to kill any unguarded runner
+
 
 private: // Constants
 	// Camera
@@ -108,6 +111,13 @@ public: // Attributes
 	int lives = 3;	// out of 3
 	int playerDamage = 20; //Default damage
 
+	//KillBall
+	bool killBallOn;
+	int killBallShots;
+	//ShotAbsorb
+	bool shotAbsorbOn;
+	int shotAbsorbHits;
+
 	FTimerHandle RunnerStatusHandler;
 
 public: // Sound
@@ -125,6 +135,9 @@ public: // Sound
 
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
 	class USoundAttenuation *attenuation;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Audio")
+	void ChangeMIntensity(int intensity);
 
 private: // HUD
 	ARunnerHUD *HUD;
@@ -152,16 +165,28 @@ private:
 public:
 	bool IsGrounded();
 	void FixRotation();
-	void AddToHealth(int newHealth);
-	void AddToScore(int newScore); 
-	void AddToDamage(int addedDamage); //Can change damage with power ups
-	void AimBlaster(const class ARunner* targetRunner, const float deltaTime);
+	
+	void AddToScore(int newScore);  //Changes score
+
+	//Power ups
+	void hitMe(int damage); //Holds the needed steps to deal damage based on current powerups
+	void AddToHealth(int newHealth); //Changes health
+	void AddToDamage(int addedDamage); //Can change damage
+	void obstainShotAbsorbPower(int hits); //ShotAbsorb 
+	void obstainKillBallPower(int shots); //KillBall
+
+
+
 //Displays for winning and losing
 private:
 	void WinScreen();
 
 private: // Sound Functions
 	void PlaySound(USoundCue* cue);
+
+public: // Sound Variables
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int MusicIntensity = 1;
 
 private: // State machines
 	void InitStateMachines();

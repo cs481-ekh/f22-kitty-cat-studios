@@ -1,5 +1,120 @@
 Minutes of the team meetings go here:
 
+## Friday Professor Meeting 3-11
+Attendees: Ross, Ben, Joey, DJ, Marie, Saulo, Doug
+Absent: None
+Commenced: 2:00
+Ended: 2:40
+Scribe: Joey
+
+Eric went over our team assessment and our scores.
+Wanted to make sure we were working together properly. 
+Doug: Mentioned our issues with git/unreal and their interactions. 
+Eric requested seeing a demo of our current game, and Ben put up his screen.
+We're missing a few things, skipping cinematic and a health value of the bar.
+No balls!!!
+Saulo showed off the powerup models as well as explained their purpose.
+Eric went through the sprint boards one by one
+Eric says workflow should be go in, pick task, drag it to in progress, then start working.
+Tasks should be bite-sized pieces so we can track time that we spend on the project.
+
+## Friday Group Meeting 3-11
+Attendees: Ross, Ben, Joey, DJ, Marie, Saulo, Doug
+Absent: None
+Commenced: 1:30
+Ended: 1:55
+Scribe: Joey
+
+
+Ben: High scores are showing, we will need to be able to update these values.
+DJ: Invisible wall is fixed! A little more complex than he thought, but collision was very oddly offset.
+	For AI, shooting is going well. When we implement the other AI types, we can have 1 main class, then
+	have subclasses for each.
+Doug: In order to implement the music in C++, it would be incredibly complicated, but intensity changing is working!
+Joey: Pause menu was improved with restart buttons. Went over trying to resolve win screen with Ross and Ben, but
+	it's still not properly working.
+Marie: Working on AI movement. Environment or programming may have issues? Her AI may not be changing when she makes
+	changes. 
+Ross: Respawn code is rather inconsistent, sometimes doesn't respawn. Hopefully, Respawning/Teleporation should be
+	successful upon death now. 
+Saulo: Worked on powerup spawner, following code based on the orb projectile. Couldn't get it to work, so swapped to
+	making new power ups. Got the damage increase to work. Plans on leaving a "freeze ball" for later groups.
+	Wanted to implement a "kill ball" that instantly kills another player/AI. Made a shot absorb/shield. Can tank
+	up to 5 shots with no damage. 
+Ben: Everyone is having issues with git and unreal with improper pulling. Currently no easy fix, as sponsor wants
+	us using git. A 3-initial high score menu would be great, like a classic arcade style.
+DJ: Player controls should be implemented. Lock-on has issues with multiple AI.
+Joey & Ben: Thinks the Lock on should either be removed, or have it be an upgrade. 
+Joey: Thinks we should implement a bounce off walls based on the dot product of hitting it. That way gameplay
+	is smoother and less clunky. 
+Ben: Original deathdrome has no camera controls, it's fixed behind the car. Will ask about it in the meeting.
+
+## Friday Group Meeting 3-4 
+Attendees: Ross, Ben, Joey, DJ, Marie, Saulo, Doug
+Absent: None
+Commenced: 1:30
+Scribe: Joey
+
+Ben: High Score screen placeholder, took a while, tried to make it build when clicked, not making a whole new
+level.
+Ben: Plans on testing night and rain map
+DJ: Using blueprints as an intermediary before transfering to C++, as blueprints can be very finnicky and not
+great for permanent additions
+Doug: Has been using blueprints for some aspects of the music, but has to call them from C++.
+-Youtube tutorials should be great for AI and Music with transfering from blueprints to C++.
+Joey: Wants to redo the arena, make it more engaging and less boring. Wants to implement win screen still, but
+issues are still ongoing. Unsure of what to do in specifics, would happily take small tasks off others hands.
+Saulo: Bug? AI is invisible?
+Ross: We should pull up the sponsor meeting and project plan so we can get a better feel for what we need.
+Suggested to Joey that map design should be put on hold and instead revise the sponsor meeting for better ideas
+on what to work on. 
+Ben & Ross: Should play like OG deathdrome.
+Joey: It's possible to make invisible collision, but that's bad for our project.
+Ross & Joey: Runs into invisible walls/AI on occasion.
+Joey: Can look through the models to see if theres any accidental invisibility.
+Saulo: Talked about potential of making an explosion effect to orbs hitting a wall/AI.
+Saulo: Added extra damage power-up
+Saulo: Multi-shot power-up possible
+Saulo: Idea of new types of projectiles.
+Ross: BUG! Bullets still hitting self. (Resolved)
+Ross: Having issues with pulling, we helped walk him through it.
+Doug: Found Screenshots of original deathdrome powerups.
+Ross: Wants to test new respawn features now that he's pulled properly.
+Marie: Continuing with AI Movement, might use blueprints but hopes to mainly use C++.
+Marie: Implemented Offense/Defense, but needs to refine it as she isn't sure it's working as intended.
+Ross: Advised Doug to hopefully have most, if not all of the soundtrack done by this sprint.
+Ross: May ask Joey for help with explosion on death, or game modes.
+
+## Morning Meeting 3-1 (Week 8)
+Present: Doug, Joey, Ben, Saulo
+Absent: Ross (sick)
+Scribe: Joey
+Started at 9:28
+Ended at 10:10
+
+Began by talking about how we thought we did. I (joey) felt like I fell behind a little. I was not alone in this feeling though.
+Ben addressed how he went through making the hi-score screen, and talked about instead of making checklists for tasks, we can make more tasks.
+This is Saulo’s first big project to use GitHub.
+Talked about restoring branches to recover dates.
+Brought up putting task number in pull request description to properly close a task.
+Merged our pending pull requests before the end of sprint 1.
+Did a bit of troubleshooting post-merge regarding the hi-score screen.
+Review what we got done:
+-Fixed projectiles
+-debugging ai spawn issues
+-saulo updated blaster models
+-Doug got sound skeleton implemented
+-Ross prevented ai from contributing to scores
+-unsure of respawn progress
+Still want to implement a better scoring system, like losing points for getting hit, or time based points.
+Brought up potential of more power-up types
+Successfully got the high score screen working.
+Asked about more proper ways to test and verify a pull request.
+Began to set up Sprint 2.
+Saulo says he may need to communicate with the AI team regarding a power up
+Potential level redesign, current one feels a little clunky.
+Playtesting should be happening with each person.
+
 ## Whole Team Meeting 2-25 (Week 7)
 Sprint: 1  
 Present: Ben, Doug, DJ, Joey, Marie, Saulo, Ross  

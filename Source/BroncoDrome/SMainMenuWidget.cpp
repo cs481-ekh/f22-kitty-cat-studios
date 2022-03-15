@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include <Runtime\Engine\Public\ImageUtils.h>
+#include "Misc/FileHelper.h"
 
 #define LOCTEXT_NAMESPACE "MainMenu"
 
@@ -16,28 +17,222 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 
 	OwningHUD = InArgs._OwningHUD;
 
-	const FMargin ContentPadding = FMargin(500.f, 300.f); 
+	// setup for background image
+	broncyImage = InArgs._broncyImage; //Don't be decieved! this can be either the main menu or high score image
+
+	//Need to pull the current high scores before building screen
+	FString file = FPaths::ProjectConfigDir();
+	file.Append(TEXT("highScores.txt"));
+	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
+	if (FileManager.FileExists(*file)) {
+		if (FFileHelper::LoadFileToStringArray(Result, *file, FFileHelper::EHashOptions::None)) {
+			UE_LOG(LogTemp, Warning, TEXT("Score Array Loaded"));
+		}
+		else {
+			UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Did not Load Scores"));
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("FileManipulation: ERROR: Can not read the file because it was not found."));
+		UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Expected file location: %s"), *file);
+	}
+
+	BuildMenu(OwningHUD->mainOrHScore);
+
+}
+
+FReply SMainMenuWidget::OnPlayDayClicked() const
+{
+	if (OwningHUD.IsValid())
+	{
+		OwningHUD->RemoveMenu();
+	}
+
+	UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Day");
+
+	return FReply::Handled();
+}
+
+FReply SMainMenuWidget::OnPlayNightClicked() const
+{
+	if (OwningHUD.IsValid())
+	{
+		OwningHUD->RemoveMenu();
+	}
+
+	UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Night");
+
+	return FReply::Handled();
+}
+
+FReply SMainMenuWidget::OnPlayRainClicked() const
+{
+	if (OwningHUD.IsValid())
+	{
+		OwningHUD->RemoveMenu();
+	}
+
+	UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Rain");
+
+	return FReply::Handled();
+}
+
+FReply SMainMenuWidget::OnQuitClicked() const
+{
+	if (OwningHUD.IsValid())
+	{
+		if (APlayerController* PC = OwningHUD->PlayerOwner)
+		{
+			PC->ConsoleCommand("quit");
+		}
+	}
+
+	return FReply::Handled();
+}
+void SMainMenuWidget::OnHScoreDebug(const FText& InText, ETextCommit::Type)
+{
+	FString toPrint = InText.ToString();
+	FString pHolder = InText.ToString();
+	FString playerScore = toPrint.RightChop(4); //Will remove the player name so we can get the score
+	toPrint.LeftInline(3, true); //Makes the given string the given size, true makes it shrinkable
+	FString trimmed = toPrint.TrimEnd();
+	int scoreInt = FCString::Atoi(*playerScore); //Atoi converts string to numeric (in this case int) "Ascii To Integer" Atoi
+	
+	int nameNumber = 0;
+	for (int i = 0; i < 10; i++) {
+		if (trimmed.Contains(FString::FromInt(i))) {
+			nameNumber = 1;
+			break;
+		}
+	}
+
+	//IF the playerScore has non-numbers in the score area
+	//This is almost certainly casued by have a name that is too long
+	if (!playerScore.IsNumeric()) {
+		//THEN print an error
+		UE_LOG(LogTemp, Warning, TEXT("NON-NUMERIC DIGITS FOUND IN SCORE"));
+	}
+	//ELSE IF the playerScore is too short
+	else if (trimmed.Len()<3 || trimmed.IsEmpty()) {
+		//THEN print an error
+		UE_LOG(LogTemp, Warning, TEXT("NAME NOT LONG ENOUGH"));
+	}
+	//ELSE IF name has a number in it
+	else if (nameNumber) {
+		//THEN print an error
+		UE_LOG(LogTemp, Warning, TEXT("NAME CONTAINS NUMBERS"));
+	}
+	else {
+		//NOTE: Result[] is an array of FStrings that contains the current scores
+
+		//Check if the player score should even be on the board
+		FString checkScore = Result[9].RightChop(4);
+		int checkInt = FCString::Atoi(*checkScore);
+		//IF the player score is at least larger than the lowest score
+		if (checkInt < scoreInt) {
+			//Get the current scores and compare them with the player score
+			int placed = 0;
+			for (int i = 8; i >= 0; i--) {
+				FString currScore = Result[i].RightChop(4);
+				int currInt = FCString::Atoi(*currScore);
+				//IF player score is less than the current score 
+				if (currInt > scoreInt) {
+					//THEN we need to place the player score into the previous slot
+					//NOTE: Since we've already checked if the players score should be on
+					//      the board we can assume this will work
+					Result[i + 1] = pHolder;
+					placed = 1;
+					break;
+				}
+				//ELSE shift the scores down
+				else
+					Result[i + 1] = Result[i];
+			}
+			//IF the score is larger than all other scores
+			if (!placed) {
+				//THEN put it in the highest score
+				Result[0] = pHolder;
+			}
+			//UPDATE THE SCORE FILE
+			FString file = FPaths::ProjectConfigDir();
+			file.Append(TEXT("highScores.txt"));
+			IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
+			if (FileManager.FileExists(*file)) {
+				if (FFileHelper::SaveStringArrayToFile(Result, *file)) {
+					UE_LOG(LogTemp, Warning, TEXT("Score Array Updated"));
+				}
+				else {
+					UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Did not update Scores"));
+				}
+			}
+			else {
+				UE_LOG(LogTemp, Warning, TEXT("FileManipulation: ERROR: Can not read the file because it was not found."));
+				UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Expected file location: %s"), *file);
+			}
+			//Rebuild the high score screen
+			BuildMenu(1);
+		}
+	}
+}
+
+//This is the handler for the high score button on the main menu
+FReply SMainMenuWidget::OnHScoreClicked() const
+{
+	if (OwningHUD.IsValid()) 
+	{
+		OwningHUD->RemoveMenu(); //get rid of current screen
+		OwningHUD->ShowMenu(1);  //show the high score screen
+	}
+	return FReply::Handled();
+}
+
+FReply SMainMenuWidget::OnReturnToMainClicked() const
+{
+	if (OwningHUD.IsValid())
+	{
+		OwningHUD->RemoveMenu();
+		OwningHUD->ShowMenu(0);
+	}
+	return FReply::Handled();
+}
+
+void SMainMenuWidget::BuildMenu(int hOrM)
+{
+	const FMargin ContentPadding = FMargin(500.f, 300.f);
+	const FMargin ScorePadding = FMargin(550.f, 200.f);
 	const FMargin HScoreContentPadding = FMargin();
 	const FMargin ButtonPadding = FMargin(10.f); //This is the space between buttons
 
 	const FText PlayDayText = LOCTEXT("PlayGameDay", "Play During the Day");
 	const FText PlayNightText = LOCTEXT("PlayGameNight", "Play at Night");
 	const FText PlayRainText = LOCTEXT("PlayGameRain", "Play in the Rain :)");
-	const FText HighScoreText = LOCTEXT("HighScores","High Score Screen");
+	const FText HighScoreText = LOCTEXT("HighScores", "High Score Screen");
 	const FText	QuitText = LOCTEXT("QuitGame", "Quit Game");
-	const FText ReturnMain = LOCTEXT("Return","Return to Main Menu");
+	const FText ReturnMain = LOCTEXT("Return", "Return to Main Menu");
+	FText hscoreText = LOCTEXT("DebugHScore", "Test High Score");
+
+	const int NUMSCORES = 10; //Only need 10 scores
 
 	FSlateFontInfo ButtonTextStyle = FCoreStyle::Get().GetFontStyle("EmbossedText");
 	ButtonTextStyle.Size = 25.f;
 
-	// setup for background image
-	broncyImage = InArgs._broncyImage; //Don't be decieved! this can be either the main menu or high score image
 	const FSlateDynamicImageBrush* BroncyImage;
 	BroncyImage = new FSlateDynamicImageBrush(broncyImage.Get(), FVector2D(942, 614), FName("BroncyImage"));
 	// above sets broncyImage to brush, and set size of image
 
+	score0 = FText::FromString(Result[0]);
+	score1 = FText::FromString(Result[1]);
+	score2 = FText::FromString(Result[2]);
+	score3 = FText::FromString(Result[3]);
+	score4 = FText::FromString(Result[4]);
+	score5 = FText::FromString(Result[5]);
+	score6 = FText::FromString(Result[6]);
+	score7 = FText::FromString(Result[7]);
+	score8 = FText::FromString(Result[8]);
+	score9 = FText::FromString(Result[9]);
+
 	//IF mainOrHScore is 0
-	if (!OwningHUD->mainOrHScore) {
+	if (!hOrM) {
 		//THEN build the main menu
 		ChildSlot[
 			SNew(SOverlay)
@@ -142,14 +337,13 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 				]
 
 				]
-
-
 				]
 		];
 	}
 	//ELSE IF mainOrHScore is 1
-	else if (OwningHUD->mainOrHScore) { //I'm being overly explicit here just in case anyone adds more screens later
+	else if (hOrM) { //I'm being overly explicit here just in case anyone adds more screens later
 		//THEN build the high score screen
+
 		ChildSlot[
 			SNew(SOverlay)
 				+ SOverlay::Slot()
@@ -159,7 +353,117 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 					SNew(SImage)
 					.Image(BroncyImage)
 				]
+			+ SOverlay::Slot()
+				.HAlign(HAlign_Right)
+				.VAlign(VAlign_Top)
+				.Padding(ScorePadding)
+				[
+					SNew(SVerticalBox)
 
+					+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(STextBlock)
+					.Font(ButtonTextStyle)
+				.Text(score0) //these need to be FText not FString
+				.Justification(ETextJustify::Center)
+				.ColorAndOpacity(FColor::Orange)
+				]
+			+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(STextBlock)
+					.Font(ButtonTextStyle)
+				.Text(score1) //these need to be FText not FString
+				.Justification(ETextJustify::Center)
+				.ColorAndOpacity(FColor::Orange)
+				]
+			+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(STextBlock)
+					.Font(ButtonTextStyle)
+				.Text(score2) //these need to be FText not FString
+				.Justification(ETextJustify::Center)
+				.ColorAndOpacity(FColor::Orange)
+				]
+			+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(STextBlock)
+					.Font(ButtonTextStyle)
+				.Text(score3) //these need to be FText not FString
+				.Justification(ETextJustify::Center)
+				.ColorAndOpacity(FColor::Orange)
+				]
+			+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(STextBlock)
+					.Font(ButtonTextStyle)
+				.Text(score4) //these need to be FText not FString
+				.Justification(ETextJustify::Center)
+				.ColorAndOpacity(FColor::Orange)
+				]
+			+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(STextBlock)
+					.Font(ButtonTextStyle)
+				.Text(score5) //these need to be FText not FString
+				.Justification(ETextJustify::Center)
+				.ColorAndOpacity(FColor::Orange)
+				]
+			+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(STextBlock)
+					.Font(ButtonTextStyle)
+				.Text(score6) //these need to be FText not FString
+				.Justification(ETextJustify::Center)
+				.ColorAndOpacity(FColor::Orange)
+				]
+			+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(STextBlock)
+					.Font(ButtonTextStyle)
+				.Text(score7) //these need to be FText not FString
+				.Justification(ETextJustify::Center)
+				.ColorAndOpacity(FColor::Orange)
+				]
+			+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(STextBlock)
+					.Font(ButtonTextStyle)
+				.Text(score8) //these need to be FText not FString
+				.Justification(ETextJustify::Center)
+				.ColorAndOpacity(FColor::Orange)
+				]
+			+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(STextBlock)
+					.Font(ButtonTextStyle)
+				.Text(score9) //these need to be FText not FString
+				.Justification(ETextJustify::Center)
+				.ColorAndOpacity(FColor::Orange)
+				]
+			//-------------------USE THIS FOR PROOF OF CONCEPT/DEBUGGING HIGH SCORES-----------------//
+			+ SVerticalBox::Slot()
+				.Padding(ButtonPadding)
+				[
+					SNew(SEditableTextBox)
+					.Font(ButtonTextStyle)
+				.Justification(ETextJustify::Center)
+				.BackgroundColor(FColor::Blue)
+				.Text(hscoreText)
+				.OnTextCommitted(this, &SMainMenuWidget::OnHScoreDebug)
+				]
+			//---------------------------------------------------------------------------------------//
+
+				]
 			+ SOverlay::Slot()
 				.HAlign(HAlign_Right)
 				.VAlign(VAlign_Bottom)
@@ -169,8 +473,8 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 					//Title Text
 					SNew(SVerticalBox)
 
-					// Play during day text
-				+ SVerticalBox::Slot()
+			// Main Menu Button
+			+ SVerticalBox::Slot()
 				.Padding(ButtonPadding)
 				[
 					SNew(SButton)
@@ -186,7 +490,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 
 				]
 
-			//Quit Game Button Text
+			//Quit Game Button
 			+ SVerticalBox::Slot()
 				.Padding(ButtonPadding)
 
@@ -201,84 +505,10 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 				.Justification(ETextJustify::Center)
 				.ColorAndOpacity(FColor::Orange)
 				]
-
 				]
-
-
 				]
 		];
 	}
-
-}
-
-FReply SMainMenuWidget::OnPlayDayClicked() const
-{
-	if (OwningHUD.IsValid())
-	{
-		OwningHUD->RemoveMenu();
-	}
-
-	UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Day");
-
-	return FReply::Handled();
-}
-
-FReply SMainMenuWidget::OnPlayNightClicked() const
-{
-	if (OwningHUD.IsValid())
-	{
-		OwningHUD->RemoveMenu();
-	}
-
-	UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Night");
-
-	return FReply::Handled();
-}
-
-FReply SMainMenuWidget::OnPlayRainClicked() const
-{
-	if (OwningHUD.IsValid())
-	{
-		OwningHUD->RemoveMenu();
-	}
-
-	UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Rain");
-
-	return FReply::Handled();
-}
-
-FReply SMainMenuWidget::OnQuitClicked() const
-{
-	if (OwningHUD.IsValid())
-	{
-		if (APlayerController* PC = OwningHUD->PlayerOwner)
-		{
-			PC->ConsoleCommand("quit");
-		}
-	}
-
-	return FReply::Handled();
-}
-
-//This is the handler for the high score button on the main menu
-FReply SMainMenuWidget::OnHScoreClicked() const
-{
-	if (OwningHUD.IsValid()) 
-	{
-		OwningHUD->RemoveMenu(); //get rid of current screen
-		OwningHUD->ShowMenu(1);  //show the high score screen
-	}
-	return FReply::Handled();
-}
-
-FReply SMainMenuWidget::OnReturnToMainClicked() const
-{
-	if (OwningHUD.IsValid())
-	{
-		OwningHUD->RemoveMenu();
-		OwningHUD->ShowMenu(0);
-	}
-	return FReply::Handled();
 }
 
 #undef LOCTEXT_NAMESPACE
