@@ -64,12 +64,14 @@ public:
 
 	FHitResult* Raycast(FVector to);
 	FVector GetDirection();
-	void MoveDecision(); //called in Tick to make move decision every 3 frames
+	void MoveDecision(FVector location); //called in Tick to make move decision every 3 frames
 	void MoveAwayFromPlayer(FVector player_location, FRotator player_direction);
 	void MoveTowardsPlayer(FVector player_location, FRotator player_direction);
-	void ShotDecision(); //called in Tick to make a shot decision every 30 frames
+	void ShotDecision(FVector location); //called in Tick to make a shot decision every 30 frames
 private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
 	void Fire();
+	void drawTargetLine(FVector location);
+	//void AimBlaster(const class ARunner* targetRunner, const float deltaTime);
 };
 

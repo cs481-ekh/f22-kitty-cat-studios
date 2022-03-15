@@ -45,20 +45,6 @@ void AAIActor::Tick(float DeltaTime)
 	if (IsGrounded()) {
 		// Mover->SetThrottleInput(1.0f);
 		auto location = GetActorLocation(); //Obtains the (x,y,z) vector loction of the AI
-		//FOR AIMING AT PLAYER
-		FHitResult AIRayHit; //For raycasting from AI to player
-		FVector RayStart; //origin point of ray cast
-		RayStart = location; //set ray origin to match AI location
-		// RayStart.Z += 50.f; //move ray up in actor
-		// RayStart.X += 200.f; //move ray away so it doesn't collide with self
-		FVector RayForwardVector = GetActorForwardVector(); //make sure line is coming from front
-		FVector RayEnd = ((RayForwardVector * 2000.f) + RayStart); //defines end point of line
-		FCollisionQueryParams RayCollisionParams; //to detect what the line is hitting
-		DrawDebugLine(GetWorld(), RayStart, RayEnd, FColor::Green, false, 0.03, 0, 5); //draws the ray line
-		if (ActorLineTraceSingle(AIRayHit, RayStart, RayEnd, ECC_WorldStatic, RayCollisionParams)) {
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("AI ray is hitting : %s"), *AIRayHit.GetComponent()->GetName()));
-		}
-		//END AIMING AT PLAYER
 
 		curr_speed = FVector::Distance(location, last_location) / DeltaTime;
 		if (curr_speed < max_speed && !reverse) {
@@ -68,8 +54,8 @@ void AAIActor::Tick(float DeltaTime)
 			ThrottleInput(-1.0f);
 		}
 
-		MoveDecision();
-		ShotDecision();
+		MoveDecision(location);
+		ShotDecision(location);
 		last_location = location;
 		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Moving"), *GetDebugName(this)));
 	}
@@ -173,7 +159,7 @@ FVector AAIActor::GetDirection() {
 	return result;
 }
 
-void AAIActor::MoveDecision() {
+void AAIActor::MoveDecision(FVector location) {
 
 	if (count != update_rate) {
 		count++;
@@ -235,21 +221,42 @@ void AAIActor::MoveDecision() {
 		MoveTowardsPlayer(player_location, player_direction);
 	}
 	if (!defensive) {
-		ShotDecision();
+		ShotDecision(location);
 	}
 }
 
-void AAIActor::ShotDecision() {
+//=======FOR AI SHOOTING
+void AAIActor::drawTargetLine(FVector location) {
+	FHitResult AIRayHit; //For raycasting from AI to player
+	FVector RayStart; //origin point of ray cast
+	FVector RayEnd;
+	RayStart = location; //set ray origin to match AI location
+	auto closest_runner = ARunnerObserver::GetClosestRunner(*this);
+	auto closest_runner_location = closest_runner->GetActorLocation();
+	ARunner::AimBlaster(closest_runner, GetWorld()->GetDeltaSeconds());
+	// RayStart.Z += 50.f; //move ray up in actor
+	// RayStart.X += 200.f; //move ray away so it doesn't collide with self
+	FVector RayForwardVector = GetActorForwardVector(); //make sure line is coming from front
+	//RayEnd = ((RayForwardVector * 2000.f) + RayStart); //defines end point of line
+	RayEnd = closest_runner_location;
+	//FCollisionQueryParams RayCollisionParams; //to detect what the line is hitting
+	DrawDebugLine(GetWorld(), RayStart, RayEnd, FColor::Green, false, 0.03, 0, 5); //draws the ray line
+	//if (ActorLineTraceSingle(AIRayHit, RayStart, RayEnd, ECC_WorldStatic, RayCollisionParams)) {
+		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("AI ray is hitting : %s"), *AIRayHit.GetComponent()->GetName()));
+	//}
+}
+void AAIActor::ShotDecision(FVector location) {
 	if (shotCount != shot_rate) { //shot timer (currently set to one shot every 30 frames
 		shotCount++;
 		return;
 	}
 	shotCount = 0; //Reset timer
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AI shot action called..."), *GetDebugName(this)));
+	drawTargetLine(location);
 	Fire();
 }
 void AAIActor::Fire() {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AI FIRE SHOT"), *GetDebugName(this)));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AI FIRE SHOT"), *GetDebugName(this)));
 	if (AIProjectileClass) {
 		auto World = GetWorld();
 		if (!World) return;
@@ -278,7 +285,7 @@ void AAIActor::Fire() {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("ProjectileClass error"), *GetDebugName(this)));
 	}
 }
-
+//=======END AI SHOOTING
 void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direction) {
 	auto curr_location = GetActorLocation();
 	auto curr_direction = GetActorRotation();
