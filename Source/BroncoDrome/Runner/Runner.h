@@ -159,7 +159,7 @@ private:
 	void Fire();
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
-	void AimBlaster(const class ARunner *targetRunner, const float deltaTime);
+	//void AimBlaster(const class ARunner *targetRunner, const float deltaTime);
 	void Pause(); 
 
 public:
@@ -174,6 +174,7 @@ public:
 	void AddToDamage(int addedDamage); //Can change damage
 	void obstainShotAbsorbPower(int hits); //ShotAbsorb 
 	void obstainKillBallPower(int shots); //KillBall
+
 
 
 //Displays for winning and losing
