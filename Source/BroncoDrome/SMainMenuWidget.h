@@ -29,10 +29,15 @@ public:
 	FReply OnPlayRainClicked() const;
 	FReply OnQuitClicked() const;
 	FReply OnHScoreClicked() const;
+	void OnHScoreDebug(const FText& InText, ETextCommit::Type);
 	FReply OnReturnToMainClicked() const;
+	void BuildMenu(int hOrM);
 	 
+	TArray<FString> Result;
 	TWeakObjectPtr<class AMenuHUD> OwningHUD;
 	TWeakObjectPtr<class UTexture2D> broncyImage;
+
+	FText score0, score1, score2, score3, score4, score5, score6, score7, score8, score9;
 
 	virtual bool SupportsKeyboardFocus() const override { return true; };
 
