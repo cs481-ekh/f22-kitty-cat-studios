@@ -7,10 +7,16 @@ Commenced: 2:50
 Ended: 4:15
 Scribe: Marie
 
+Went over what tasks were completed or left open in sprint two. 
+Came up with a plan for the next sprint and discussed implementation of 
+AI with different personalities via multiple spawners or random choice. 
+Began planning for sprint 3.
+
 ## Tuesday Section 1 Meeting 3/15
 Attendees: Ross, Ben, Joey, Saulo, Doug
 Absent: None (Only section 1)
 9:40 - 10:25 (~45 minutes)
+
 Sprint retrospective, topics discussed:
 	We improved the existing features we were working on. Pause, music, high scores, respawning, power-ups, win screen, etc.
 	Our sprint goal was kinda achieved. We missed a few things, but nothing too major.
@@ -19,12 +25,6 @@ Sprint retrospective, topics discussed:
 	We didn’t do as much testing as maybe we should have.
 	New sprint goals set
 Scribe: Doug
-
-
-Went over what tasks were completed or left open in sprint two. 
-Came up with a plan for the next sprint and discussed implementation of 
-AI with different personalities via multiple spawners or random choice. 
-Began planning for sprint 3.
 
 ## Friday Professor Meeting 3-11
 Attendees: Ross, Ben, Joey, DJ, Marie, Saulo, Doug
