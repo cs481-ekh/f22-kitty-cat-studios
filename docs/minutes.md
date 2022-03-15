@@ -1,5 +1,17 @@
 Minutes of the team meetings go here:
 
+## Tuesday Section 002 Meeting
+Attendees: Marie, DJ
+Absent: None (Because only section 002 was meeting)
+Commenced: 2:50
+Ended: 4:15
+Scribe: Marie
+
+Went over what tasks were completed or left open in sprint two. 
+Came up with a plan for the next sprint and discussed implementation of 
+AI with different personalities via multiple spawners or random choice. 
+Began planning for sprint 3.
+
 ## Friday Professor Meeting 3-11
 Attendees: Ross, Ben, Joey, DJ, Marie, Saulo, Doug
 Absent: None
