@@ -1,4 +1,5 @@
 // // Copyright (C) Dromies 2021. All Rights Reserved.
+// // Copyright (C) Team Gregg 2022. All Rights Reserved.
 
 #pragma once
 
@@ -53,4 +54,6 @@ public:
 
 private: 
 	AActor *RunnerParent; 
+
+	virtual void init(); //Just to set things up
 };

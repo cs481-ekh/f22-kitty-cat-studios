@@ -12,7 +12,10 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Sound/SoundCue.h"
 
+//Orbs
 #include "../StageActors/OrbProjectile.h"
+#include "../StageActors/PowerUp/KillBallProjectile.h"
+
 #include "../StageActors/RunnerObserver.h"
 #include "../StageActors/ParticleSpawner.h"
 
@@ -101,9 +104,12 @@ ARunner::ARunner()
 	engineAudioComponent->AutoAttachParent = GetRootComponent();
 	engineAudioComponent->bAllowSpatialization = true;
 
-	//Weapons
-	extraDamage = false;
-	extraDamageShots = 0;
+	//KillBall PowerUp
+	killBallOn = false;
+	killBallShots = 0;
+	//ShotAbsorb PowerUp
+	shotAbsorbOn = false;
+	shotAbsorbHits = 0;
 
 
 }
@@ -321,10 +327,16 @@ void ARunner::LockOn()
 
 void ARunner::Fire()
 {
+	//classes set in Unreal Class Defaults of Runners 
 	if (!ProjectileClass) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("===ProjectileClass not initialized - shot failed==="), *GetDebugName(this)));
 		return;
 	}
+	if (!KillBallProjectileClass) {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("===KillBallProjectileClass not initialized - shot failed==="), *GetDebugName(this)));
+		return;
+	}
+
 	auto World = GetWorld();
 	if (!World) return;
 
@@ -335,37 +347,46 @@ void ARunner::Fire()
 	const auto rot = BlasterBase->GetComponentRotation();
 	const auto loc = BlasterBase->GetComponentLocation() + 150.0 * (rot.Vector());	//150 is to account for the length of the barrel
 
-
-	AOrbProjectile* projectile; // = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams);;
-	//check for extra damage
-	if (extraDamage) {
-		// Spawn new orb
-		projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams);
+	//check for Kill Ball
+	if (killBallOn) {
+		
+		AKillBallProjectile* projectile = World->SpawnActor<AKillBallProjectile>(KillBallProjectileClass, loc, rot, SpawnParams); // Spawn KillBal
 		
 		//Fires shot and turn off if we run out of shots
-		extraDamageShots--;
-		if (extraDamageShots <= 0) {
-			extraDamage = false;
+		killBallShots--;
+		if (killBallShots <= 0) {
+			killBallOn = false;
+		}
+
+		if (projectile) {
+			//Projectile variables
+			projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
+			//Debug
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your KillBall weapon."), *GetDebugName(this)));
+			//Effects
+			PlaySound(laserAudioCue);
+			AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),
+				BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
+		}
+		else {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("KILLBALL FAILED"), *GetDebugName(this)));
 		}
 	}
-	else {
-		projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams); //Regular orb
+	else { //Fire a regular orb ball
+		AOrbProjectile*  projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams); //Regular orb
+		if (projectile) {
+			//Projectile variables
+			projectile->FireOrbInDirection(rot.Vector(), this);
+			projectile->shotDamage = playerDamage; //Set damage of shot to the players damage
+			//Debug
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your regular weapon."), *GetDebugName(this)));
+			//Effects
+			PlaySound(laserAudioCue);
+			AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),
+				BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
+
+		}
 	}
-
-	//AOrbProjectile* projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams);
-	if (projectile) {
-		//Projectile variables
-		projectile->FireOrbInDirection(rot.Vector(), this);
-		projectile->shotDamage = playerDamage; //Set damage of shot to the players damage
-		//Debug
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your weapon."), *GetDebugName(this)));
-		//Effects
-		PlaySound(laserAudioCue);
-		AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(), 
-			BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
-
-	}
-
 
 }
 
@@ -501,10 +522,17 @@ void ARunner::AddToDamage(int addedDamage) {
 	ChangeMIntensity(1);
 	playerDamage += addedDamage;
 }
+
 //PowerUps call this to use ShotAbsorb and add hits
 void ARunner::obstainShotAbsorbPower(int hits) {
 	shotAbsorbOn = true;
 	shotAbsorbHits = shotAbsorbHits + hits; //This powerup stacks
+}
+
+//PowerUps call this to use KillBall and add hits
+void ARunner::obstainKillBallPower(int hits) {
+	killBallOn = true;
+	killBallShots = killBallShots + hits; //This powerup indeed stacks
 }
 
 //Orbs call this function when they hit the runner

@@ -1,4 +1,6 @@
 // Copyright (C) Dromies 2021. All Rights Reserved.
+// // Copyright (C) Team Gregg 2022. All Rights Reserved.
+
 #include "OrbProjectile.h"
 #include "../Runner/Runner.h"
 // Sets default values
@@ -6,51 +8,9 @@ AOrbProjectile::AOrbProjectile()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	if (!RootComponent) {
-		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
-	}
-	if (!CollisionComponent) {
-		//Create sphere collider
-		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-		//Set collision profile
-		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
-		CollisionComponent->OnComponentHit.AddDynamic(this, &AOrbProjectile::OnHit);
-		CollisionComponent->InitSphereRadius(25.0f);
-		//Make root
-		RootComponent = CollisionComponent;
-	}
-	if (!ProjectileMovementComponent) {
-		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
-		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
-		//Both speed = 5000 means consistent speed
-		ProjectileMovementComponent->InitialSpeed = 5000.0f;
-		ProjectileMovementComponent->MaxSpeed = 5000.0f;
-		ProjectileMovementComponent->bRotationFollowsVelocity = true;
-		ProjectileMovementComponent->bShouldBounce = true;
-		//False = destroyed on impact with wall
-		ProjectileMovementComponent->bShouldBounce = false;
-		ProjectileMovementComponent->Bounciness = 0.1f;
-		ProjectileMovementComponent->ProjectileGravityScale = 0.25f;
-		//0 = No gravity
-		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
-	}
+	
+	init();
 
-	if(!ProjectileMeshComponent){
-		//Create mesh
-		ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Assets/Blaster/PlasmaBall")); //Orginal in case something breaks Game/Assets/Blaster/Sphere.Sphere
-		if(Mesh.Succeeded()){
-			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
-		}
-		//Add material
-		static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Game/Assets/Blaster/MaterialAndTextures/Plasma")); //Orginal in case something breaks /Engine/MapTemplates/Materials/BasicAsset02.BasicAsset02
-		if(Material.Succeeded()){
-			ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
-		}
-		ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
-		ProjectileMeshComponent->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-		ProjectileMeshComponent->SetupAttachment(RootComponent);
-	}
 	//Despawn after 5s
 	InitialLifeSpan = 5.0f;
 	//Damage
@@ -90,4 +50,50 @@ void AOrbProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor
     }
 }
 
+void AOrbProjectile::init() {
+	if (!RootComponent) {
+		RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("ProjectileSceneComponent"));
+	}
+	if (!CollisionComponent) {
+		//Create sphere collider
+		CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+		//Set collision profile
+		CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Projectile"));
+		CollisionComponent->OnComponentHit.AddDynamic(this, &AOrbProjectile::OnHit);
+		CollisionComponent->InitSphereRadius(25.0f);
+		//Make root
+		RootComponent = CollisionComponent;
+	}
+	if (!ProjectileMovementComponent) {
+		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
+		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
+		//Both speed = 5000 means consistent speed
+		ProjectileMovementComponent->InitialSpeed = 5000.0f;
+		ProjectileMovementComponent->MaxSpeed = 5000.0f;
+		ProjectileMovementComponent->bRotationFollowsVelocity = true;
+		ProjectileMovementComponent->bShouldBounce = true;
+		//False = destroyed on impact with wall
+		ProjectileMovementComponent->bShouldBounce = false;
+		ProjectileMovementComponent->Bounciness = 0.1f;
+		ProjectileMovementComponent->ProjectileGravityScale = 0.25f;
+		//0 = No gravity
+		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
+	}
 
+	if (!ProjectileMeshComponent) {
+		//Create mesh
+		ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Assets/Blaster/PlasmaBall"));
+		if (Mesh.Succeeded()) {
+			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
+		}
+		//Add material
+		static ConstructorHelpers::FObjectFinder<UMaterial>Material(TEXT("/Game/Assets/Blaster/MaterialAndTextures/Plasma")); 
+		if (Material.Succeeded()) {
+			ProjectileMaterialInstance = UMaterialInstanceDynamic::Create(Material.Object, ProjectileMeshComponent);
+		}
+		ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
+		ProjectileMeshComponent->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+		ProjectileMeshComponent->SetupAttachment(RootComponent);
+	}
+}
