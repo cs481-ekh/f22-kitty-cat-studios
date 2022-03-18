@@ -103,6 +103,14 @@ bool bFromSweep, const FHitResult& SweepResult)
 				dynamic_cast<ARunner*>(OtherActor)->AddToDamage(10); //Damage
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
 			break;
+			case 3:
+				dynamic_cast<ARunner*>(OtherActor)->obstainShotAbsorbPower(5); //ShotAbsorb default 5
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power ShotAbsorb"), *GetDebugName(this)));
+				break;
+			case 4:
+				dynamic_cast<ARunner*>(OtherActor)->obstainKillBallPower(1); //KillBall default 1
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power KillBall!"), *GetDebugName(this)));
+				break;
 		}
 	
 
@@ -127,7 +135,7 @@ void APowerUp::UpdateLocation(FVector point)
 	SetActorLocation(point, false, 0, ETeleportType::None);
 	timeTracker = 1.0f;
 	GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUp::ShowExpiration, 9.0f, false);
-	powerTypeIndex = FMath::RandRange(0, 2); //Randomly assigns powerup ability. Range needs to be updated when adding new powers
+	powerTypeIndex = FMath::RandRange(0, 4); //Randomly assigns powerup ability. Range needs to be updated when adding new powers
 	spawnTime = FDateTime::Now();
 	RotationScale = 90.0f;
 	

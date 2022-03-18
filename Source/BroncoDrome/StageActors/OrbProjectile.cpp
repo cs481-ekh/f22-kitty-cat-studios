@@ -83,7 +83,9 @@ void AOrbProjectile::init() {
 	if (!ProjectileMeshComponent) {
 		//Create mesh
 		ProjectileMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ProjectileMeshComponent"));
-		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Assets/Blaster/PlasmaBall"));
+
+		static ConstructorHelpers::FObjectFinder<UStaticMesh>Mesh(TEXT("/Game/Assets/Blaster/LaserShot")); ///Game/Assets/Blaster/PlasmaBall
+
 		if (Mesh.Succeeded()) {
 			ProjectileMeshComponent->SetStaticMesh(Mesh.Object);
 		}

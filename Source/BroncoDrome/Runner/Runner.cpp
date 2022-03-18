@@ -384,8 +384,6 @@ void ARunner::Fire()
 			PlaySound(laserAudioCue);
 			AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),
 				BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
-
-
 		}
 	}
 }

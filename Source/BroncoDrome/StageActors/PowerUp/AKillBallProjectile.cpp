@@ -1,4 +1,6 @@
 // Copyright (C) Dromies 2021. All Rights Reserved.
+// Copyright (C) Team Gregg 2022. All Rights Reserved.
+
 #include "KillBallProjectile.h"
 
 // Sets default values
