@@ -1,5 +1,10 @@
 Minutes of the team meetings go here:
 
+## Friday Group Meeting 3-18
+Attendees: All
+2:00 - 2:30 (~30 minutes)
+Talked about what tasks we plan on doing during spring break.
+
 ## Tuesday Section 002 Meeting
 Attendees: Marie, DJ
 Absent: None (Because only section 002 was meeting)
