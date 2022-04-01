@@ -1,5 +1,12 @@
 Minutes of the team meetings go here:
 
+## Friday Group Meeting 4-1
+Attendees: All
+1:30 - 2:05 (~35 minutes)
+Talked about progress during spring break
+Talked about goals going forward
+Bugs, replay menu, models, AI, etc.
+
 ## Friday Group Meeting 3-18
 Attendees: All
 2:00 - 2:30 (~30 minutes)
