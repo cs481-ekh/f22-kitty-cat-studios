@@ -87,9 +87,14 @@ void ARunnerHUD::Pause() {
 
 //Win Condition Call
 void ARunnerHUD::YouWin(){
-	UGameplayStatics::SetGamePaused(GetWorld(), true);
 	//SHOULD display win widget, is causing an error
-	//m_WinWidget->AddToViewport();
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("You Win Function Reached"), *GetDebugName(this)));
-
+	class APlayerController* Mouse;
+	Mouse = GetWorld()->GetFirstPlayerController();
+	paused = true; 
+	Mouse->bShowMouseCursor = true;
+	Mouse->bEnableClickEvents = true;
+	Mouse->bEnableMouseOverEvents = true;
+	m_WinWidget->AddToViewport();
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("You Win Function Reached"), *GetDebugName(this)));
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
 }

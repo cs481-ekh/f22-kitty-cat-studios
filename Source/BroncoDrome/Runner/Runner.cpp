@@ -193,6 +193,7 @@ void ARunner::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Hop", IE_Pressed, this, &ARunner::Hop);
 	PlayerInputComponent->BindAction("LockOn", IE_Pressed, this, &ARunner::LockOn);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ARunner::Fire);
+	PlayerInputComponent->BindAction("WIN", IE_Pressed, this, &ARunner::WinScreen);
 	FInputActionBinding& pause = PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &ARunner::Pause); 
 	pause.bExecuteWhenPaused = true; 
 }
@@ -460,6 +461,10 @@ void ARunner::AimBlaster(const ARunner* targetRunner, const float deltaTime)
 void ARunner::Pause() {
 	ChangeMIntensity(0);
 	HUD->Pause(); 
+}
+
+void ARunner::WinScreen(){
+	HUD->YouWin();
 }
 
 void ARunner::AddToHealth(int newHealth) {
