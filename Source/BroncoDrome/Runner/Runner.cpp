@@ -385,6 +385,7 @@ void ARunner::Fire()
 			PlaySound(laserAudioCue);
 			AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),
 				BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
+
 		}
 	}
 }
@@ -461,6 +462,7 @@ void ARunner::AimBlaster(const ARunner* targetRunner, const float deltaTime)
 void ARunner::Pause() {
 	ChangeMIntensity(0);
 	HUD->Pause(); 
+	//AddToHealth(-40);	// Temporarily make it so that pausing hurts you a lot for testing purposes ;)))
 }
 
 void ARunner::WinScreen(){
@@ -485,39 +487,87 @@ void ARunner::AddToHealth(int newHealth) {
 			}	// Leave the function immediately to prevent trying to respawn a runner that should no longer exist
 		}
 		FVector CurrentLocation = GetActorLocation();	// We want to keep track of where the runner was when it died
-		int respawnAttemptCounter = 0;	// Keep track of how many times respawning has failed. If it's failed more than 5 times, it's probably stuck in an infinite loop so just give up
-		while (GetActorLocation() == CurrentLocation) {	// Continue attempting to relocate the runner until it has been moved to a respawn point
-			if (respawnAttemptCounter > 5) {
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning has been attempted multiple times without success, aborting respawn attempts to prevent an infinite loop!"), *GetDebugName(this)));
-				return;
-			}
-			int selectedPoint = rand() % 4;	// Grab a random number 0 - 3, each number represents one of the map's corners
-			const FVector newLocation = { (float)(4700 * (pow(-1, ((selectedPoint + 1) / 2)))) , (float)(3600 * (pow(-1, (selectedPoint / 2)))), (float)(0) };	// Use math to pick the location of the chosen corner
-			const FRotator newOrientation = { (float)(0), (float)(225 + 90 * selectedPoint) , (float)(0) };	// Use math to rotate the runner the amount that is appropriate for the selected corner
-			TeleportTo(newLocation, newOrientation);	// Try to teleport to the calculated corner with the calculated rotation
-			respawnAttemptCounter++;
+
+		
+		/* This code will make it seem to disappear. Source: https://forums.unrealengine.com/t/disable-an-actor/4738/22 */
+
+			/* Stop its movement and teleport it up to prevent collisions first */
+		Mover->Deactivate();
+		const FVector higher = { CurrentLocation.X, CurrentLocation.Y, CurrentLocation.Z + 100 };
+		const FRotator newOrientation = { 0, 0, 0 };
+		TeleportTo(higher, newOrientation);
+		SetActorHiddenInGame(true);
+		SetActorEnableCollision(false);
+		SetActorTickEnabled(false);
+
+			/* If the player just died, they shouldn't be able to move until they respawn */
+		if (GetController() == GetWorld()->GetFirstPlayerController()) {
+			DisableInput(GetWorld()->GetFirstPlayerController());
 		}
+														
+		/* This code will make it wait three second to respawn. Source: https://www.codegrepper.com/code-examples/cpp/unreal+engine+delay+c%2B%2B */
+		
+		FTimerHandle TimerHandle;
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning in 3 seconds..."), *GetDebugName(this)));
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("2 seconds left to respawn..."), *GetDebugName(this)));
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+					{
+						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("1 second left to respawn..."), *GetDebugName(this)));
+						GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+							{
+								Respawn();	// After three seconds, the runner respawns at one of the four corners
+								EnableInput(GetWorld()->GetFirstPlayerController());
+								Mover->Activate();
+							}, 1, false
+						);
+					}, 1, false
+				);
+			}, 1, false
+		);
+		
 		HUD->SetHealth(health);
 	}
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->SetHealth(health);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player's health is now: %d"), health, *GetDebugName(this)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Player's health is now: %d"), health, *GetDebugName(this)));
 	} 
 	else {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AI's health is now: %d"), health, *GetDebugName(this)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AI's health is now: %d"), health, *GetDebugName(this)));
 	}
+}
+
+/* Tries to move the runner to one of the four corners of the map. If it fails 5 times, it will not teleport it because something went wrong and an infinite loop is likely */
+void ARunner::Respawn() {
+	FVector CurrentLocation = GetActorLocation();	// We want to keep track of where the runner was when it died
+	int respawnAttemptCounter = 0;	// Keep track of how many times respawning has failed. If it's failed more than 5 times, it's probably stuck in an infinite loop so just give up
+	while (GetActorLocation() == CurrentLocation) {	// Continue attempting to relocate the runner until it has been moved to a respawn point
+		if (respawnAttemptCounter > 5) {
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning has been attempted multiple times without success, aborting respawn attempts to prevent an infinite loop!"), *GetDebugName(this)));
+			return;
+		}
+		int selectedPoint = rand() % 4;	// Grab a random number 0 - 3, each number represents one of the map's corners
+		const FVector newLocation = { (float)(4700 * (pow(-1, ((selectedPoint + 1) / 2)))) , (float)(3600 * (pow(-1, (selectedPoint / 2)))), (float)(0) };	// Use math to pick the location of the chosen corner
+		const FRotator newOrientation = { (float)(0), (float)(225 + 90 * selectedPoint) , (float)(0) };	// Use math to rotate the runner the amount that is appropriate for the selected corner
+		TeleportTo(newLocation, newOrientation);	// Try to teleport to the calculated corner with the calculated rotation
+		respawnAttemptCounter++;
+	}
+	SetActorHiddenInGame(false);
+	SetActorEnableCollision(true);
+	SetActorTickEnabled(true);
 }
 
 void ARunner::AddToScore(int newScore) {
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		score += newScore;
 		HUD->AddToScore(newScore);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Added To Score."), *GetDebugName(this)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Added To Score."), *GetDebugName(this)));
 	} 
 	//WIN CONDITION
 	if (score >= 5000){
 		//SetGlobalTimeDilation(2);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Win!!"), *GetDebugName(this)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Win!!"), *GetDebugName(this)));
 		HUD->YouWin();
 	}
 }

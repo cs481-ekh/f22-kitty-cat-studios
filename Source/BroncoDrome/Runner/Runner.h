@@ -170,6 +170,7 @@ public:
 	//Power ups
 	void hitMe(int damage); //Holds the needed steps to deal damage based on current powerups
 	void AddToHealth(int newHealth); //Changes health
+	void Respawn();	// For respawning
 	void AddToDamage(int addedDamage); //Can change damage
 	void obstainShotAbsorbPower(int hits); //ShotAbsorb 
 	void obstainKillBallPower(int shots); //KillBall
