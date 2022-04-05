@@ -462,7 +462,7 @@ void ARunner::AimBlaster(const ARunner* targetRunner, const float deltaTime)
 void ARunner::Pause() {
 	ChangeMIntensity(0);
 	HUD->Pause(); 
-	//AddToHealth(-40);	// Temporarily make it so that pausing hurts you a lot for testing purposes ;)))
+	AddToHealth(-40);	// Temporarily make it so that pausing hurts you a lot for testing purposes ;)))
 }
 
 void ARunner::WinScreen(){
@@ -477,7 +477,7 @@ void ARunner::AddToHealth(int newHealth) {
 	/* This is when a runner has lost all of its health */
 	else if (health <= 0) {
 		ChangeMIntensity(2);
-		health = 100;	// Reset to full health
+		HUD->SetDead(true);
 		/* This is when the runner is an AI rather than the player */
 		if (GetController() != GetWorld()->GetFirstPlayerController()) {
 			lives--;	// The AI loses a life when they lose all their health (initially 3 lives)
@@ -508,18 +508,22 @@ void ARunner::AddToHealth(int newHealth) {
 		/* This code will make it wait three second to respawn. Source: https://www.codegrepper.com/code-examples/cpp/unreal+engine+delay+c%2B%2B */
 		
 		FTimerHandle TimerHandle;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning in 3 seconds..."), *GetDebugName(this)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning in 3 seconds..."), *GetDebugName(this)));
+		if (GetController() == GetWorld()->GetFirstPlayerController()) HUD->SetTimeLeft(3);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("2 seconds left to respawn..."), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("2 seconds left to respawn..."), *GetDebugName(this)));
+				if (GetController() == GetWorld()->GetFirstPlayerController()) HUD->SetTimeLeft(2);
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 					{
-						GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("1 second left to respawn..."), *GetDebugName(this)));
+						//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("1 second left to respawn..."), *GetDebugName(this)));
+						if (GetController() == GetWorld()->GetFirstPlayerController()) HUD->SetTimeLeft(1);
 						GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 							{
 								Respawn();	// After three seconds, the runner respawns at one of the four corners
 								EnableInput(GetWorld()->GetFirstPlayerController());
 								Mover->Activate();
+								if (GetController() == GetWorld()->GetFirstPlayerController()) HUD->SetHealth(health);
 							}, 1, false
 						);
 					}, 1, false
@@ -527,7 +531,7 @@ void ARunner::AddToHealth(int newHealth) {
 			}, 1, false
 		);
 		
-		HUD->SetHealth(health);
+		//HUD->SetHealth(health);
 	}
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->SetHealth(health);
@@ -556,6 +560,8 @@ void ARunner::Respawn() {
 	SetActorHiddenInGame(false);
 	SetActorEnableCollision(true);
 	SetActorTickEnabled(true);
+	health = 100;	// Reset to full health
+	HUD->SetDead(false);
 }
 
 void ARunner::AddToScore(int newScore) {

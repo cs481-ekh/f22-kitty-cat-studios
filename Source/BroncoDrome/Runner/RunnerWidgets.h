@@ -28,6 +28,12 @@ public:		// Constructors
 	UPROPERTY(BlueprintReadOnly)
 	float speed = 0.0;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool dead = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	int timeLeft = 0;
+
 
 protected:	// Overrides
 
@@ -47,6 +53,10 @@ public:		// Interface
 
 	void SetHealth(int health);
 	void SetSpeed(float newSpeed); 
+
+	void SetDead(bool newDead);
+
+	void SetTimeLeft(int newTime);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnRenderLockOnReticle(FVector worldSpace, bool hide);

@@ -62,6 +62,8 @@ public:		// Interface
 	inline void SetScore(int score) { m_Widgets->OnSetScore(score); } // unused but it causes an error when I remove, so I'm leaving it 
 	inline void SetHealth(int health) { m_Widgets->SetHealth(health); }
 	inline void SetSpeed(float speed) { m_Widgets->SetSpeed(speed); }
+	inline void SetDead(bool newDead) { m_Widgets->SetDead(newDead); }
+	inline void SetTimeLeft(int newTime) { m_Widgets->SetTimeLeft(newTime); }
 	inline void RenderLockOnReticle(FVector worldSpace, bool hide) { m_Widgets->OnRenderLockOnReticle(worldSpace, hide); }
 
 public: 

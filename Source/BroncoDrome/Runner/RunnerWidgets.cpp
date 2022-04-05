@@ -20,8 +20,16 @@ void URunnerWidgets::increaseScoreVar(int score) {
 	playerScore += score;
 }
 
+void URunnerWidgets::SetDead(bool newDead) {
+	dead = newDead;
+}
+
 void URunnerWidgets::SetHealth(int newHealth) {
-	healthFloat = newHealth / 100; 
+	healthFloat = newHealth / 100.0; 
+}
+
+void URunnerWidgets::SetTimeLeft(int newTime) {
+	timeLeft = newTime;
 }
 
 void URunnerWidgets::SetSpeed(float newSpeed) {
