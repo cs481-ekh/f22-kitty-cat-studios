@@ -1,5 +1,10 @@
 Minutes of the team meetings go here:
 
+## Tuesday Section 1 Meeting 4/5
+Attendees: Ben, Joey, Saulo, Doug
+Absent: Ross
+9:40 - 10:25 (~45 minutes)
+
 ## Friday Group Meeting 4-1
 Attendees: All
 1:30 - 2:05 (~35 minutes)
