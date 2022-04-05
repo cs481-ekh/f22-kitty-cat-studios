@@ -28,4 +28,9 @@ void URunnerWidgets::SetSpeed(float newSpeed) {
 	speed = newSpeed; 
 }
 
+//Return the current player score
+int URunnerWidgets::getScore() {
+	return playerScore;
+}
+
 

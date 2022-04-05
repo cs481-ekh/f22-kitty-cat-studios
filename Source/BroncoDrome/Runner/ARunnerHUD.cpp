@@ -94,6 +94,7 @@ void ARunnerHUD::YouWin(){
 	Mouse->bShowMouseCursor = true;
 	Mouse->bEnableClickEvents = true;
 	Mouse->bEnableMouseOverEvents = true;
+	m_WinWidget->setScore(m_Widgets->getScore());
 	m_WinWidget->AddToViewport();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("You Win Function Reached"), *GetDebugName(this)));
 	UGameplayStatics::SetGamePaused(GetWorld(), true);

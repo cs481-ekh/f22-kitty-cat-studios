@@ -51,4 +51,8 @@ public:		// Interface
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnRenderLockOnReticle(FVector worldSpace, bool hide);
 
+	//Function to return the current player score
+	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)
+		int getScore();
+
 };

@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/VerticalBox.h"
+#include "Components/TextBlock.h"
+#include "Components/SlateWrapperTypes.h"
 #include "WinWidget.generated.h"
 
 UCLASS()
@@ -17,7 +20,15 @@ public:		// Constructors
 	// Instead, NativePreConstruct() and NativeConstruct() overrides to init variables
 	//UPROPERTY(BlueprintReadOnly)
 	//int Win = 0;
-
+	
+	//player score
+	UPROPERTY(BlueprintReadOnly)
+		int pscore = 0;
+	//Array for scores
+	TArray<FString> Result;
+	//Vertical box for the high score on the win screen
+	UVerticalBox* sBox;
+	UTextBlock* pText;
 
 protected:	// Overrides
 
@@ -33,4 +44,16 @@ public:		// Interface
 
     //UFUNCTION(BlueprintImplementableEvent, BlueprintCallable) // unused but it causes an error when I remove it 
     //void YouWin();      
+	
+	//Function to submit the new high score (if applicable)
+	UFUNCTION(BlueprintCallable, Category = UWinWidget)
+		void hScoreSubmit(FText initials);
+
+	//Function to set the current players score
+	UFUNCTION(BlueprintCallable, Category = UWinWidget)
+		void setScore(int score);
+
+	UFUNCTION(BlueprintCallable, Category = UWinWidget)
+		void showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText);
+
 };
