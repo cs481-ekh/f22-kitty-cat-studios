@@ -18,30 +18,38 @@ This document was made to tell the future teams what the powerups are like.
 First a warning: I AM NEW TO ALL OF THIS!
 
 The code in the PowerUpMaster class is most likly all done by the previous team. I copied it over from the orginal PowerUp.cpp and .h files to avoid breaking something.
-I had to move some things around to get stuff to work, public vs private and make the powerTypeIndex a UPROPERTY, but otherwise I did nothing dramatic there.
+I had to move some things around to get stuff to work and maybe add/remove some lines here and there. But otherwise I did nothing dramatic there.
+I left the orginal code incase we needed it.
 
 When creating a brand new powerup:
-	- Create a child of the PowerUpMasterClass Blueprint in Unreal Engine. Change only the mesh model and the PowerTypeIndex variable in the Class Defaults menu.
+	- Create a child of the PowerUpMasterClass Blueprint in Unreal Engine. Change only the mesh model and the PowerTypeIndex variable in the CLASS DEFAULTS menu.
 		Double click the child blueprint to open the menu up, don't use the right bottom side menu options under the World Outliner. 
 		If you place a power up and try to change that one's index from the side menu, it seems to change all, including other different powerups
 			on the field for some reason. I don't know why, it just did for me.
 		When you change the PowerTypeIndex variable in the Class Defaults menu it will set any Actor with this class to that power up and not change any others.
-		You can now drag the blueprint anywhere on the level to spawn the new powerup.
+		You can now drag the blueprint anywhere on the level to spawn the new powerup BUT ONLY FOR THAT 1 TIME AT THE START OF THE GAME.
 
 	- Next, follow the collision settings of the PowerUpMasterClass found in the UnrealEngine PowerUps folder. 
 		Again only in the Class Defaults menu, make sure the new blueprint follows the settings in the PowerUpMasterClass. Since it
 			was made as a child of the PowerUpMasterClass, your new blueprint should already be setup. I just included this in case it was not.
 			I had to follow the orignal code's setup to get it to work. It could be spawned and animated but not interacted with otherwise.
 
-	- Go to the PowerUpMaster.cpp file and create the new affect for the powerup.
+	- Go to the PowerUpMaster.cpp file and create the new effect for the powerup.
 		Find void APowerUpMaster::ExecuteFunction. In the switch statement, add the new case and call the needed functions for your powerup.
 		If you have not already, you might have to create those as well for whatever you are trying to do.
+		If you want, you can also updated the orginal PowerUp.ccp as well. Just remember to increase the range at the bottom.
+
+	- Now to create a new Spawner for your power up
+		Create a childe of the PowerUpSpawnerMaster Blueprint in Unreal Engine. Again change only the mesh model and the PowerTypeIndex variable in the CLASS DEFAULTS menu.
+		Change the PowerUp class variable to the new PowerUp.
+		You can now drag the blueprint anywhere on the level to spawn the new powerup INDEFINITELY in that spot.
+		The actual plateform model has no colision, so feel free to place them in the air for like any cool jumps or stuff.
 
 When placing any powerup on the level.
 	- For the strangest reason, the new power ups, despite not being really different from the original, float above where they are spawned.
-		If you place the power up on the ground level, it will fly up to a point where the Runner can not grab it. Again don't know why, the originals
+		If you place simpley the power up on the ground level, it will fly up to a point where the Runner can not grab it. Again don't know why, the originals
 			stay where they are.
-	- PowerUpSpawner is not yet completed but this (could) help with the flying issue
+	- The PowerUpSpawner (somehow) fixes the flying issue so they should not fly away when spawned. 
 		
 When creating a new projectile
 	- Make sure to set the Class Defaults in the runner for each new projectile

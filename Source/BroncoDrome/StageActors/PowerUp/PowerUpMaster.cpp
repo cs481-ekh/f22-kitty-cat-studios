@@ -64,8 +64,10 @@ void APowerUpMaster::HideActor()
 
 	SetActorHiddenInGame(hidden);
 
-	if (timeTracker <= 0)
+	if (timeTracker <= 0) {
 		SetActorEnableCollision(false);
+		Destroy(); //Remove actor when its time is up.
+	}
 
 	SetActorTickEnabled(!hidden);
 }
@@ -110,13 +112,9 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 		}
 
 		AParticleSpawner::SpawnParticle(BigPoof, GetActorLocation(), FVector(), 1.f); //Poof it is gone
+		Destroy(); //Remove actor when picked up
 	}
-	else
-	{
-		//Deals with relocating powerups
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Power spawned in wall, relocating..."), *GetDebugName(this)));
-		UpdateLocation(FVector(FMath::RandRange(ASpawner::GetBounds().Min.X, ASpawner::GetBounds().Max.X), FMath::RandRange(ASpawner::GetBounds().Min.Y, ASpawner::GetBounds().Max.Y), -70));
-	}
+
 }
 
 int APowerUpMaster::GetTimeTillExpiration()
@@ -124,17 +122,3 @@ int APowerUpMaster::GetTimeTillExpiration()
 	return 20 - (FDateTime::Now() - spawnTime).GetTotalSeconds(); //Don't touch this! I don't know what it does. The 20 value is not for the time
 }
 
-void APowerUpMaster::UpdateLocation(FVector point)
-{
-	//Basically resets everything on tp.
-	SetActorLocation(point, false, 0, ETeleportType::None);
-	timeTracker = 1.0f;
-	GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUpMaster::ShowExpiration, 9.0f, false);
-	spawnTime = FDateTime::Now();
-	RotationScale = 90.0f;
-
-	hidden = false;
-	SetActorHiddenInGame(hidden);
-	SetActorTickEnabled(!hidden);
-	SetActorEnableCollision(!hidden);
-}

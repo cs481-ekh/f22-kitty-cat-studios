@@ -11,7 +11,7 @@ class BRONCODROME_API APowerUpSpawner : public AActor
 public:
 	APowerUpSpawner();
 	
-	UPROPERTY(EditAnywhere, Category = "Spawing PowerUP")
+	UPROPERTY(EditAnywhere, Category = "Spawning PowerUP")
 		TSubclassOf<class APowerUpMaster> powerUpClass;
 
 	//Mesh
@@ -23,13 +23,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	FTimerHandle spawnTimeHandle;
+	float spawnTime = 35.0f; //Remember to adjust if you also adjusted the spawn time of the power ups!
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	APowerUpMaster* powerUp;
 
 	UFUNCTION()
-		void spawnPowerUp(FVector loc, FRotator rot);
-	
+		//void spawnPowerUp(APowerUpMaster* powerUp, FVector loc, FRotator rot);
+		void spawnPowerUp();
 
 private:
 	
