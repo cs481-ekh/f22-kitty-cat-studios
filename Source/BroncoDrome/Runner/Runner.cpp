@@ -476,11 +476,12 @@ void ARunner::AddToHealth(int newHealth) {
 	}
 	/* This is when a runner has lost all of its health */
 	else if (health <= 0) {
-		ChangeMIntensity(2);
+		ChangeMIntensity(0);
 		HUD->SetDead(true);
 		/* This is when the runner is an AI rather than the player */
 		if (GetController() != GetWorld()->GetFirstPlayerController()) {
 			lives--;	// The AI loses a life when they lose all their health (initially 3 lives)
+			ChangeMIntensity(2);
 			if (lives <= 0) {
 				Destroy();	// When an AI loses all three lives, they are permanently destroyed
 				return;
