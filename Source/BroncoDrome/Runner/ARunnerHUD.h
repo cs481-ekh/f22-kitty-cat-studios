@@ -8,6 +8,7 @@
 #include "RunnerWidgets.h"
 #include "PauseWidgets.h"
 #include "WinWidget.h"
+#include "LoseWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "ARunnerHUD.generated.h"
 
@@ -40,6 +41,10 @@ public:		// Blueprint variables
 	UPROPERTY(EditDefaultsOnly, Category = "WinWidget")
 	TSubclassOf<UUserWidget> WinWidgetClass;
 
+	//LoseBP Variables
+	UPROPERTY(EditDefaultsOnly, Category = "LoseWidget")
+	TSubclassOf<UUserWidget> LoseWidgetClass;
+
 	bool paused = false; 
 
 private:	// Members
@@ -48,6 +53,8 @@ private:	// Members
 	UPauseWidgets* m_PauseWidgets; 
 	//Widget for the win screen
 	UWinWidget* m_WinWidget;
+	//Widget for the Lose Screen
+	ULoseWidget* m_LoseWidget;
 
 public:		// Interface
 
@@ -62,4 +69,6 @@ public:
 	void HideHUD(bool option);
 	//For Win Condition
 	void YouWin();
+	//For Loss Condition
+	void YouLose();
 };

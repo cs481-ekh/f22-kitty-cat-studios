@@ -47,6 +47,14 @@ void ARunnerHUD::BeginPlay()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
 	}
+	//Lose Widget Enabling
+	if (LoseWidgetClass) {
+		m_LoseWidget = CreateWidget<ULoseWidget>(GetWorld(), LoseWidgetClass); 
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
+	}
 }
 
 void ARunnerHUD::DrawHUD()
