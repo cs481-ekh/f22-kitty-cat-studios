@@ -14,7 +14,7 @@ AAIActor::AAIActor(): ARunner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	ARunner::isAI = true;
 
 	//Mover = (UChaosWheeledVehicleMovementComponent*)GetMovementComponent();
 	//Mover->SetThrottleInput(1.0f);
@@ -229,14 +229,15 @@ void AAIActor::drawTargetLine(FVector location) {
 	FVector RayStart; //origin point of ray cast
 	FVector RayEnd;
 	RayStart = location; //set ray origin to match AI location
-	auto closest_runner = ARunnerObserver::GetClosestRunner(*this);
-	auto closest_runner_location = closest_runner->GetActorLocation();
-	ARunner::AimBlaster(closest_runner, GetWorld()->GetDeltaSeconds());
+	// auto closest_runner = ARunnerObserver::GetClosestRunner(*this);
+	auto player_runner = ARunnerObserver::GetPlayer(*this);
+	auto player_runner_location = player_runner->GetActorLocation();
+	ARunner::AimBlaster(player_runner, GetWorld()->GetDeltaSeconds());
 	// RayStart.Z += 50.f; //move ray up in actor
 	// RayStart.X += 200.f; //move ray away so it doesn't collide with self
 	FVector RayForwardVector = GetActorForwardVector(); //make sure line is coming from front
 	//RayEnd = ((RayForwardVector * 2000.f) + RayStart); //defines end point of line
-	RayEnd = closest_runner_location;
+	RayEnd = player_runner_location;
 	//FCollisionQueryParams RayCollisionParams; //to detect what the line is hitting
 	DrawDebugLine(GetWorld(), RayStart, RayEnd, FColor::Green, false, 0.03, 0, 5); //draws the ray line
 	//if (ActorLineTraceSingle(AIRayHit, RayStart, RayEnd, ECC_WorldStatic, RayCollisionParams)) {

@@ -100,6 +100,17 @@ ARunner* ARunnerObserver::GetClosestRunner(const ARunner& fromRunner, float maxD
 	return closestRunner;
 }
 
+ARunner* ARunnerObserver::GetPlayer(const ARunner& fromRunner) {
+	const std::set<ARunner*>& reg = SingletonInstance->m_RunnerRegister;
+	for (ARunner* toRunner : reg) {
+		if (toRunner == &fromRunner) continue;
+		if (!toRunner->isAI) {
+			return toRunner;
+		}
+	}
+	return nullptr;
+}
+
 float ARunnerObserver::GetRunnerDistance(const ARunner& fromRunner, const ARunner& toRunner)
 {
 	if (&fromRunner == &toRunner)
