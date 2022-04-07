@@ -31,8 +31,8 @@ public:
 	float max_angle = 195.0f;
 	FVector last_location;
 	float curr_speed = 0.0;
-	float max_speed = 450.0f;
-	float max_distance = 1050.0f; //was 450.0f
+	float max_speed = 600.0f; //was 450.0f
+	float max_distance = 1000.0f; //was 450.0f
 	float fwd_dist = 30.0f;
 	float car_distance = 1000.0f;
 	float dont_care_distance = 3000.0f;
@@ -44,7 +44,7 @@ public:
 
 	int shot_rate = 90; //interval for AI shots
 
-	bool defensive = true;
+	bool defensive = false;
 
 	AAIActor();
 

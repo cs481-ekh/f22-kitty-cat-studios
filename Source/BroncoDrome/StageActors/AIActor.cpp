@@ -131,13 +131,14 @@ FVector AAIActor::GetDirection() {
 		}
 	}
 
-	FHitResult* backward = Raycast(-GetActorForwardVector() * max_distance);
-	if (backward) {
-		if (backward->Distance + fwd_dist < closest) {
-			closest = backward->Distance + fwd_dist;
-			result = FVector::BackwardVector;
-		}
-	}
+	//FHitResult* backward = Raycast(-GetActorForwardVector() * max_distance);
+	//if (backward) {
+	//	if (backward->Distance + fwd_dist < closest) {
+	//		closest = backward->Distance + fwd_dist;
+	//		result = FVector::BackwardVector;
+	//	}
+	//}
+	//I want to leave out this vector for some testing
 
 	FHitResult* bright = Raycast((GetActorRightVector() + (-GetActorForwardVector())) * max_distance);
 	if (bright) {
@@ -154,8 +155,6 @@ FVector AAIActor::GetDirection() {
 			result = (FVector::LeftVector + FVector::BackwardVector);
 		}
 	}
-
-	 //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::SanitizeFloat(closest));
 	return result;
 }
 
@@ -176,11 +175,12 @@ void AAIActor::MoveDecision(FVector location) {
 	auto curr_direction = GetActorRotation();
 
 	auto forward_vec = GetActorForwardVector();
-		// ActorGetDistanceToCollision()
+	// ActorGetDistanceToCollision()
 	// ActorLineTraceSingle()
 	auto dir = GetDirection();
 	reverse = dir.Equals(FVector::ForwardVector);
 
+	//this vector may be coming from the center of objects, which is why runners used to continuously run into objects
 	if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
 
 		if (dir.Equals(FVector::ForwardVector)) {
@@ -189,9 +189,11 @@ void AAIActor::MoveDecision(FVector location) {
 		}
 		else if (dir.Equals(FVector::LeftVector)) {
 			Mover->SetSteeringInput(1.0f);
+			ThrottleInput(1.0f);
 		}
 		else if (dir.Equals(FVector::RightVector)) {
 			Mover->SetSteeringInput(-1.0f);
+			ThrottleInput(1.0f);
 		}
 		else if (dir.Equals((FVector::LeftVector + FVector::ForwardVector))) {
 			Mover->SetSteeringInput(1.0f);
@@ -202,22 +204,10 @@ void AAIActor::MoveDecision(FVector location) {
 			ThrottleInput(-1.0f);
 		}
 	}
-	//else if (FVector::Distance(player_location, curr_location) > dont_care_distance) {
-	//	Mover->SetSteeringInput(0.0f);
-	//}
-	//else if (FVector::Distance(player_location, curr_location) > car_distance) {
-
-	//	// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Towards"), *GetDebugName(this)));
-	//	// MoveTowardsPlayer(player_location, player_direction);
-	//	Mover->SetSteeringInput(0.0f);
-	//}
 	else if (defensive) {
 		MoveAwayFromPlayer(player_location, player_direction);
 	}
 	else {
-		//Marie commented out so they won't move away
-		//MoveAwayFromPlayer(player_location, player_direction);
-		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Away"), *GetDebugName(this)));
 		MoveTowardsPlayer(player_location, player_direction);
 	}
 
@@ -311,27 +301,41 @@ void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direc
 	}
 }
 
-void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direction)
-{
+void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direction) {
 	auto curr_location = GetActorLocation();
 	auto curr_direction = GetActorRotation();
 
-	// FOR RANDOM MOVES IF WE WANT
-	//FNavLocation ResultLocation = FNavLocation();
-	//auto radius = 500.0;
-	//NavSys->GetRandomReachablePointInRadius(player_location, radius, ResultLocation);
-	
-	auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(player_location, curr_location);
-	auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
-	if (turn_angle_manhattan >= min_angle && turn_angle_manhattan <= max_angle) {
-		Mover->SetSteeringInput(0.0f);
-		curr_turn = -curr_turn;
-	}
-	else {
-		Mover->SetSteeringInput(curr_turn);
-	}
-	last_angle = turn_angle_manhattan;
+	auto next_location = player_location - curr_location;
+
+	Mover->SetSteeringInput(next_location);
+	ThrottleInput(1.0f);
+
+	//Mover->SetSteeringInput(-1.0f);
+	//ThrottleInput(-1.0f);
 }
+
+//void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direction)
+//{
+//	auto curr_location = GetActorLocation();
+//	auto curr_direction = GetActorRotation();
+//
+//	auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(player_location, curr_location);
+//	auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
+//	/*if (turn_angle_manhattan >= min_angle && turn_angle_manhattan <= max_angle) {
+//		Mover->SetSteeringInput(0.0f);
+//		curr_turn = -curr_turn;
+//	}
+//	else {
+//		Mover->SetSteeringInput(curr_turn);
+//	}*/
+//	if (turn_angle_manhattan <= min_angle || turn_angle_manhattan >= max_angle) {
+//
+//	}
+//	else {
+//		Mover->SetSteeringInput(curr_turn);
+//	}
+//	last_angle = turn_angle_manhattan;
+//}
 
 void AAIActor::UpdateLocation(FVector point)
 {
