@@ -117,7 +117,8 @@ public: // Attributes
 	//ShotAbsorb
 	bool shotAbsorbOn;
 	int shotAbsorbHits;
-
+	//Designate Player-AI
+	bool isAI = false;
 	FTimerHandle RunnerStatusHandler;
 
 public: // Sound
