@@ -87,7 +87,7 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
 				break;
 			case 1:
-				dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f); //Speed
+				dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f); //Speed Which doesn't work and I don't know how to fix it
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
 				break;
 			case 2:
