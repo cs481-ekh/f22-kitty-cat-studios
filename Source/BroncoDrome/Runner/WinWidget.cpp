@@ -6,16 +6,11 @@
 void UWinWidget::NativePreConstruct()
 {
 	Super::NativePreConstruct();
-
-
 }
 
 void UWinWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	//Initialize player score
-	//pscore = 0;
 }
 
 void UWinWidget::hScoreSubmit(FText initials) 
@@ -109,7 +104,7 @@ void UWinWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText)
 	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 	if (FileManager.FileExists(*file)) {
 		if (FFileHelper::LoadFileToStringArray(Result, *file, FFileHelper::EHashOptions::None)) {
-			UE_LOG(LogTemp, Warning, TEXT("Score Array Loaded"));
+			//UE_LOG(LogTemp, Warning, TEXT("Score Array Loaded"));
 		}
 		else {
 			UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Did not Load Scores"));
@@ -123,7 +118,6 @@ void UWinWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText)
 	FString checkScore = Result[9].RightChop(4);
 	int checkInt = FCString::Atoi(*checkScore);
 	//IF the player score is at least larger than the lowest score
-	//pscore = 128; //use this for testing if you want, increment so that pscore is greater than the lowest high score
 	if (checkInt < pscore) {
 		//Need to make high score buttons visable and enabled
 		scoreBox->SetVisibility(ESlateVisibility::Visible);

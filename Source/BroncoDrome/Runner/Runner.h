@@ -181,6 +181,7 @@ public:
 //Displays for winning and losing
 private:
 	void WinScreen();
+	void LoseScreen();
 
 private: // Sound Functions
 	void PlaySound(USoundCue* cue);

@@ -194,6 +194,7 @@ void ARunner::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("LockOn", IE_Pressed, this, &ARunner::LockOn);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ARunner::Fire);
 	PlayerInputComponent->BindAction("WIN", IE_Pressed, this, &ARunner::WinScreen);
+	PlayerInputComponent->BindAction("LOSE", IE_Pressed, this, &ARunner::LoseScreen);
 	FInputActionBinding& pause = PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &ARunner::Pause); 
 	pause.bExecuteWhenPaused = true; 
 }
@@ -300,7 +301,7 @@ void ARunner::Hop()
 	if (AerialSM.IsInState(&AerialS_Grounded)) {
 		RootMesh->AddForce(GetActorUpVector() * HOP_FORCE_AMOUNT, FName("b_Root"), true);
 		PlaySound(jumpAudioCue);
-		AParticleSpawner::SpawnParticle(ParticleType::Poof, GetActorLocation(), FVector(), 0.3f);
+		//AParticleSpawner::SpawnParticle(ParticleType::Poof, GetActorLocation(), FVector(), 0.3f);
 	} 
 }
 
@@ -467,6 +468,10 @@ void ARunner::Pause() {
 
 void ARunner::WinScreen(){
 	HUD->YouWin();
+}
+
+void ARunner::LoseScreen() {
+	HUD->YouLose();
 }
 
 void ARunner::AddToHealth(int newHealth) {

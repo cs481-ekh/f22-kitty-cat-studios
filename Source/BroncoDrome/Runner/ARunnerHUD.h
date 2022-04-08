@@ -23,6 +23,21 @@ class BRONCODROME_API ARunnerHUD : public AHUD
 public:	// Constructors
 
 	ARunnerHUD();
+	UPROPERTY(EditDefaultsOnly, Category = "RunnerWidgets")
+		TSubclassOf<UUserWidget> RunnerWidgetsClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Pause")
+		TSubclassOf<UUserWidget> PauseWidgetsClass;
+
+	//WinBP Variables
+	UPROPERTY(EditDefaultsOnly, Category = "WinWidget")
+		TSubclassOf<UUserWidget> WinWidgetClass;
+
+	//LoseBP Variables
+	UPROPERTY(EditDefaultsOnly, Category = "LoseWidget")
+		TSubclassOf<UUserWidget> LoseWidgetClass;
+	UPROPERTY()
+		UWorld* world;
 
 protected:	// Overloads
 
@@ -31,30 +46,21 @@ protected:	// Overloads
 
 public:		// Blueprint variables
 
-	UPROPERTY(EditDefaultsOnly, Category = "RunnerWidgets")
-	TSubclassOf<UUserWidget> RunnerWidgetsClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Pause")
-	TSubclassOf<UUserWidget> PauseWidgetsClass;
-
-	//WinBP Variables
-	UPROPERTY(EditDefaultsOnly, Category = "WinWidget")
-	TSubclassOf<UUserWidget> WinWidgetClass;
-
-	//LoseBP Variables
-	UPROPERTY(EditDefaultsOnly, Category = "LoseWidget")
-	TSubclassOf<UUserWidget> LoseWidgetClass;
-
-	bool paused = false; 
+	UPROPERTY()
+		bool paused = false; 
 
 private:	// Members
 
-	URunnerWidgets* m_Widgets;
-	UPauseWidgets* m_PauseWidgets; 
+	UPROPERTY()
+		URunnerWidgets* m_Widgets;
+	UPROPERTY()
+		UPauseWidgets* m_PauseWidgets; 
 	//Widget for the win screen
-	UWinWidget* m_WinWidget;
+	UPROPERTY()
+		UWinWidget* m_WinWidget;
 	//Widget for the Lose Screen
-	ULoseWidget* m_LoseWidget;
+	UPROPERTY()
+		ULoseWidget* m_LoseWidget;
 
 public:		// Interface
 

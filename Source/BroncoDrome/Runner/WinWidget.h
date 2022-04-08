@@ -25,10 +25,13 @@ public:		// Constructors
 	UPROPERTY(BlueprintReadOnly)
 		int pscore = 0;
 	//Array for scores
-	TArray<FString> Result;
+	UPROPERTY()
+		TArray<FString> Result;
 	//Vertical box for the high score on the win screen
-	UVerticalBox* sBox;
-	UTextBlock* pText;
+	UPROPERTY()
+		UVerticalBox* sBox;
+	UPROPERTY()
+		UTextBlock* pText;
 
 protected:	// Overrides
 

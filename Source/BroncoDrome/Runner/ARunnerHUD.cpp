@@ -13,6 +13,11 @@ ARunnerHUD::ARunnerHUD()
 void ARunnerHUD::BeginPlay()
 {
 	Super::BeginPlay();
+	paused = false;
+	world = GetWorld();
+	if(world == NULL)
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not load world"));
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
 
 	if (RunnerWidgetsClass)
 	{
@@ -41,7 +46,9 @@ void ARunnerHUD::BeginPlay()
 	}
 	//Enable Win Widget
 	if (WinWidgetClass) {
-		m_WinWidget = CreateWidget<UWinWidget>(GetWorld(), WinWidgetClass); 
+		m_WinWidget = CreateWidget<UWinWidget>(GetWorld(), WinWidgetClass);
+		if(m_WinWidget == NULL)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Win Widget not verified"));
 	}
 	else
 	{
@@ -50,6 +57,8 @@ void ARunnerHUD::BeginPlay()
 	//Lose Widget Enabling
 	if (LoseWidgetClass) {
 		m_LoseWidget = CreateWidget<ULoseWidget>(GetWorld(), LoseWidgetClass); 
+		if(m_LoseWidget == NULL)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Lose Widget not verified"));
 	}
 	else
 	{
@@ -97,13 +106,26 @@ void ARunnerHUD::Pause() {
 void ARunnerHUD::YouWin(){
 	//SHOULD display win widget, is causing an error
 	class APlayerController* Mouse;
-	Mouse = GetWorld()->GetFirstPlayerController();
-	paused = true; 
+	Mouse = world->GetFirstPlayerController();
+	paused = true;
 	Mouse->bShowMouseCursor = true;
 	Mouse->bEnableClickEvents = true;
 	Mouse->bEnableMouseOverEvents = true;
 	m_WinWidget->setScore(m_Widgets->getScore());
 	m_WinWidget->AddToViewport();
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("You Win Function Reached"), *GetDebugName(this)));
-	UGameplayStatics::SetGamePaused(GetWorld(), true);
+	UGameplayStatics::SetGamePaused(world, true);
+}
+
+void ARunnerHUD::YouLose() 
+{
+	class APlayerController* Mouse;
+	Mouse = world->GetFirstPlayerController();
+	paused = true;
+	Mouse->bShowMouseCursor = true;
+	Mouse->bEnableClickEvents = true;
+	Mouse->bEnableMouseOverEvents = true;
+	m_LoseWidget->setScore(m_Widgets->getScore());
+	m_LoseWidget->AddToViewport();
+	UGameplayStatics::SetGamePaused(world, true);
 }
