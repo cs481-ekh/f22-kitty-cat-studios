@@ -36,12 +36,6 @@ void APowerUpMaster::Tick(float DeltaTime)
 
 void APowerUpMaster::Animate(float DeltaTime)
 {
-	// Bob object up and down over time
-	if (timeTracker > 0)
-		AddActorLocalOffset(FVector(0.f, 0.f, FGenericPlatformMath::Cos(GetGameTimeSinceCreation() * BobTimeScale) * BobDistanceScale));
-	else
-		AddActorLocalOffset(FVector(0.f, 0.f, 9.0f));
-
 	// Rotate object over time
 	AddActorLocalRotation(FRotator(0.f, RotationScale * DeltaTime, 0.f));
 }

@@ -17,11 +17,12 @@ ASpawner::ASpawner()
 void ASpawner::BeginPlay()
 {
 	Super::BeginPlay();
-
+	/* Disabled but kept
 	for(int x = 0; x < amountOfPowerups; x++) //Default is set to 6
 		powerups.Add(GetWorld()->SpawnActor<APowerUp>(ActorToSpawn, FVector(0,0,-500), FRotator(0,0,0))); //Adds to array
 
 	GetWorldTimerManager().SetTimer(SpawnerTimerHandler, this, &ASpawner::DetermineRandomLocation, 4.0f, true);
+	*/
 }
 
 // Called every frame
