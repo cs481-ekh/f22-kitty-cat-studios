@@ -1,5 +1,17 @@
 Minutes of the team meetings go here:
 
+## Friday Group Meeting 4/8
+Attendees: Everyone (both sections)
+Absent: None
+1:30pm - 2:05pm
+Scribe: Ben
+
+Went over what everyone did over the past week,
+whether or not the AI should be able to pick up
+power-ups, how the runner file is formatted. We
+looked at the minimal viable product and planned
+to tackle the remaining issues.
+
 ## Tuesday Section 1 Meeting 4/5
 Attendees: Ben, Joey, Saulo, Doug
 Absent: Ross
