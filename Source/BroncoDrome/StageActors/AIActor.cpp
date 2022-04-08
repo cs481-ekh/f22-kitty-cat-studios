@@ -302,12 +302,15 @@ void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direc
 }
 
 void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direction) {
-	auto curr_location = GetActorLocation();
+
+	/*auto curr_location = GetActorLocation();
+
 	auto curr_direction = GetActorRotation();
 
 	auto next_location = player_location - curr_location;
 
-	Mover->SetSteeringInput(next_location);
+	Mover->SetSteeringInput(next_location);*/
+
 	ThrottleInput(1.0f);
 
 	//Mover->SetSteeringInput(-1.0f);
