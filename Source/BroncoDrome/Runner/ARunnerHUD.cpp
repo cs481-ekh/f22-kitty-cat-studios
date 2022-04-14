@@ -1,4 +1,4 @@
-// // Copyright (C) Dromies 2021. All Rights Reserved.
+// // Copyright (C) Dromies 2021 + Team Gregg 2022. All Rights Reserved.
 
 
 #include "ARunnerHUD.h"
@@ -15,10 +15,12 @@ void ARunnerHUD::BeginPlay()
 	Super::BeginPlay();
 	paused = false;
 	world = GetWorld();
+	//Checks to make sure the 
 	if(world == NULL)
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not load world"));
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
 
+	//Checks for each widget present in the HUD that they are loaded
 	if (RunnerWidgetsClass)
 	{
 		m_Widgets = CreateWidget<URunnerWidgets>(GetWorld(), RunnerWidgetsClass);
@@ -85,18 +87,24 @@ void ARunnerHUD::Pause() {
 	
 	if (!paused) {
 		paused = true; 
+		//Pauses game
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		//Reveals mouse and enables clicking
 		Mouse->bShowMouseCursor = true;
 		Mouse->bEnableClickEvents = true;
 		Mouse->bEnableMouseOverEvents = true;
+		//Adds pause menu to screen
 		m_PauseWidgets->AddToViewport();
 	}
 	else {
 		paused = false; 
+		//Unpauses game
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
+		//Hides mouse and disables clicking
 		Mouse->bShowMouseCursor = false;
 		Mouse->bEnableClickEvents = false;
 		Mouse->bEnableMouseOverEvents = false;
+		//Removes the pause menu
 		m_PauseWidgets->RemoveFromViewport();
 	}
 	
@@ -108,12 +116,13 @@ void ARunnerHUD::YouWin(){
 	class APlayerController* Mouse;
 	Mouse = world->GetFirstPlayerController();
 	paused = true;
+	//Reveals mouse and enables clicking
 	Mouse->bShowMouseCursor = true;
 	Mouse->bEnableClickEvents = true;
 	Mouse->bEnableMouseOverEvents = true;
-	m_WinWidget->setScore(m_Widgets->getScore());
-	m_WinWidget->AddToViewport();
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("You Win Function Reached"), *GetDebugName(this)));
+	m_WinWidget->setScore(m_Widgets->getScore()); //Sets score for adding to the high scores tab
+	m_WinWidget->AddToViewport(); //Displays the win screen
+	//Pauses Game
 	UGameplayStatics::SetGamePaused(world, true);
 }
 
@@ -122,10 +131,27 @@ void ARunnerHUD::YouLose()
 	class APlayerController* Mouse;
 	Mouse = world->GetFirstPlayerController();
 	paused = true;
+	//Reveals mouse and enables clicking
 	Mouse->bShowMouseCursor = true;
 	Mouse->bEnableClickEvents = true;
 	Mouse->bEnableMouseOverEvents = true;
-	m_LoseWidget->setScore(m_Widgets->getScore());
-	m_LoseWidget->AddToViewport();
-	UGameplayStatics::SetGamePaused(world, true);
+	m_LoseWidget->setScore(m_Widgets->getScore()); //Sets score to display on the lose screen
+	m_LoseWidget->AddToViewport(); //Displays the lose screen
+	UGameplayStatics::SetGamePaused(world, true); //Pauses Game
 }
+
+/* Rough details for adding a new widget to the HUD:
+* 1. Create a .h and .cpp file for your desired widget (I.E. WinWidget.cpp and WinWidget.h)
+*  		(PauseWidgets files are a good starting point, WinWidget has a more complicated menu)
+* 2. #include the .h file in ARunnerHUD.h
+* 3. In ARunnerHUD.cpp (this file), check that the widget is loading by adding 
+* 		the "if(WidgetName)..." block.
+* 4. From here on, you'll need to go into Unreal. 
+*		Specifically Content/Blueprints/UI, and create a new widget
+* 5. You'll need to reparent it to itself 
+*		-> Open In Editor (double click) -> File -> Reparent Blueprint
+* 6. Recompile and build the game
+* 7. Open RunnerHUD. On the right column, find your widget and use the dropdown menu
+* 		To select the proper widget
+* With that, a new widget should be successfully made and implemented!
+*/
