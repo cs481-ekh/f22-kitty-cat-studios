@@ -466,10 +466,12 @@ void ARunner::Pause() {
 	AddToHealth(-40);	// Temporarily make it so that pausing hurts you a lot for testing purposes ;)))
 }
 
+//Callable function to display on the HUD upon reaching win condition
 void ARunner::WinScreen(){
 	HUD->YouWin();
 }
 
+//Callable function to display on the HUD upon reaching lose condition
 void ARunner::LoseScreen() {
 	HUD->YouLose();
 }
@@ -574,12 +576,9 @@ void ARunner::AddToScore(int newScore) {
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		score += newScore;
 		HUD->AddToScore(newScore);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Added To Score."), *GetDebugName(this)));
 	} 
-	//WIN CONDITION
+	//WIN CONDITION (Adjust for testing purposes)
 	if (score >= 5000){
-		//SetGlobalTimeDilation(2);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Win!!"), *GetDebugName(this)));
 		HUD->YouWin();
 	}
 }
