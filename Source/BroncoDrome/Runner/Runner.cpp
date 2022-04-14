@@ -116,7 +116,7 @@ ARunner::ARunner()
 
 void ARunner::BeginPlay()
 {
-	ChangeMIntensity(0);
+	ChangeMIntensity(1);
 	Super::BeginPlay();
 	SetActorHiddenInGame(true);
 	DisableInput(GetWorld()->GetFirstPlayerController());
@@ -351,7 +351,7 @@ void ARunner::Fire()
 
 	//check for Kill Ball
 	if (killBallOn) {
-		
+		ChangeMIntensity(2);
 		AKillBallProjectile* projectile = World->SpawnActor<AKillBallProjectile>(KillBallProjectileClass, loc, rot, SpawnParams); // Spawn KillBal
 		
 		//Fires shot and turn off if we run out of shots
@@ -375,6 +375,7 @@ void ARunner::Fire()
 		}
 	}
 	else { //Fire a regular orb ball
+		ChangeMIntensity(1);
 		AOrbProjectile*  projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams); //Regular orb
 		if (projectile) {
 			//Projectile variables
@@ -435,7 +436,7 @@ void ARunner::AimBlaster(const ARunner* targetRunner, const float deltaTime)
 
 	if (targetRunner)
 	{
-		ChangeMIntensity(1);
+		//ChangeMIntensity(1);
 		// Aim blaster towards target runner
 		const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
 			BlasterBase->GetComponentLocation(), targetRunner->GetActorLocation());
@@ -447,7 +448,7 @@ void ARunner::AimBlaster(const ARunner* targetRunner, const float deltaTime)
 	}
 	else
 	{
-		ChangeMIntensity(0);
+		//ChangeMIntensity(0);
 		// Aim blaster towards front of runner
 		blasterSlerpedLookAt = UKismetMathLibrary::RLerp(BlasterBase->GetComponentRotation(),
 			GetActorForwardVector().Rotation(), LOCK_ON_BLASTER_RPS * deltaTime, true);
@@ -468,11 +469,13 @@ void ARunner::Pause() {
 
 //Callable function to display on the HUD upon reaching win condition
 void ARunner::WinScreen(){
+	ChangeMIntensity(2);
 	HUD->YouWin();
 }
 
 //Callable function to display on the HUD upon reaching lose condition
 void ARunner::LoseScreen() {
+	ChangeMIntensity(0);
 	HUD->YouLose();
 }
 
@@ -483,7 +486,7 @@ void ARunner::AddToHealth(int newHealth) {
 	}
 	/* This is when a runner has lost all of its health */
 	else if (health <= 0) {
-		ChangeMIntensity(0);
+		
 		HUD->SetDead(true);
 		/* This is when the runner is an AI rather than the player */
 		if (GetController() != GetWorld()->GetFirstPlayerController()) {
@@ -493,6 +496,9 @@ void ARunner::AddToHealth(int newHealth) {
 				Destroy();	// When an AI loses all three lives, they are permanently destroyed
 				return;
 			}	// Leave the function immediately to prevent trying to respawn a runner that should no longer exist
+		}
+		else {
+			ChangeMIntensity(0);
 		}
 		FVector CurrentLocation = GetActorLocation();	// We want to keep track of where the runner was when it died
 
@@ -584,18 +590,20 @@ void ARunner::AddToScore(int newScore) {
 }
 //PowerUps can call this to change player damage
 void ARunner::AddToDamage(int addedDamage) {
-	ChangeMIntensity(1);
+	//ChangeMIntensity(1);
 	playerDamage += addedDamage;
 }
 
 //PowerUps call this to use ShotAbsorb and add hits
 void ARunner::obstainShotAbsorbPower(int hits) {
+	ChangeMIntensity(2);
 	shotAbsorbOn = true;
 	shotAbsorbHits = shotAbsorbHits + hits; //This powerup stacks
 }
 
 //PowerUps call this to use KillBall and add hits
 void ARunner::obstainKillBallPower(int hits) {
+	ChangeMIntensity(2);
 	killBallOn = true;
 	killBallShots = killBallShots + hits; //This powerup indeed stacks
 }
