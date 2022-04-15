@@ -110,6 +110,8 @@ public: // Attributes
 	int health = 100; // out of 100
 	int lives = 3;	// out of 3
 	int playerDamage = 20; //Default damage
+	int gameTime = 180; //Time per level, in seconds
+	FTimerHandle GameTimeHandler; //For tick
 
 	//KillBall
 	bool killBallOn;
@@ -165,7 +167,8 @@ private:
 public:
 	bool IsGrounded();
 	void FixRotation();
-	
+	void DecrementGameTime();
+
 	void AddToScore(int newScore);  //Changes score
 
 	//Power ups

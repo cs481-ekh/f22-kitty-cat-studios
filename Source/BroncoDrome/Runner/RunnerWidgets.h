@@ -34,6 +34,9 @@ public:		// Constructors
 	UPROPERTY(BlueprintReadOnly)
 	int timeLeft = 0;
 
+	UPROPERTY(BlueprintReadOnly)
+	int gameTimeRemaining = 180; //In seconds, per level
+
 
 protected:	// Overrides
 
@@ -57,6 +60,7 @@ public:		// Interface
 	void SetDead(bool newDead);
 
 	void SetTimeLeft(int newTime);
+	void SetGameTimeRemaining(int currentGameTime);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnRenderLockOnReticle(FVector worldSpace, bool hide);

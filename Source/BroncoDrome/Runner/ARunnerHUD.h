@@ -70,6 +70,7 @@ public:		// Interface
 	inline void SetSpeed(float speed) { m_Widgets->SetSpeed(speed); }
 	inline void SetDead(bool newDead) { m_Widgets->SetDead(newDead); }
 	inline void SetTimeLeft(int newTime) { m_Widgets->SetTimeLeft(newTime); }
+	inline void SetGameTimeRemaining(int currentGameTime) {m_Widgets->SetGameTimeRemaining(currentGameTime);}
 	inline void RenderLockOnReticle(FVector worldSpace, bool hide) { m_Widgets->OnRenderLockOnReticle(worldSpace, hide); }
 
 public: 

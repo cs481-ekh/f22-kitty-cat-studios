@@ -36,6 +36,10 @@ void URunnerWidgets::SetSpeed(float newSpeed) {
 	speed = newSpeed; 
 }
 
+void URunnerWidgets::SetGameTimeRemaining(int newTime){
+	gameTimeRemaining = newTime;
+}
+
 //Return the current player score
 int URunnerWidgets::getScore() {
 	return playerScore;

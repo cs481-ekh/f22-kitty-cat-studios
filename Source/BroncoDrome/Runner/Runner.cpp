@@ -132,6 +132,8 @@ void ARunner::BeginPlay()
 
 	// Add to RunnerObserver register
 	ARunnerObserver::RegisterRunner(*this);
+
+
 }
 
 void ARunner::ReinstateAll()
@@ -139,6 +141,10 @@ void ARunner::ReinstateAll()
 	SetActorHiddenInGame(false);
 	EnableInput(GetWorld()->GetFirstPlayerController());
 	HUD->HideHUD(false);
+
+	//Commence game timer
+	GetWorld()->GetTimerManager().SetTimer(
+		GameTimeHandler, this, &ARunner::DecrementGameTime, 1, false);
 }
 
 void ARunner::InitStateMachines()
@@ -175,10 +181,18 @@ void ARunner::Tick(float DeltaTime)
 			speedUpdateTimer = 0; 
 		}
 	}
-		
+	
 	// Tick state machines
 	AerialSM.TickCurrentState(DeltaTime);
 	MovementSM.TickCurrentState(DeltaTime);
+}
+
+void ARunner::DecrementGameTime()
+{
+	gameTime--;
+	HUD->SetGameTimeRemaining(gameTime);
+
+	gameTime >= 1 ? GetWorld()->GetTimerManager().SetTimer(GameTimeHandler, this, &ARunner::DecrementGameTime, 1, false) : LoseScreen();
 }
 
 void ARunner::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
