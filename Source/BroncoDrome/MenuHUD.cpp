@@ -14,6 +14,10 @@ AMenuHUD::AMenuHUD() {
 	BroncyImage = BroncyImagePath.Object; //This is the image for the main menu
 	static ConstructorHelpers::FObjectFinder<UTexture2D> HScoreImagePath(TEXT("Texture2D'/Game/Assets/Screenshots/hscore.hscore'"));
 	HScoreImage = HScoreImagePath.Object; //This is the image for the high score screen
+	static ConstructorHelpers::FObjectFinder<UTexture2D> Tutorial1Path(TEXT("Texture2D'/Game/Assets/Screenshots/tut1.tut1'"));
+	tut1Image = Tutorial1Path.Object; //Image for the first tutorial page
+	static ConstructorHelpers::FObjectFinder<UTexture2D> Tutorial2Path(TEXT("Texture2D'/Game/Assets/Screenshots/tut2.tut2'"));
+	tut2Image = Tutorial2Path.Object; //Image for the second tutorial page
 }
 
 void AMenuHUD::BeginPlay()
@@ -31,12 +35,26 @@ void AMenuHUD::ShowMenu(int i)
 	mainOrHScore = i; //SMainMenuWidget needs to know what this number is -> 0=main menu | 1=high score
 	if (GEngine && GEngine->GameViewport)
 	{
+		switch (i) {
+			case 1:
+				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(HScoreImage); //This will load SMainMenuWidget with the high score image
+				break;
+			case 2:
+				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(tut1Image); //This will load SMainMenuWidget with the first tutorial image
+				break;
+			case 3:
+				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(tut2Image); //This will load SMainMenuWidget with the second tutorial image
+				break;
+			default:
+				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(BroncyImage); //This will load SMainMenuWidget with the main menu image
+				break;
+		}
 		//IF we want to show the main menu
-		if(!i)
-			MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(BroncyImage); //This will load SMainMenuWidget with the main menu image
+		//if(!i)
+			//MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(BroncyImage); //This will load SMainMenuWidget with the main menu image
 		//ELSE IF we want show the high score screen
-		else if (i)
-			MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(HScoreImage); //This will load SMainMenuWidget with the high score image
+		//else if (i)
+			//MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(HScoreImage); //This will load SMainMenuWidget with the high score image
 		GEngine->GameViewport->AddViewportWidgetContent(SAssignNew(MenuWidgetContainer, SWeakWidget).PossiblyNullContent(MenuWidget.ToSharedRef()));
 
 		if (PlayerOwner)

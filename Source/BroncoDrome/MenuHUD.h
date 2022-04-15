@@ -29,7 +29,12 @@ public:
 
 private:
 	UPROPERTY()
-	UTexture2D* BroncyImage;
-	UTexture2D* HScoreImage;
+		UTexture2D* BroncyImage;
+	UPROPERTY()
+		UTexture2D* HScoreImage;
+	UPROPERTY()
+		UTexture2D* tut1Image;
+	UPROPERTY()
+		UTexture2D* tut2Image;
 	
 };

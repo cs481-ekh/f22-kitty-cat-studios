@@ -32,6 +32,8 @@ public:
 	void OnHScoreDebug(const FText& InText, ETextCommit::Type);
 	FReply OnReturnToMainClicked() const;
 	void BuildMenu(int hOrM);
+	FReply OnTutClicked() const;
+	FReply OnNextTutClicked() const;
 	 
 	TArray<FString> Result;
 	TWeakObjectPtr<class AMenuHUD> OwningHUD;
