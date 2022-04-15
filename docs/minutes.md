@@ -1,5 +1,39 @@
 Minutes of the team meetings go here:
 
+## Friday Group Meeting 4/15
+Attendees: Everyone (both sections)
+Asbsent: None
+1:30pm - 
+Scribe: Ben
+
+Saulo: Updated map objects to simplify 
+
+Ross: Want to update the HUD to show how 
+much time is left and how many enemies left
+
+Marie: Want to finish the offensive movement 
+and fix manhattan distance, adding personalities
+to different enemies
+
+Joey: Add instructions for new widgets for next
+team, implemented game timer initially set to 
+3 minutes, resets each match. Wants to add a 
+skip for the intro cutscene.
+
+Doug: Wrote new music and added implemented it
+added dynamic music to the other maps. Want to
+playtest more.
+
+DJ: Worked on fine-tuning AI targeting wants to
+help Marie with the AI personalities.
+
+Ben: Added new main menu screen, added tutorial
+screens. Is going to work on getting progressive
+levels working and better scoring.
+
+We also talked about the showcase and the github
+pages assignment as well as the handoff.
+
 ## Friday Group Meeting 4/8
 Attendees: Everyone (both sections)
 Absent: None
