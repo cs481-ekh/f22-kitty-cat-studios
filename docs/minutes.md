@@ -3,7 +3,7 @@ Minutes of the team meetings go here:
 ## Friday Group Meeting 4/15
 Attendees: Everyone (both sections)
 Asbsent: None
-1:30pm - 
+1:30pm - 2:10pm
 Scribe: Ben
 
 Saulo: Updated map objects to simplify 
