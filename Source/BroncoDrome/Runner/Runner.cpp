@@ -122,6 +122,7 @@ void ARunner::BeginPlay()
 	DisableInput(GetWorld()->GetFirstPlayerController());
 	HUD = Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	HUD->HideHUD(true);
+	HUD->SetEnemiesLeft(3);
 	GetWorldTimerManager().SetTimer(RunnerStatusHandler, this, &ARunner::ReinstateAll, 12.0f, false);
 
 	InitStateMachines();
@@ -478,7 +479,7 @@ void ARunner::AimBlaster(const ARunner* targetRunner, const float deltaTime)
 void ARunner::Pause() {
 	ChangeMIntensity(0);
 	HUD->Pause(); 
-	AddToHealth(-40);	// Temporarily make it so that pausing hurts you a lot for testing purposes ;)))
+	//AddToHealth(-40);	// Temporarily make it so that pausing hurts you a lot for testing purposes ;)))
 }
 
 //Callable function to display on the HUD upon reaching win condition
@@ -500,19 +501,35 @@ void ARunner::AddToHealth(int newHealth) {
 	}
 	/* This is when a runner has lost all of its health */
 	else if (health <= 0) {
-		
+		//KillBall PowerUp
+		killBallOn = false;
+		killBallShots = 0;
+		//ShotAbsorb PowerUp
+		shotAbsorbOn = false;
+		shotAbsorbHits = 0;
 		HUD->SetDead(true);
 		/* This is when the runner is an AI rather than the player */
 		if (GetController() != GetWorld()->GetFirstPlayerController()) {
 			lives--;	// The AI loses a life when they lose all their health (initially 3 lives)
 			ChangeMIntensity(2);
 			if (lives <= 0) {
+				//HUD->DecrementEnemyCounter();	// Decrease the amount of enemies left to kill by 1 and if they are all dead, you win
+				/*GameInstanceForGlobalVariables* GI = Cast<GameInstanceForGlobalVariables>(UGameplayStatics::GetGameInstance(GetWorld()));
+				if (GI) {
+					GI::setEnemiesLeft(3);
+				}*/
+				HUD->DecrementEnemiesLeft();
 				Destroy();	// When an AI loses all three lives, they are permanently destroyed
+				
 				return;
 			}	// Leave the function immediately to prevent trying to respawn a runner that should no longer exist
 		}
 		else {
+			lives--;
 			ChangeMIntensity(0);
+			if (lives <= 0) {
+				LoseScreen();
+			}
 		}
 		FVector CurrentLocation = GetActorLocation();	// We want to keep track of where the runner was when it died
 

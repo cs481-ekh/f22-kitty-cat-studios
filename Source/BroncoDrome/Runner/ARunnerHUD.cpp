@@ -6,6 +6,8 @@
 
 #include "GameFramework/GameUserSettings.h"
 
+int anemoniesLeft = 0;
+
 ARunnerHUD::ARunnerHUD()
 {
 
@@ -109,6 +111,15 @@ void ARunnerHUD::Pause() {
 		m_PauseWidgets->RemoveFromViewport();
 	}
 	
+}
+
+void ARunnerHUD::SetAnemonies(int anemonies) {
+	anemoniesLeft = anemonies;
+}
+
+void ARunnerHUD::DecrementAnemonies() {
+	anemoniesLeft--;
+	if (anemoniesLeft == 0) YouWin();
 }
 
 //Win Condition Call

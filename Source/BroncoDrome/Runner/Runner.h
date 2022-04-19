@@ -111,6 +111,7 @@ public: // Attributes
 	int lives = 3;	// out of 3
 	int playerDamage = 20; //Default damage
 	int gameTime = 180; //Time per level, in seconds
+	int AIToKill = 3;
 	FTimerHandle GameTimeHandler; //For tick
 
 	//KillBall
@@ -168,7 +169,8 @@ public:
 	bool IsGrounded();
 	void FixRotation();
 	void DecrementGameTime();
-
+	void DecrementAILeftToKill();
+	void CheckForGameOver();
 	void AddToScore(int newScore);  //Changes score
 
 	//Power ups

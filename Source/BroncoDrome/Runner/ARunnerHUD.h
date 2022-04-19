@@ -62,6 +62,8 @@ private:	// Members
 	UPROPERTY()
 		ULoseWidget* m_LoseWidget;
 
+		
+
 public:		// Interface
 
 	inline void AddToScore(int score) { m_Widgets->increaseScoreVar(score); } // use this one
@@ -70,6 +72,9 @@ public:		// Interface
 	inline void SetSpeed(float speed) { m_Widgets->SetSpeed(speed); }
 	inline void SetDead(bool newDead) { m_Widgets->SetDead(newDead); }
 	inline void SetTimeLeft(int newTime) { m_Widgets->SetTimeLeft(newTime); }
+	inline void DecrementLivesLeft() { m_Widgets->DecrementLivesLeft(); }
+	inline void SetEnemiesLeft(int newAmount) { m_Widgets->SetEnemiesLeft(newAmount); SetAnemonies(newAmount); }
+	inline void DecrementEnemiesLeft(void) { m_Widgets->DecrementEnemiesLeft(); DecrementAnemonies(); }
 	inline void SetGameTimeRemaining(int currentGameTime) {m_Widgets->SetGameTimeRemaining(currentGameTime);}
 	inline void RenderLockOnReticle(FVector worldSpace, bool hide) { m_Widgets->OnRenderLockOnReticle(worldSpace, hide); }
 
@@ -80,4 +85,6 @@ public:
 	void YouWin();
 	//For Loss Condition
 	void YouLose();
+	void SetAnemonies(int anemonies);
+	void DecrementAnemonies();
 };

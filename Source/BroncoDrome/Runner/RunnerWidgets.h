@@ -37,6 +37,12 @@ public:		// Constructors
 	UPROPERTY(BlueprintReadOnly)
 	int gameTimeRemaining = 180; //In seconds, per level
 
+	UPROPERTY(BlueprintReadOnly)
+		int enemiesLeft = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+		int livesLeft = 3;
+
 
 protected:	// Overrides
 
@@ -61,6 +67,13 @@ public:		// Interface
 
 	void SetTimeLeft(int newTime);
 	void SetGameTimeRemaining(int currentGameTime);
+
+	void DecrementLivesLeft(void);
+
+	void SetEnemiesLeft(int newAmount);
+	void DecrementEnemiesLeft(void);
+
+	int getAnemoniesLeft();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnRenderLockOnReticle(FVector worldSpace, bool hide);

@@ -44,6 +44,7 @@ protected:	// Overrides
 private:	// Members
 
     //UFUNCTION(BlueprintImplementableEvent, BlueprintCallable) // unused but it causes an error when I remove it 
+	int enemiesLeft = 3;
 	
 
 public:		// Interface
@@ -61,5 +62,9 @@ public:		// Interface
 
 	UFUNCTION(BlueprintCallable, Category = UWinWidget)
 		void showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText);
+
+	void decrementEnemiesLeft();
+
+	int getEnemiesLeft();
 
 };

@@ -18,6 +18,8 @@ public:
 
 	void AllowSpawning();
 
+	int GetAmountOfAI();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

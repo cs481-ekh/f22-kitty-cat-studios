@@ -11,6 +11,11 @@ AAISpawner::AAISpawner():AActor()
 
 }
 
+// Used to find out how many AI there are
+int AAISpawner::GetAmountOfAI() {
+	return amountOfAI;
+}
+
 // Called when the game starts or when spawned
 void AAISpawner::BeginPlay()
 {
@@ -25,6 +30,7 @@ void AAISpawner::BeginPlay()
 			FRotator roc = FRotator(0, 0, 0);
 			aiActors.Add(GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, roc));
 		}
+		//Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->SetEnemiesLeft(maxAI);
 	}
 
 	GetWorldTimerManager().SetTimer(handler, this, &AAISpawner::AllowSpawning, 12.0f, false);

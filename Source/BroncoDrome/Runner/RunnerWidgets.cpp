@@ -40,9 +40,19 @@ void URunnerWidgets::SetGameTimeRemaining(int newTime){
 	gameTimeRemaining = newTime;
 }
 
+void URunnerWidgets::DecrementLivesLeft() {
+	livesLeft--;
+}
+
+void URunnerWidgets::SetEnemiesLeft(int newAmount) {
+	enemiesLeft = newAmount;
+}
+
+void URunnerWidgets::DecrementEnemiesLeft(void) {
+	enemiesLeft--;
+}
+
 //Return the current player score
 int URunnerWidgets::getScore() {
 	return playerScore;
 }
-
-
