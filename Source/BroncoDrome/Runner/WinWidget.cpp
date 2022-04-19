@@ -1,6 +1,8 @@
 // // Copyright (C) Team Gregg 2022. All Rights Reserved.
 
 #include "WinWidget.h"
+#include "BroncoDrome/BroncoSaveGame.h"
+#include "Kismet/GameplayStatics.h"
 #include "Misc/FileHelper.h"
 
 void UWinWidget::NativePreConstruct()
@@ -11,6 +13,10 @@ void UWinWidget::NativePreConstruct()
 void UWinWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+	//load the save file
+	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		levelsBeat = load->mapsBeaten;
+	}
 }
 
 void UWinWidget::hScoreSubmit(FText initials) 
@@ -118,7 +124,8 @@ void UWinWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText)
 	FString checkScore = Result[9].RightChop(4);
 	int checkInt = FCString::Atoi(*checkScore);
 	//IF the player score is at least larger than the lowest score
-	if (checkInt < pscore) {
+	//AND IF the player has beaten the three levels
+	if (checkInt < pscore && levelsBeat>=2) {
 		//Need to make high score buttons visable and enabled
 		scoreBox->SetVisibility(ESlateVisibility::Visible);
 		scoreBox->SetIsEnabled(true);

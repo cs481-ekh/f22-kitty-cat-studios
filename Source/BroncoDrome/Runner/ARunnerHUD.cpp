@@ -2,6 +2,7 @@
 
 
 #include "ARunnerHUD.h"
+#include "BroncoDrome/BroncoSaveGame.h"
 
 #include "GameFramework/GameUserSettings.h"
 
@@ -112,18 +113,32 @@ void ARunnerHUD::Pause() {
 
 //Win Condition Call
 void ARunnerHUD::YouWin(){
-	//SHOULD display win widget, is causing an error
-	class APlayerController* Mouse;
-	Mouse = world->GetFirstPlayerController();
-	paused = true;
-	//Reveals mouse and enables clicking
-	Mouse->bShowMouseCursor = true;
-	Mouse->bEnableClickEvents = true;
-	Mouse->bEnableMouseOverEvents = true;
-	m_WinWidget->setScore(m_Widgets->getScore()); //Sets score for adding to the high scores tab
-	m_WinWidget->AddToViewport(); //Displays the win screen
-	//Pauses Game
-	UGameplayStatics::SetGamePaused(world, true);
+	//Need to see how many maps have been beaten
+	int mapsBeat = 0;
+	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		mapsBeat = load->mapsBeaten;
+		//IF we still need to progress
+		//if (mapsBeat < 2) {
+			//THEN increment the score and mapsBeaten and save the game
+			load->score += m_Widgets->getScore();
+			load->mapsBeaten++;
+			if (UGameplayStatics::SaveGameToSlot(load, load->SaveName, 0)) { //this saves the load object
+				//SHOULD display win widget, is causing an error
+				class APlayerController* Mouse;
+				Mouse = world->GetFirstPlayerController();
+				paused = true;
+				//Reveals mouse and enables clicking
+				Mouse->bShowMouseCursor = true;
+				Mouse->bEnableClickEvents = true;
+				Mouse->bEnableMouseOverEvents = true;
+				load->score += m_Widgets->getScore(); //Update the score for the playthrough
+				m_WinWidget->setScore(load->score); //Sets score for adding to the high scores tab
+				m_WinWidget->AddToViewport(); //Displays the win screen
+				//Pauses Game
+				UGameplayStatics::SetGamePaused(world, true);
+			}
+		//}
+	}
 }
 
 void ARunnerHUD::YouLose() 

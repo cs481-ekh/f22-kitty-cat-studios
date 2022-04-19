@@ -2,6 +2,7 @@
 
 
 #include "SMainMenuWidget.h"
+#include "BroncoSaveGame.h"
 #include "MenuHUD.h"
 #include "GameFramework/PlayerController.h"
 #include "Engine/World.h"
@@ -13,6 +14,7 @@
 
 void SMainMenuWidget::Construct(const FArguments& InArgs)
 {
+
 	bCanSupportFocus = true;
 
 	OwningHUD = InArgs._OwningHUD;
@@ -41,10 +43,36 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 
 }
 
+void SMainMenuWidget::InitBroncoSave(int level) const
+{
+	//Create and save the initial values. Nothing else is needed here "save" will have the name "curr" for it's save slot.
+	if (UBroncoSaveGame* save = Cast<UBroncoSaveGame>(UGameplayStatics::CreateSaveGameObject(UBroncoSaveGame::StaticClass())))
+	{
+		save->score = 0;
+		save->mapsBeaten = level;
+		if (UGameplayStatics::SaveGameToSlot(save, save->SaveName, 0)) {
+		}
+	}
+}
+
+FReply SMainMenuWidget::OnPlayClicked() const
+{
+	if (OwningHUD.IsValid())
+	{
+		InitBroncoSave(-1); //0 will make it so that 3 levels will be played
+		OwningHUD->RemoveMenu();
+	}
+
+	UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Day");
+
+	return FReply::Handled();
+}
+
 FReply SMainMenuWidget::OnPlayDayClicked() const
 {
 	if (OwningHUD.IsValid())
 	{
+		InitBroncoSave(3); //3 will make it so that only 1 level will be played
 		OwningHUD->RemoveMenu();
 	}
 
@@ -57,6 +85,7 @@ FReply SMainMenuWidget::OnPlayNightClicked() const
 {
 	if (OwningHUD.IsValid())
 	{
+		InitBroncoSave(3); //3 will make it so that only 1 level will be played
 		OwningHUD->RemoveMenu();
 	}
 
@@ -69,6 +98,7 @@ FReply SMainMenuWidget::OnPlayRainClicked() const
 {
 	if (OwningHUD.IsValid())
 	{
+		InitBroncoSave(3); //3 will make it so that only 1 level will be played
 		OwningHUD->RemoveMenu();
 	}
 
@@ -226,13 +256,13 @@ void SMainMenuWidget::BuildMenu(int hOrM)
 	const FMargin HScoreContentPadding = FMargin();
 	const FMargin ButtonPadding = FMargin(10.f); //This is the space between buttons
 
+	const FText PlayText = LOCTEXT("PlayGame", "Play");
 	const FText PlayDayText = LOCTEXT("PlayGameDay", "Play During the Day");
 	const FText PlayNightText = LOCTEXT("PlayGameNight", "Play at Night");
 	const FText PlayRainText = LOCTEXT("PlayGameRain", "Play in the Rain :)");
-	const FText HighScoreText = LOCTEXT("HighScores", "High Score Screen");
+	const FText HighScoreText = LOCTEXT("HighScores", "High Scores");
 	const FText	QuitText = LOCTEXT("QuitGame", "Quit Game");
 	const FText ReturnMain = LOCTEXT("Return", "Return to Main Menu");
-	//const FText hscoreText = LOCTEXT("DebugHScore", "Test High Score");
 	const FText tutText = LOCTEXT("Tutorial", "Tutorial");
 	const FText NextText = LOCTEXT("next", "Next");
 	const FText BackText = LOCTEXT("back", "Back");
@@ -578,6 +608,21 @@ void SMainMenuWidget::BuildMenu(int hOrM)
 						SNew(STextBlock)
 						.Font(ButtonTextStyle)
 					.Text(tutText)
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					]
+						// Play main game
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(SButton)
+						.OnClicked(this, &SMainMenuWidget::OnPlayClicked)
+					.ButtonColorAndOpacity(FColor::Blue)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(PlayText)
 					.Justification(ETextJustify::Center)
 					.ColorAndOpacity(FColor::Orange)
 					]

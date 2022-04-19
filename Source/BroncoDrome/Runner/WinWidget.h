@@ -24,6 +24,9 @@ public:		// Constructors
 	//player score
 	UPROPERTY(BlueprintReadOnly)
 		int pscore = 0;
+	//player score
+	UPROPERTY(BlueprintReadOnly)
+		int levelsBeat;
 	//Array for scores
 	UPROPERTY()
 		TArray<FString> Result;
