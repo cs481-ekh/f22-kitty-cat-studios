@@ -42,7 +42,8 @@ public:		// Public Static API
 	// Runner visibility tests
 	static class ARunner* GetClosestRunner(const class ARunner& fromRunner, float maxDistance = std::numeric_limits<float>::max(), 
 		float angularThreshold = 180.f, bool raycastTest = false);
-	static class ARunner* GetPlayer(const class ARunner& fromRunner);
+	static class ARunner* GetPlayer(const class ARunner& fromRunner, float maxDistance = std::numeric_limits<float>::max(),
+		float angularThreshold = 180.f, bool raycastTest = false);
 	static float GetRunnerDistance(const class ARunner& fromRunner, const class ARunner& toRunner);
 	static float GetAngleBetweenRunners(const class ARunner& fromRunner, const class ARunner& toRunner, bool fromCamera = true);
 	static bool RunnerRaycastTest(const class ARunner& fromRunner, const class ARunner& toRunner);

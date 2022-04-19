@@ -73,7 +73,7 @@ protected:
 		TSubclassOf<class AKillBallProjectile> KillBallProjectileClass; //A one shot orb to kill any unguarded runner
 
 
-private: // Constants
+public: // Constants
 	// Camera
 	const float CAMERA_PIVOT_HEIGHT = 120.f;
 	const float CAMERA_ROTATION_OFFSET = -10.f;
@@ -188,7 +188,7 @@ private:
 	void WinScreen();
 	void LoseScreen();
 
-private: // Sound Functions
+public: // Sound Functions
 	void PlaySound(USoundCue* cue);
 
 public: // Sound Variables

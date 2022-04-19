@@ -100,13 +100,14 @@ ARunner* ARunnerObserver::GetClosestRunner(const ARunner& fromRunner, float maxD
 	return closestRunner;
 }
 
-ARunner* ARunnerObserver::GetPlayer(const ARunner& fromRunner) {
+ARunner* ARunnerObserver::GetPlayer(const ARunner& fromRunner, float maxDistance,
+	float angularThreshold, bool raycastTest) {
 	const std::set<ARunner*>& reg = SingletonInstance->m_RunnerRegister;
 	for (ARunner* toRunner : reg) {
-		if (toRunner == &fromRunner) continue;
-		if (!toRunner->isAI) {
+		if (toRunner == &fromRunner) 
+			continue;
+		if (!toRunner->isAI && IsRunnerVisible(fromRunner, *toRunner, maxDistance, angularThreshold, raycastTest)) 
 			return toRunner;
-		}
 	}
 	return nullptr;
 }

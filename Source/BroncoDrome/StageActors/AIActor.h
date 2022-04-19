@@ -37,7 +37,7 @@ public:
 	float car_distance = 1000.0f;
 	float dont_care_distance = 3000.0f;
 	bool reverse = false;
-
+	class ARunner* player_runner = nullptr;
 	int count = 0;
 	int update_rate = 3;
 	int shotCount = 0; //acts as a timer for AI shot function
@@ -72,6 +72,8 @@ private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
 	void Fire();
 	void drawTargetLine(FVector location);
-	//void AimBlaster(const class ARunner* targetRunner, const float deltaTime);
+	void QueryLockOnEngage();
+	void QueryLockOnDisengage();
+	void LockOn();
 };
 

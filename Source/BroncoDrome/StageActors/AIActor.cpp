@@ -53,7 +53,7 @@ void AAIActor::Tick(float DeltaTime)
 		else {
 			ThrottleInput(-1.0f);
 		}
-
+		drawTargetLine(location);
 		MoveDecision(location);
 		ShotDecision(location);
 		last_location = location;
@@ -214,57 +214,81 @@ void AAIActor::MoveDecision(FVector location) {
 }
 
 //=======FOR AI SHOOTING
-void AAIActor::drawTargetLine(FVector location) {
-	FHitResult AIRayHit; //For raycasting from AI to player
-	FVector RayStart; //origin point of ray cast
-	FVector RayEnd;
-	RayStart = location; //set ray origin to match AI location
-	// auto closest_runner = ARunnerObserver::GetClosestRunner(*this);
-	auto player_runner = ARunnerObserver::GetPlayer(*this);
-	auto player_runner_location = player_runner->GetActorLocation();
-	ARunner::AimBlaster(player_runner, GetWorld()->GetDeltaSeconds());
-	// RayStart.Z += 50.f; //move ray up in actor
-	// RayStart.X += 200.f; //move ray away so it doesn't collide with self
-	FVector RayForwardVector = GetActorForwardVector(); //make sure line is coming from front
-	//RayEnd = ((RayForwardVector * 2000.f) + RayStart); //defines end point of line
-	RayEnd = player_runner_location;
-	//FCollisionQueryParams RayCollisionParams; //to detect what the line is hitting
-	DrawDebugLine(GetWorld(), RayStart, RayEnd, FColor::Green, false, 0.03, 0, 5); //draws the ray line
-	//if (ActorLineTraceSingle(AIRayHit, RayStart, RayEnd, ECC_WorldStatic, RayCollisionParams)) {
-		//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("AI ray is hitting : %s"), *AIRayHit.GetComponent()->GetName()));
-	//}
+
+void AAIActor::QueryLockOnEngage(){
+	// Check to see if timer is valid
+	if (!m_LockOnQueryTimer.IsValid() || !player_runner)
+		return;
+	// Query to see if other runner is visible
+	if (ARunnerObserver::IsRunnerVisible(*this, *player_runner, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST))
+		// Loop another engagement query timer
+		GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
+	else
+		// Start disengage timer
+		GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnDisengage, LOCK_ON_NON_VISIBLE_TIME, false);
 }
+
+void AAIActor::QueryLockOnDisengage(){
+	// Check to see if timer is valid
+	if (!m_LockOnQueryTimer.IsValid() || !player_runner)
+		return;
+	// Query to see if other runner is visible
+	if (ARunnerObserver::IsRunnerVisible(*this, *player_runner, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST))
+		// Return to engagemenet query timer
+		GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
+	else
+		// Stop targeting, target has been invisible for too long
+		player_runner = nullptr;
+}
+void AAIActor::LockOn(){
+	// Currently locked on?
+	if (!player_runner){
+		// Target closest visible Runner (may return null)
+		player_runner = ARunnerObserver::GetClosestRunner(*this, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST);
+		// If found target, start query tick
+		if (player_runner)
+			GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
+	}
+	else{
+		// Clear currently locked-on Runner
+		player_runner = nullptr;
+		// Stop any timers that may be running
+		m_LockOnQueryTimer.Invalidate();
+	}
+}
+void AAIActor::drawTargetLine(FVector location) {
+	//ARunner *player_runner = ARunnerObserver::GetPlayer(*this, 32000.f, 100.f, true);
+	player_runner = ARunnerObserver::GetPlayer(*this, 32000.f, 100.f, true);
+	if (player_runner) {
+		ARunner::AimBlaster(player_runner, GetWorld()->GetDeltaSeconds());
+		LockOn();
+		// Fire();
+	}
+}
+
 void AAIActor::ShotDecision(FVector location) {
-	if (shotCount != shot_rate) { //shot timer (currently set to one shot every 30 frames
+	if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
 		shotCount++;
 		return;
 	}
 	shotCount = 0; //Reset timer
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("AI shot action called..."), *GetDebugName(this)));
-	drawTargetLine(location);
+	// drawTargetLine(location);
 	Fire();
 }
+
 void AAIActor::Fire() {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("AI FIRE SHOT"), *GetDebugName(this)));
 	if (AIProjectileClass) {
 		auto World = GetWorld();
 		if (!World) return;
-		//else GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("getWorld error"), *GetDebugName(this)));
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = GetInstigator();
-
 		const auto rot = BlasterBase->GetComponentRotation();
 		const auto loc = BlasterBase->GetComponentLocation() + 150.0 * (rot.Vector());	//150 is to account for the length of the barrel
-
 		AOrbProjectile* Projectile = World->SpawnActor<AOrbProjectile>(AIProjectileClass, loc, rot, SpawnParams);
 		if (Projectile) {
-			//PlaySound(laserAudioCue);
+			PlaySound(laserAudioCue);
 			Projectile->FireOrbInDirection(rot.Vector(), this);
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your weapon."), *GetDebugName(this)));
-			//AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),
-				//BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
-
 		}
 		else {
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Projectile init error"), *GetDebugName(this)));
