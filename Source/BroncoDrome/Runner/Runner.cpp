@@ -361,7 +361,7 @@ void ARunner::Fire()
 	SpawnParams.Instigator = GetInstigator();
 
 	const auto rot = BlasterBase->GetComponentRotation();
-	const auto loc = BlasterBase->GetComponentLocation() + 150.0 * (rot.Vector());	//150 is to account for the length of the barrel
+	const auto loc = BlasterBase->GetComponentLocation() + 200.0 * (rot.Vector());	//200 is to account for the length of the barrel
 
 	//check for Kill Ball
 	if (killBallOn) {

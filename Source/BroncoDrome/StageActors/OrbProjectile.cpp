@@ -68,14 +68,12 @@ void AOrbProjectile::init() {
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 		ProjectileMovementComponent->SetUpdatedComponent(CollisionComponent);
 		//Both speed = 5000 means consistent speed
-		ProjectileMovementComponent->InitialSpeed = 5000.0f;
-		ProjectileMovementComponent->MaxSpeed = 5000.0f;
+		ProjectileMovementComponent->InitialSpeed = 8000.0f;
+		ProjectileMovementComponent->MaxSpeed = 8000.0f;
 		ProjectileMovementComponent->bRotationFollowsVelocity = true;
-		ProjectileMovementComponent->bShouldBounce = true;
-		//False = destroyed on impact with wall
 		ProjectileMovementComponent->bShouldBounce = false;
-		ProjectileMovementComponent->Bounciness = 0.1f;
-		ProjectileMovementComponent->ProjectileGravityScale = 0.25f;
+		//False = destroyed on impact with wall
+		//ProjectileMovementComponent->Bounciness = 0.1f;
 		//0 = No gravity
 		ProjectileMovementComponent->ProjectileGravityScale = 0.0f;
 	}
