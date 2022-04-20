@@ -597,8 +597,8 @@ void ARunner::Respawn() {
 			return;
 		}
 		int selectedPoint = rand() % 4;	// Grab a random number 0 - 3, each number represents one of the map's corners
-		const FVector newLocation = { (float)(4700 * (pow(-1, ((selectedPoint + 1) / 2)))) , (float)(3600 * (pow(-1, (selectedPoint / 2)))), (float)(0) };	// Use math to pick the location of the chosen corner
-		const FRotator newOrientation = { (float)(0), (float)(225 + 90 * selectedPoint) , (float)(0) };	// Use math to rotate the runner the amount that is appropriate for the selected corner
+		FVector newLocation = { (float)(4700 * (pow(-1, ((selectedPoint + 1) / 2)))) , (float)(3600 * (pow(-1, (selectedPoint / 2)))), (float)(0) };	// Use math to pick the location of the chosen corner
+		FRotator newOrientation = { (float)(0), (float)(225 + 90 * selectedPoint) , (float)(0) };	// Use math to rotate the runner the amount that is appropriate for the selected corner
 		TeleportTo(newLocation, newOrientation);	// Try to teleport to the calculated corner with the calculated rotation
 		respawnAttemptCounter++;
 	}

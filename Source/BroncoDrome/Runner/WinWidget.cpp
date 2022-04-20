@@ -100,7 +100,7 @@ void UWinWidget::setScore(int score)
 }
 
 //Called from blueprint upon construction
-void UWinWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText)
+void UWinWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText, UTextBlock* totalScore)
 {
 	sBox = scoreBox;
 	pText = pleaseText;
@@ -121,11 +121,17 @@ void UWinWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText)
 		UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Expected file location: %s"), *file);
 	}
 
+	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		levelsBeat = load->mapsBeaten;
+	}
 	FString checkScore = Result[9].RightChop(4);
 	int checkInt = FCString::Atoi(*checkScore);
 	//IF the player score is at least larger than the lowest score
 	//AND IF the player has beaten the three levels
 	if (checkInt < pscore && levelsBeat>=2) {
+		FString totScore = "Total Score: ";
+		totScore.AppendInt(pscore);
+		totalScore->SetText(FText::FromString(totScore));
 		//Need to make high score buttons visable and enabled
 		scoreBox->SetVisibility(ESlateVisibility::Visible);
 		scoreBox->SetIsEnabled(true);

@@ -94,7 +94,7 @@ void ULoseWidget::setScore(int score)
 	pscore = score;
 }
 
-void ULoseWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText) 
+void ULoseWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText, UTextBlock* totalScore) 
 {
 	sBox = scoreBox;
 	pText = pleaseText;
@@ -119,6 +119,9 @@ void ULoseWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText)
 	int checkInt = FCString::Atoi(*checkScore);
 	//IF the player score is at least larger than the lowest score
 	if (checkInt < pscore) {
+		FString totScore = "Total Score: ";
+		totScore.AppendInt(pscore);
+		totalScore->SetText(FText::FromString(totScore));
 		//Need to make high score buttons visable and enabled
 		scoreBox->SetVisibility(ESlateVisibility::Visible);
 		scoreBox->SetIsEnabled(true);

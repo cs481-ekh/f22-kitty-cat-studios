@@ -128,42 +128,40 @@ void ARunnerHUD::YouWin(){
 	int mapsBeat = 0;
 	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
 		mapsBeat = load->mapsBeaten;
-		//IF we still need to progress
-		//if (mapsBeat < 2) {
-			//THEN increment the score and mapsBeaten and save the game
-			load->score += m_Widgets->getScore();
-			load->mapsBeaten++;
-			if (UGameplayStatics::SaveGameToSlot(load, load->SaveName, 0)) { //this saves the load object
-				//SHOULD display win widget, is causing an error
-				class APlayerController* Mouse;
-				Mouse = world->GetFirstPlayerController();
-				paused = true;
-				//Reveals mouse and enables clicking
-				Mouse->bShowMouseCursor = true;
-				Mouse->bEnableClickEvents = true;
-				Mouse->bEnableMouseOverEvents = true;
-				load->score += m_Widgets->getScore(); //Update the score for the playthrough
-				m_WinWidget->setScore(load->score); //Sets score for adding to the high scores tab
-				m_WinWidget->AddToViewport(); //Displays the win screen
-				//Pauses Game
-				UGameplayStatics::SetGamePaused(world, true);
-			}
-		//}
+		load->score += m_Widgets->getScore();  //Update the score for the playthrough
+		load->mapsBeaten++;
+		if (UGameplayStatics::SaveGameToSlot(load, load->SaveName, 0)) { //this saves the load object
+			//SHOULD display win widget, is causing an error
+			class APlayerController* Mouse;
+			Mouse = world->GetFirstPlayerController();
+			paused = true;
+			//Reveals mouse and enables clicking
+			Mouse->bShowMouseCursor = true;
+			Mouse->bEnableClickEvents = true;
+			Mouse->bEnableMouseOverEvents = true;
+			m_WinWidget->setScore(load->score); //Sets score for adding to the high scores tab
+			m_WinWidget->AddToViewport(); //Displays the win screen
+			//Pauses Game
+			UGameplayStatics::SetGamePaused(world, true);
+		}
 	}
 }
 
 void ARunnerHUD::YouLose() 
 {
-	class APlayerController* Mouse;
-	Mouse = world->GetFirstPlayerController();
-	paused = true;
-	//Reveals mouse and enables clicking
-	Mouse->bShowMouseCursor = true;
-	Mouse->bEnableClickEvents = true;
-	Mouse->bEnableMouseOverEvents = true;
-	m_LoseWidget->setScore(m_Widgets->getScore()); //Sets score to display on the lose screen
-	m_LoseWidget->AddToViewport(); //Displays the lose screen
-	UGameplayStatics::SetGamePaused(world, true); //Pauses Game
+	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		load->score += m_Widgets->getScore();  //Update the score for the playthrough
+		class APlayerController* Mouse;
+		Mouse = world->GetFirstPlayerController();
+		paused = true;
+		//Reveals mouse and enables clicking
+		Mouse->bShowMouseCursor = true;
+		Mouse->bEnableClickEvents = true;
+		Mouse->bEnableMouseOverEvents = true;
+		m_LoseWidget->setScore(load->score); //Sets score to display on the lose screen
+		m_LoseWidget->AddToViewport(); //Displays the lose screen
+		UGameplayStatics::SetGamePaused(world, true); //Pauses Game
+	}
 }
 
 /* Rough details for adding a new widget to the HUD:

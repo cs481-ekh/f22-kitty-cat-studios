@@ -45,6 +45,6 @@ public:		// Interface
 		void setScore(int score);
 
 	UFUNCTION(BlueprintCallable, Category = UWinWidget)
-		void showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText);
+		void showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText, UTextBlock* totalScore);
   
 };

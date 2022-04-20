@@ -54,5 +54,6 @@ void URunnerWidgets::DecrementEnemiesLeft(void) {
 
 //Return the current player score
 int URunnerWidgets::getScore() {
+	playerScore += (gameTimeRemaining*10) + (livesLeft*100); // Factor in the time and lives remaining
 	return playerScore;
 }
