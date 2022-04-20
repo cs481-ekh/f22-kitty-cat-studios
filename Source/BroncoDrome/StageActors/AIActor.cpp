@@ -209,6 +209,7 @@ void AAIActor::MoveDecision(FVector location) {
 	}
 	else {
 		MoveTowardsPlayer(player_location, player_direction);
+		ThrottleInput(1.0f);
 	}
 
 }
@@ -325,44 +326,24 @@ void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direc
 	}
 }
 
-void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direction) {
-
-	/*auto curr_location = GetActorLocation();
-
+void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direction)
+{
+	auto curr_location = GetActorLocation();
 	auto curr_direction = GetActorRotation();
 
-	auto next_location = player_location - curr_location;
+	auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(player_location, curr_location);
+	auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
 
-	Mover->SetSteeringInput(next_location);*/
-
-	ThrottleInput(1.0f);
-
-	//Mover->SetSteeringInput(-1.0f);
-	//ThrottleInput(-1.0f);
+	if (turn_angle_manhattan < max_angle && turn_angle_manhattan > min_angle) {
+		Mover->SetSteeringInput(turn_angle_manhattan);
+	}
+	else if (turn_angle_manhattan > max_angle) {
+		Mover->SetSteeringInput(max_angle);
+	}
+	else {
+		Mover->SetSteeringInput(min_angle);
+	}
 }
-
-//void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direction)
-//{
-//	auto curr_location = GetActorLocation();
-//	auto curr_direction = GetActorRotation();
-//
-//	auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(player_location, curr_location);
-//	auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
-//	/*if (turn_angle_manhattan >= min_angle && turn_angle_manhattan <= max_angle) {
-//		Mover->SetSteeringInput(0.0f);
-//		curr_turn = -curr_turn;
-//	}
-//	else {
-//		Mover->SetSteeringInput(curr_turn);
-//	}*/
-//	if (turn_angle_manhattan <= min_angle || turn_angle_manhattan >= max_angle) {
-//
-//	}
-//	else {
-//		Mover->SetSteeringInput(curr_turn);
-//	}
-//	last_angle = turn_angle_manhattan;
-//}
 
 void AAIActor::UpdateLocation(FVector point)
 {
