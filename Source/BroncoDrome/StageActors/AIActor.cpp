@@ -6,6 +6,7 @@
 #include "Kismet/KismetMathLibrary.h"
 
 #include "DrawDebugHelpers.h"
+#include "AISpawner.h"
 
 
 
@@ -15,7 +16,7 @@ AAIActor::AAIActor(): ARunner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	ARunner::isAI = true;
-
+	// ARunner::aiId = AISpawner::GetAmountOfAI();
 	//Mover = (UChaosWheeledVehicleMovementComponent*)GetMovementComponent();
 	//Mover->SetThrottleInput(1.0f);
 	//Mover->bReverseAsBrake = true;
@@ -168,6 +169,7 @@ void AAIActor::MoveDecision(FVector location) {
 
 	// auto player_location = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 	auto closest_runner = ARunnerObserver::GetClosestRunner(*this);
+	// auto closest_runner = ARunnerObserver::GetPlayer(*this);
 	auto player_location = closest_runner->GetActorLocation();
 	auto player_direction = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation();
 
