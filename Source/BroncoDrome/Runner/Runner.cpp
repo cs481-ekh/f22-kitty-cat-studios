@@ -510,7 +510,7 @@ void ARunner::AddToHealth(int newHealth) {
 		HUD->SetDead(true);
 		/* This is when the runner is an AI rather than the player */
 		if (GetController() != GetWorld()->GetFirstPlayerController()) {
-			lives--;	// The AI loses a life when they lose all their health (initially 3 lives)
+			lives-=3;	// The AI loses a life when they lose all their health (initially 3 lives)
 			ChangeMIntensity(2);
 			if (lives <= 0) {
 				//HUD->DecrementEnemyCounter();	// Decrease the amount of enemies left to kill by 1 and if they are all dead, you win
@@ -526,6 +526,7 @@ void ARunner::AddToHealth(int newHealth) {
 		}
 		else {
 			lives--;
+			HUD->DecrementLivesLeft();
 			ChangeMIntensity(0);
 			if (lives <= 0) {
 				LoseScreen();
