@@ -206,6 +206,7 @@ void AAIActor::MoveDecision(FVector location) {
 	}
 	else if (defensive) {
 		MoveAwayFromPlayer(player_location, player_direction);
+		ThrottleInput(-1.0f);
 	}
 	else {
 		MoveTowardsPlayer(player_location, player_direction);
@@ -311,18 +312,27 @@ void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direc
 
 	auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(player_location, curr_location);
 	auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
-	if ((last_angle == turn_angle_manhattan && turn_angle_manhattan > min_angle) || (turn_angle_manhattan == last_angle && turn_angle_manhattan < max_angle)) {
-		curr_turn = -curr_turn;
-		last_angle = turn_angle_manhattan;
-		Mover->SetSteeringInput(curr_turn);
+	//if ((last_angle == turn_angle_manhattan && turn_angle_manhattan > min_angle) || (turn_angle_manhattan == last_angle && turn_angle_manhattan < max_angle)) {
+	//	curr_turn = -curr_turn;
+	//	last_angle = turn_angle_manhattan;
+	//	Mover->SetSteeringInput(curr_turn);
+	//}
+	//else {
+	//	if (turn_angle_manhattan < min_angle || turn_angle_manhattan > max_angle) {
+	//		Mover->SetSteeringInput(0.0f);
+	//	}
+	//	else {
+	//		Mover->SetSteeringInput(curr_turn);
+	//	}
+	//}
+	if (turn_angle_manhattan < max_angle && turn_angle_manhattan > min_angle) {
+		Mover->SetSteeringInput(turn_angle_manhattan);
+	}
+	else if (turn_angle_manhattan > max_angle) {
+		Mover->SetSteeringInput(max_angle);
 	}
 	else {
-		if (turn_angle_manhattan < min_angle || turn_angle_manhattan > max_angle) {
-			Mover->SetSteeringInput(0.0f);
-		}
-		else {
-			Mover->SetSteeringInput(curr_turn);
-		}
+		Mover->SetSteeringInput(min_angle);
 	}
 }
 
