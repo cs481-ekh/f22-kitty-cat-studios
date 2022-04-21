@@ -1,5 +1,14 @@
 Minutes of the team meetings go here:
 
+## Thursday Group Retrospective
+Attendees: Everyone (both sections)
+Absent: None
+3:30pm - 4:00pm
+Scribe: Ben
+
+Talked about next steps for sponsor
+deliverables and senior design showcase
+
 ## Friday Group Meeting 4/15
 Attendees: Everyone (both sections)
 Asbsent: None
