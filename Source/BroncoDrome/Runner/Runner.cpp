@@ -567,7 +567,7 @@ void ARunner::AddToHealth(int newHealth) {
 		/* This code will make it wait three second to respawn. Source: https://www.codegrepper.com/code-examples/cpp/unreal+engine+delay+c%2B%2B */
 		
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning in 3 seconds..."), *GetDebugName(this)));
-		if (HUD->getLives()>1 && HUD->getLives()<3) {
+		if (HUD->getLives()>1 && HUD->getLives()<3 && HUD->getEnemiesLeft() > 0) {
 			if (!this->isAI) HUD->SetTimeLeft(3);
 			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 				{

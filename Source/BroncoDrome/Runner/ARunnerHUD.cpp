@@ -125,6 +125,9 @@ void ARunnerHUD::DecrementAnemonies() {
 int ARunnerHUD::getLives() {
 	return m_Widgets->livesLeft;
 }
+int ARunnerHUD::getEnemiesLeft() {
+	return m_Widgets->enemiesLeft;
+}
 
 //Win Condition Call
 void ARunnerHUD::YouWin(){

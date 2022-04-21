@@ -63,7 +63,7 @@ void AAISpawner::Tick(float DeltaTime)
 	if (canSpawn)
 	{
 		if (amountOfAI < maxAI) {
-			for (amountOfAI; amountOfAI < maxAI; amountOfAI++) {
+			for (int i = amountOfAI; i < maxAI; i++) {
 				FVector loc = FVector(FMath::RandRange(bounds.Min.X, bounds.Max.X), FMath::RandRange(bounds.Min.Y, bounds.Max.Y), 400);
 				FRotator roc = FRotator(0, 0, 0);
 				aiActors.Add(GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, roc));

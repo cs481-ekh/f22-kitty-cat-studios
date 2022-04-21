@@ -262,7 +262,7 @@ FReply SMainMenuWidget::OnCredClicked() const
 
 void SMainMenuWidget::BuildMenu(int hOrM)
 {
-	const FMargin ContentPadding = FMargin(300.f, 300.f);
+	const FMargin ContentPadding = FMargin(100.f, 300.f);
 	const FMargin LogoPadding = FMargin(100.f, 75.f);
 	const FMargin ScorePadding = FMargin(550.f, 200.f);
 	const FMargin TutPadding = FMargin(100.f, 75.f);

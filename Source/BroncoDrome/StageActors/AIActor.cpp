@@ -74,13 +74,15 @@ void AAIActor::Tick(float DeltaTime)
 FHitResult* AAIActor::Raycast(FVector to)
 {
 	FHitResult outHit;
+	FHitResult* oHit;
 	const FCollisionQueryParams collisionParams(FName(TEXT("TestCast")), false, this);
 	// collisionParams.AddIgnoredActor(*this);
 
 	FVector start = GetActorLocation();
 	bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, start + to, ECC_WorldDynamic, collisionParams);
 	if (hit) {
-		return &outHit;
+		oHit = &outHit;
+		return oHit;
 	}
 	else {
 		return nullptr;
