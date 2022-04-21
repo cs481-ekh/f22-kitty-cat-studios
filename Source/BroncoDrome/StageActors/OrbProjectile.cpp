@@ -63,6 +63,7 @@ void AOrbProjectile::init() {
 		CollisionComponent->InitSphereRadius(25.0f);
 		//Make root
 		RootComponent = CollisionComponent;
+		CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	}
 	if (!ProjectileMovementComponent) {
 		ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
@@ -95,5 +96,6 @@ void AOrbProjectile::init() {
 		ProjectileMeshComponent->SetMaterial(0, ProjectileMaterialInstance);
 		ProjectileMeshComponent->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 		ProjectileMeshComponent->SetupAttachment(RootComponent);
+		ProjectileMeshComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	}
 }
