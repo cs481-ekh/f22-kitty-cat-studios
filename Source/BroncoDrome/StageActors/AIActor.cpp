@@ -15,7 +15,7 @@ AAIActor::AAIActor(): ARunner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	ARunner::isAI = true;
+	isAI = true;
 	// ARunner::aiId = AISpawner::GetAmountOfAI();
 	//Mover = (UChaosWheeledVehicleMovementComponent*)GetMovementComponent();
 	//Mover->SetThrottleInput(1.0f);

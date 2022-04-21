@@ -116,25 +116,36 @@ ARunner::ARunner()
 
 void ARunner::BeginPlay()
 {
-	ChangeMIntensity(1);
-	Super::BeginPlay();
-	SetActorHiddenInGame(true);
-	DisableInput(GetWorld()->GetFirstPlayerController());
-	HUD = Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-	HUD->HideHUD(true);
-	HUD->SetEnemiesLeft(3);
-	GetWorldTimerManager().SetTimer(RunnerStatusHandler, this, &ARunner::ReinstateAll, 12.0f, false);
+	//For player characters
+	if (!this->isAI)
+	{
+		ChangeMIntensity(1);
+		Super::BeginPlay();
+		SetActorHiddenInGame(true);
+		DisableInput(GetWorld()->GetFirstPlayerController());
+		HUD = Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+		HUD->HideHUD(true);
+		HUD->SetEnemiesLeft(3);
+		GetWorldTimerManager().SetTimer(RunnerStatusHandler, this, &ARunner::ReinstateAll, 12.0f, false);
+		InitStateMachines();
+		// Begin looping engine audio
+		engineAudioComponent->Play();
+		// Add to RunnerObserver register
+		ARunnerObserver::RegisterRunner(*this);
 
-	InitStateMachines();
-
-	// Begin looping engine audio
-	
-	engineAudioComponent->Play();
-
-	// Add to RunnerObserver register
-	ARunnerObserver::RegisterRunner(*this);
-
-
+	}// For AI characters
+	else
+	{
+		Super::BeginPlay();
+		HUD = Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+		SetActorHiddenInGame(false);
+		EnableInput(GetWorld()->GetFirstPlayerController());
+		InitStateMachines();
+		// Begin looping engine audio
+		engineAudioComponent->Play();
+		// Add to RunnerObserver register
+		ARunnerObserver::RegisterRunner(*this);
+	}
 }
 
 void ARunner::ReinstateAll()
