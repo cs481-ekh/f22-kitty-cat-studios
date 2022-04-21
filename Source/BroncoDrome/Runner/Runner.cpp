@@ -357,11 +357,11 @@ void ARunner::Fire()
 {
 	//classes set in Unreal Class Defaults of Runners 
 	if (!ProjectileClass) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("===ProjectileClass not initialized - shot failed==="), *GetDebugName(this)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("===ProjectileClass not initialized - shot failed==="), *GetDebugName(this)));
 		return;
 	}
 	if (!KillBallProjectileClass) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("===KillBallProjectileClass not initialized - shot failed==="), *GetDebugName(this)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("===KillBallProjectileClass not initialized - shot failed==="), *GetDebugName(this)));
 		return;
 	}
 
@@ -390,14 +390,14 @@ void ARunner::Fire()
 			//Projectile variables
 			projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
 			//Debug
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your KillBall weapon."), *GetDebugName(this)));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your KillBall weapon."), *GetDebugName(this)));
 			//Effects
 			PlaySound(laserAudioCue);
 			AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),
 				BlasterBase->GetComponentRotation().Vector() * (projectile->ProjectileMovementComponent->InitialSpeed * 0.8f), 0.8f);
 		}
 		else {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("KILLBALL FAILED"), *GetDebugName(this)));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("KILLBALL FAILED"), *GetDebugName(this)));
 		}
 	}
 	else { //Fire a regular orb ball
@@ -408,7 +408,7 @@ void ARunner::Fire()
 			projectile->FireOrbInDirection(rot.Vector(), this);
 			projectile->shotDamage = playerDamage; //Set damage of shot to the players damage
 			//Debug
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your regular weapon."), *GetDebugName(this)));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your regular weapon."), *GetDebugName(this)));
 			//Effects
 			PlaySound(laserAudioCue);
 			AParticleSpawner::SpawnParticle(Poof, BlasterBase->GetComponentLocation(),

@@ -71,7 +71,7 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 {
 	if (OtherActor->IsA(ARunner::StaticClass()))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("You collected a powerup."), *GetDebugName(this)));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("You collected a powerup."), *GetDebugName(this)));
 		timeTracker = 0.0f;
 		hidden = false;
 		SetActorHiddenInGame(false);
@@ -84,23 +84,23 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 		switch (powerTypeIndex) {
 			case 0:
 				dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20); //Health
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
 				break;
 			case 1:
 				dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f); //Speed Which doesn't work and I don't know how to fix it
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
 				break;
 			case 2:
 				dynamic_cast<ARunner*>(OtherActor)->AddToDamage(10); //Damage
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
 				break;
 			case 3:
 				dynamic_cast<ARunner*>(OtherActor)->obstainShotAbsorbPower(5); //ShotAbsorb default 5
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power ShotAbsorb"), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power ShotAbsorb"), *GetDebugName(this)));
 				break;
 			case 4:
 				dynamic_cast<ARunner*>(OtherActor)->obstainKillBallPower(1); //KillBall default 1
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power KillBall!"), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power KillBall!"), *GetDebugName(this)));
 				break;
 
 		}

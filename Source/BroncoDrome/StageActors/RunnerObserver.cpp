@@ -48,8 +48,8 @@ void ARunnerObserver::RegisterRunner(ARunner& runner)
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARNING: RunnerObserver could not register "
-			"Runner %p because it is already being managed"), &runner));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARNING: RunnerObserver could not register "
+		//	"Runner %p because it is already being managed"), &runner));
 	}
 }
 
@@ -63,8 +63,8 @@ void ARunnerObserver::DeregisterRunner(ARunner& runner)
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARNING: RunnerObserver could not deregister "
-			"Runner %p because it is not being managed."), &runner));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARNING: RunnerObserver could not deregister "
+		//	"Runner %p because it is not being managed."), &runner));
 	}
 }
 

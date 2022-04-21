@@ -43,7 +43,7 @@ void AOrbProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor
 		if (ARunner* runner = Cast<ARunner, AActor>(OtherActor)) {
 			runner->hitMe(shotDamage * (-1));//(Make it negative) //hitMe function lets runner deal with the powerups
 			//runner->AddToHealth(shotDamage * (- 1)); //(Make it negative) Left here incase something breaks
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hit a runner."), *GetDebugName(this)));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hit a runner."), *GetDebugName(this)));
 			Cast<ARunner, AActor>(RunnerParent)->AddToScore(10);
 		}
 		Destroy();

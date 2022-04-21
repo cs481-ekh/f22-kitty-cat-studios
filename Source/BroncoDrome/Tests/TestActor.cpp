@@ -20,7 +20,7 @@ void ATestActor::BeginPlay()
 	Super::BeginPlay();
 	
 	// Print name to screen
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Hello from %s (the rotating tire)!"), *GetDebugName(this)));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Hello from %s (the rotating tire)!"), *GetDebugName(this)));
 }
 
 // Called every frame

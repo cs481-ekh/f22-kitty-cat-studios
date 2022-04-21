@@ -51,7 +51,7 @@ void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRota
 	SpawnParams.Instigator = GetInstigator();
 	auto World = GetWorld();
 	
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Power Up Spawned"), *GetDebugName(this)));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Power Up Spawned"), *GetDebugName(this)));
 	powerUp = World->SpawnActor<APowerUpMaster>(powerUpClass, loc, rot, SpawnParams);
 		
 	GetWorldTimerManager().SetTimer(spawnTimeHandle, this, &APowerUpSpawner::spawnPowerUp, spawnTime, false);

@@ -20,7 +20,7 @@ void ARunnerHUD::BeginPlay()
 	world = GetWorld();
 	//Checks to make sure the 
 	if(world == NULL)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not load world"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not load world"));
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
 
 	//Checks for each widget present in the HUD that they are loaded
@@ -34,12 +34,12 @@ void ARunnerHUD::BeginPlay()
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not create Widgets"));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not create Widgets"));
 		}
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
 	}
 
 	if (PauseWidgetsClass) {
@@ -47,7 +47,7 @@ void ARunnerHUD::BeginPlay()
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
 	}
 	//Enable Win Widget
 	if (WinWidgetClass) {

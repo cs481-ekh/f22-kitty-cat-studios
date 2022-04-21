@@ -45,7 +45,7 @@ void ASpawner::DetermineRandomLocation()
 		//Change location and try again if they are too close.
 		if (sqrt(pow(abs(loc.X - otherloc.X), 2) + pow(abs(loc.Y - otherloc.Y), 2)) <= spacingDistance)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Powerup too close to another powerup, relocating..."), *GetDebugName(this)));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Powerup too close to another powerup, relocating..."), *GetDebugName(this)));
 			loc = FVector(FMath::RandRange(bounds.Min.X, bounds.Max.X), FMath::RandRange(bounds.Min.Y, bounds.Max.Y), -70);
 			i = 0;
 		}
@@ -69,7 +69,7 @@ void ASpawner::SpawnObject(FVector loc, FRotator roc)
 	if (actorLocationIndex == powerups.Num())
 		actorLocationIndex = 0;
 
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("A powerup has been spawned."), *GetDebugName(this)));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("A powerup has been spawned."), *GetDebugName(this)));
 
 }
 
