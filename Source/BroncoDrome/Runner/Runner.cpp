@@ -495,12 +495,14 @@ void ARunner::Pause() {
 
 //Callable function to display on the HUD upon reaching win condition
 void ARunner::WinScreen(){
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	ChangeMIntensity(2);
 	HUD->YouWin();
 }
 
 //Callable function to display on the HUD upon reaching lose condition
 void ARunner::LoseScreen() {
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	ChangeMIntensity(0);
 	HUD->YouLose();
 }
@@ -521,7 +523,8 @@ void ARunner::AddToHealth(int newHealth) {
 		if(!this->isAI) HUD->SetDead(true);
 		/* This is when the runner is an AI rather than the player */
 		if (GetController() != GetWorld()->GetFirstPlayerController()) {
-			lives-=3;	// The AI loses a life when they lose all their health (initially 3 lives)
+			lives--;	// The AI loses a life when they lose all their health (initially 3 lives)
+			HUD->DecrementEnemiesLeft(); //AI will have three lives, but each life taken is counted for the players goal. This should help if there are too few AI
 			ChangeMIntensity(2);
 			if (lives <= 0) {
 				//HUD->DecrementEnemyCounter();	// Decrease the amount of enemies left to kill by 1 and if they are all dead, you win
@@ -529,7 +532,6 @@ void ARunner::AddToHealth(int newHealth) {
 				if (GI) {
 					GI::setEnemiesLeft(3);
 				}*/
-				HUD->DecrementEnemiesLeft();
 				Destroy();	// When an AI loses all three lives, they are permanently destroyed
 				
 				return;
@@ -558,37 +560,36 @@ void ARunner::AddToHealth(int newHealth) {
 		SetActorTickEnabled(false);
 
 			/* If the player just died, they shouldn't be able to move until they respawn */
-		if (GetController() == GetWorld()->GetFirstPlayerController()) {
+		if (!this->isAI) {
 			DisableInput(GetWorld()->GetFirstPlayerController());
 		}
 														
 		/* This code will make it wait three second to respawn. Source: https://www.codegrepper.com/code-examples/cpp/unreal+engine+delay+c%2B%2B */
 		
-		FTimerHandle TimerHandle;
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning in 3 seconds..."), *GetDebugName(this)));
-		if (GetController() == GetWorld()->GetFirstPlayerController()) HUD->SetTimeLeft(3);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
-			{
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("2 seconds left to respawn..."), *GetDebugName(this)));
-				if (GetController() == GetWorld()->GetFirstPlayerController()) HUD->SetTimeLeft(2);
-				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
-					{
-						//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("1 second left to respawn..."), *GetDebugName(this)));
-						if (GetController() == GetWorld()->GetFirstPlayerController()) HUD->SetTimeLeft(1);
-						GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
-							{
-								Respawn();	// After three seconds, the runner respawns at one of the four corners
-								EnableInput(GetWorld()->GetFirstPlayerController());
-								Mover->Activate();
-								if (GetController() == GetWorld()->GetFirstPlayerController()) HUD->SetHealth(health);
-							}, 1, false
-						);
-					}, 1, false
-				);
-			}, 1, false
-		);
-		
-		//HUD->SetHealth(health);
+		if (HUD->getLives()>1 && HUD->getLives()<3) {
+			if (!this->isAI) HUD->SetTimeLeft(3);
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+				{
+					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("2 seconds left to respawn..."), *GetDebugName(this)));
+					if (!this->isAI) HUD->SetTimeLeft(2);
+					GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+						{
+							//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("1 second left to respawn..."), *GetDebugName(this)));
+							if (!this->isAI) HUD->SetTimeLeft(1);
+							GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+								{
+									Respawn();	// After three seconds, the runner respawns at one of the four corners
+									if (!this->isAI) EnableInput(GetWorld()->GetFirstPlayerController());
+									Mover->Activate();
+									if (GetController() == GetWorld()->GetFirstPlayerController()) HUD->SetHealth(health);
+								}, 1, false
+							);
+						}, 1, false
+					);
+				}, 1, false
+			);
+		}
 	}
 	if (GetController() == GetWorld()->GetFirstPlayerController()) {
 		HUD->SetHealth(health);

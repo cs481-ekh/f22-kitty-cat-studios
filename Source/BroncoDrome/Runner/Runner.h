@@ -65,6 +65,9 @@ public: // Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapons, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent *BlasterCannon;
 
+	UPROPERTY()
+		FTimerHandle TimerHandle;
+
 protected:
 	//Projectiles to use
 	UPROPERTY(EditAnywhere, Category = Projectile)

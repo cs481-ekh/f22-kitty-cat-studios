@@ -122,6 +122,10 @@ void ARunnerHUD::DecrementAnemonies() {
 	if (anemoniesLeft == 0) YouWin();
 }
 
+int ARunnerHUD::getLives() {
+	return m_Widgets->livesLeft;
+}
+
 //Win Condition Call
 void ARunnerHUD::YouWin(){
 	//Need to see how many maps have been beaten

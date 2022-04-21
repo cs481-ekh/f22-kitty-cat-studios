@@ -87,4 +87,5 @@ public:
 	void YouLose();
 	void SetAnemonies(int anemonies);
 	void DecrementAnemonies();
+	int getLives();
 };
