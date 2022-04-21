@@ -507,7 +507,7 @@ void ARunner::AddToHealth(int newHealth) {
 		//ShotAbsorb PowerUp
 		shotAbsorbOn = false;
 		shotAbsorbHits = 0;
-		HUD->SetDead(true);
+		if(!this->isAI) HUD->SetDead(true);
 		/* This is when the runner is an AI rather than the player */
 		if (GetController() != GetWorld()->GetFirstPlayerController()) {
 			lives-=3;	// The AI loses a life when they lose all their health (initially 3 lives)
@@ -607,7 +607,7 @@ void ARunner::Respawn() {
 	SetActorEnableCollision(true);
 	SetActorTickEnabled(true);
 	health = 100;	// Reset to full health
-	HUD->SetDead(false);
+	if (!this->isAI) HUD->SetDead(false);
 }
 
 void ARunner::AddToScore(int newScore) {
