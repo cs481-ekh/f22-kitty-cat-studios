@@ -27,6 +27,7 @@ public:
 	void RemoveMenu();
 	AMenuHUD();
 
+
 private:
 	UPROPERTY()
 		UTexture2D* BroncyImage;
@@ -36,5 +37,8 @@ private:
 		UTexture2D* tut1Image;
 	UPROPERTY()
 		UTexture2D* tut2Image;
-	
+	UPROPERTY()
+		UTexture2D* sdpLogo;
+	UPROPERTY()
+		UTexture2D* credits;
 };

@@ -17,7 +17,8 @@ public:
 	SLATE_BEGIN_ARGS(SMainMenuWidget) {}
 
 	SLATE_ARGUMENT(TWeakObjectPtr<class AMenuHUD>, OwningHUD)
-	SLATE_ARGUMENT(TWeakObjectPtr<class UTexture2D>, broncyImage)
+		SLATE_ARGUMENT(TWeakObjectPtr<class UTexture2D>, broncyImage)
+		SLATE_ARGUMENT(TWeakObjectPtr<class UTexture2D>, sdpLogo)
 
 	SLATE_END_ARGS()
 
@@ -36,10 +37,12 @@ public:
 	void BuildMenu(int hOrM);
 	FReply OnTutClicked() const;
 	FReply OnNextTutClicked() const;
+	FReply OnCredClicked() const;
 	 
 	TArray<FString> Result;
 	TWeakObjectPtr<class AMenuHUD> OwningHUD;
 	TWeakObjectPtr<class UTexture2D> broncyImage;
+	TWeakObjectPtr<class UTexture2D> sdpLogo;
 
 	FText score0, score1, score2, score3, score4, score5, score6, score7, score8, score9;
 

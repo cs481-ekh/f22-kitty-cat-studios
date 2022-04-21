@@ -21,6 +21,7 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 
 	// setup for background image
 	broncyImage = InArgs._broncyImage; //Don't be decieved! this can be either the main menu or high score image
+	sdpLogo = InArgs._sdpLogo;
 
 	//Need to pull the current high scores before building screen
 	FString file = FPaths::ProjectConfigDir();
@@ -248,9 +249,21 @@ FReply SMainMenuWidget::OnNextTutClicked() const
 	return FReply::Handled();
 }
 
+//This is the handler for the sdp logo button
+FReply SMainMenuWidget::OnCredClicked() const
+{
+	if (OwningHUD.IsValid())
+	{
+		OwningHUD->RemoveMenu(); //get rid of current screen
+		OwningHUD->ShowMenu(4);  //show the credit screen
+	}
+	return FReply::Handled();
+}
+
 void SMainMenuWidget::BuildMenu(int hOrM)
 {
 	const FMargin ContentPadding = FMargin(300.f, 300.f);
+	const FMargin LogoPadding = FMargin(100.f, 75.f);
 	const FMargin ScorePadding = FMargin(550.f, 200.f);
 	const FMargin TutPadding = FMargin(100.f, 75.f);
 	const FMargin HScoreContentPadding = FMargin();
@@ -274,6 +287,8 @@ void SMainMenuWidget::BuildMenu(int hOrM)
 
 	const FSlateDynamicImageBrush* BroncyImage;
 	BroncyImage = new FSlateDynamicImageBrush(broncyImage.Get(), FVector2D(942, 614), FName("BroncyImage"));
+	const FSlateDynamicImageBrush* SDPLogo;
+	SDPLogo = new FSlateDynamicImageBrush(sdpLogo.Get(), FVector2D(300,150), FName("SDPLogo"));
 	// above sets broncyImage to brush, and set size of image
 
 	score0 = FText::FromString(Result[0]);
@@ -578,7 +593,7 @@ void SMainMenuWidget::BuildMenu(int hOrM)
 					]
 			];
 			break;
-		default: //Build the main menu
+		case 4:
 			ChildSlot[
 				SNew(SOverlay)
 					+ SOverlay::Slot()
@@ -589,6 +604,59 @@ void SMainMenuWidget::BuildMenu(int hOrM)
 						.Image(BroncyImage)
 					]
 
+				+ SOverlay::Slot()
+					.HAlign(HAlign_Left)
+					.VAlign(VAlign_Bottom)
+					.Padding(TutPadding)
+					[
+						SNew(SVerticalBox)
+
+						// Show Tutorial Screen
+					+ SVerticalBox::Slot()
+					.Padding(ButtonPadding)
+					[
+						SNew(SButton)
+						.OnClicked(this, &SMainMenuWidget::OnReturnToMainClicked)
+					.ButtonColorAndOpacity(FColor::Blue)
+					[
+						SNew(STextBlock)
+						.Font(ButtonTextStyle)
+					.Text(BackText)
+					.Justification(ETextJustify::Center)
+					.ColorAndOpacity(FColor::Orange)
+					]
+					]
+					]
+			];
+			break;
+		default: //Build the main menu
+			ChildSlot[
+				SNew(SOverlay)
+					+ SOverlay::Slot()
+					.HAlign(HAlign_Fill)
+					.VAlign(VAlign_Fill)
+					[
+						SNew(SImage)
+						.Image(BroncyImage)
+					]
+				+ SOverlay::Slot()
+					.HAlign(HAlign_Left)
+					.VAlign(VAlign_Bottom)
+					.Padding(LogoPadding)
+					[
+						SNew(SVerticalBox)
+						+ SVerticalBox::Slot()
+						.Padding(ButtonPadding)
+						[
+							SNew(SButton)
+							.OnClicked(this, &SMainMenuWidget::OnCredClicked)
+							.ButtonColorAndOpacity(FColor::Blue)
+							[
+								SNew(SImage)
+								.Image(SDPLogo)
+							]
+						]
+					]
 				+ SOverlay::Slot()
 					.HAlign(HAlign_Right)
 					.VAlign(VAlign_Top)

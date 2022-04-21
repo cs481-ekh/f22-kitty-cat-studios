@@ -18,6 +18,10 @@ AMenuHUD::AMenuHUD() {
 	tut1Image = Tutorial1Path.Object; //Image for the first tutorial page
 	static ConstructorHelpers::FObjectFinder<UTexture2D> Tutorial2Path(TEXT("Texture2D'/Game/Assets/Screenshots/tut2.tut2'"));
 	tut2Image = Tutorial2Path.Object; //Image for the second tutorial page
+	static ConstructorHelpers::FObjectFinder<UTexture2D> SDPLogoPath(TEXT("Texture2D'/Game/Assets/Screenshots/sdp-logo-infinity.sdp-logo-infinity'"));
+	sdpLogo = SDPLogoPath.Object; //Image for the SDP logo
+	static ConstructorHelpers::FObjectFinder<UTexture2D> CreditsPath(TEXT("Texture2D'/Game/Assets/Screenshots/credits.credits'"));
+	credits = CreditsPath.Object; //Image for the Credits page
 }
 
 void AMenuHUD::BeginPlay()
@@ -45,8 +49,11 @@ void AMenuHUD::ShowMenu(int i)
 			case 3:
 				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(tut2Image); //This will load SMainMenuWidget with the second tutorial image
 				break;
+			case 4:
+				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(credits); //This will load SMainMenuWidget with the credits page
+				break;
 			default:
-				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(BroncyImage); //This will load SMainMenuWidget with the main menu image
+				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(BroncyImage).sdpLogo(sdpLogo); //This will load SMainMenuWidget with the main menu image
 				break;
 		}
 		//IF we want to show the main menu
