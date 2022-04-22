@@ -2,7 +2,19 @@
 
 [![BroncoDrome Video](https://img.youtube.com/vi/WcRSF955N7A/0.jpg)](https://www.youtube.com/watch?v=WcRSF955N7A)
 
-## Contributors
+## Current Contributors
+
+| Name             | Role                                   |
+| ---------------  | -------------------------------------- |
+| Ben Bettencourt  | Game Loop and Mechanics Programmer     |
+| Saulo Gragg      | Modeler and Mechanics Programmer       |
+| Joey Kitzhaber   | Game Tester and Mechanics Programmer   |
+| Doug McEwen      | Game Tester and Audio Programmer       |
+| Marie Phelan     | AI and Mechanics Programmer            |
+| Ross Rippee      | Game Loop and Mechanics Programmer     |
+| DJ Roychourdhury | AI and Mechanics Programmer            |
+
+## Previous Contributors
 
 | Name            | Role                              |
 | --------------- | --------------------------------- |
@@ -14,7 +26,29 @@
 | Jared Lytle     | Mapping and AI Programmer         |
 | Connor Wood     | Mapping and AI Programmer         |
 
-## Project Description 
+## Abstract: 
+In 1996, Viacom released DeathDrome for Windows 95. DeathDrome was a third-person shooter game consisting of vehicular combat. Vehicles with unique attributes and various weapons would compete against each other, using power-ups scattered across the map to gain advantage over their opponents. Our sponsor, Eric Henderson, being a big fan of the game, wanted it to be remade to rekindle great memories.
+
+In the Fall 2021 semester, Boise State students created BroncoDrome in an attempt to realize Eric’s vision. The game was made using the Unreal Engine for a modern feel. However, a single semester did not prove to be enough time to remake the classic game from scratch. At the end of the semester the game was very barebones with a nonthreatening AI opponent, no way of winning or losing, uninspired models, and nonfunctional power-ups. This was a big problem for Eric who was expecting a fully-fledged game.
+
+With this in mind, Team Gregg took up the baton in an attempt to make BroncoDrome become our sponsor's dream game. Our goal was to supply a finished (yet updatable) game. We set out to to implement most (if not all) of the missing features. In addition to adding these new features, we also intended to improve the pre-existing features, such as the game loop, the menus, the music, and the AI opponent. We committed ourselves to realizing our sponsor’s dream.
+
+## Our finished product:
+
+
+
+
+
+
+
+
+
+
+
+
+
+! Below this point is stuff from the previous semester that will be deleted when we have a finished index.md !
+
 BroncoDrome is an attempt to break the mould of a typical senior design project. 
 
 Requiring not only what is learned in core-classes, but also elective knowledge such as object-oriented design patterns, computer graphics, game creation, classical artificial intelligence, and more, the students working on this project were able to bring their individual talents to create a project that is greater than the sum of its parts.
