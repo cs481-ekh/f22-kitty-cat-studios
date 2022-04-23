@@ -35,16 +35,17 @@ With this in mind, Team Gregg took up the baton in an attempt to make BroncoDrom
 
 ## Our finished product:
 
+### Updated Main Menu
 
+### Updated Map Layout
 
+### Updated Music
 
+### Updated HUD
 
+### Updated Models
 
-
-
-
-
-
+### Dynamic Soundtrack Added
 
 
 ! Below this point is stuff from the previous semester that will be deleted when we have a finished index.md !
