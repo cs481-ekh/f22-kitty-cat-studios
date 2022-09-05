@@ -29,6 +29,12 @@ BroncoDrome is a 3rd person vehicular combat game being developed using Unreal E
 | Joseph Kitzhaber | Programmer                        |
 | Marie Phelan     | AI Programmer                     |
 
+## Contributors Fall 2022
+
+| Name              | Role          |
+|-------------------|---------------|
+| Quinn Shultz      | AI Programmer |
+| Damian Sappington | AI Programmer |
 
 ## Project Setup
 
