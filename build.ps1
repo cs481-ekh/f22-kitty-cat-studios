@@ -1,9 +1,9 @@
-# Before running this script, set the UNREAL_HOME environment variable 
+# Before running this script, set the UNREAL_HOME environment variable
 # (i.e. "SET UNREAL_HOME <path_to_unreal>")
 
 $PROJECT_HOME=(Get-Location).Path
 
-if($UNREAL_HOME -eq $null)
+if($null -eq $UNREAL_HOME)
 {
 	Write-Output "Please set the UNREAL_HOME environment variable!"
 }
