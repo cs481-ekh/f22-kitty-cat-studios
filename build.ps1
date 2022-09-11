@@ -1,7 +1,6 @@
 # Before running this script, set the UNREAL_HOME environment variable 
 # (i.e. "SET UNREAL_HOME <path_to_unreal>")
 
-$UNREAL_HOME="D:\Program Files\Epic Games\UE_4.26Chaos"
 $PROJECT_HOME=(Get-Location).Path
 
 if($UNREAL_HOME -eq $null)
