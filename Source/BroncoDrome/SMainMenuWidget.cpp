@@ -29,6 +29,17 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	file.Append(TEXT("highScores.txt"));
 	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 	if (FileManager.FileExists(*file)) {
+		// File loaded successfully
+	}
+	else {
+		// Try to create the required highscores file
+		UE_LOG(LogTemp, Warning, TEXT("FileManipulation: INFO: Initializing new Score file"));
+
+		FString FilePath = FPaths::ConvertRelativePathToFull(FPaths::ProjectConfigDir()) + TEXT("/highScores.txt");
+		FFileHelper::SaveStringToFile(TEXT("BEN 3000\nMAR 2500\nDJR 2000\nDOU 1500\nROS 1000\nJOY 800\nSAU 600\nPLC 400\nTST 200\nDBG 0"), *FilePath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), EFileWrite::FILEWRITE_Append);
+	}
+
+	if (FileManager.FileExists(*file)) {
 		if (FFileHelper::LoadFileToStringArray(Result, *file, FFileHelper::EHashOptions::None)) {
 			UE_LOG(LogTemp, Warning, TEXT("Score Array Loaded"));
 		}
@@ -39,9 +50,6 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("FileManipulation: ERROR: Can not read the file because it was not found."));
 		UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Expected file location: %s"), *file);
-
-		FString FilePath = FPaths::ConvertRelativePathToFull(FPaths::ProjectConfigDir()) + TEXT("/highScores.txt");
-		FFileHelper::SaveStringToFile(TEXT("BEN 3000\nMAR 2500\nDJR 2000\nDOU 1500\nROS 1000\nJOY 800\nSAU 600\nPLC 400\nTST 200\nDBG 0"), *FilePath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), EFileWrite::FILEWRITE_Append);
 	}
 
 	BuildMenu(OwningHUD->mainOrHScore);
