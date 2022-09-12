@@ -33,10 +33,17 @@ void SMainMenuWidget::Construct(const FArguments& InArgs)
 	}
 	else {
 		// Try to create the required highscores file
-		UE_LOG(LogTemp, Warning, TEXT("FileManipulation: INFO: Initializing new Score file"));
+		UE_LOG(LogTemp, Warning,
+			TEXT("FileManipulation: INFO: Initializing new Score file"));
 
-		FString FilePath = FPaths::ConvertRelativePathToFull(FPaths::ProjectConfigDir()) + TEXT("/highScores.txt");
-		FFileHelper::SaveStringToFile(TEXT("BEN 3000\nMAR 2500\nDJR 2000\nDOU 1500\nROS 1000\nJOY 800\nSAU 600\nPLC 400\nTST 200\nDBG 0"), *FilePath, FFileHelper::EEncodingOptions::AutoDetect, &IFileManager::Get(), EFileWrite::FILEWRITE_Append);
+		FString FilePath =
+			FPaths::ConvertRelativePathToFull(FPaths::ProjectConfigDir()) +
+			TEXT("/highScores.txt");
+		FFileHelper::SaveStringToFile(
+			TEXT("BEN 3000\nMAR 2500\nDJR 2000\nDOU 1500\nROS 1000\nJOY 800\nSAU "
+				"600\nPLC 400\nTST 200\nDBG 0"),
+			*FilePath, FFileHelper::EEncodingOptions::AutoDetect,
+			&IFileManager::Get(), EFileWrite::FILEWRITE_Append);
 	}
 
 	if (FileManager.FileExists(*file)) {
