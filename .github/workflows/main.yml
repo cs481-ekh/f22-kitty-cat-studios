@@ -2,13 +2,13 @@
 
 name: CI for BroncoDrome
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the main branch, we can switch this to develop once we set up the git-flow pattern. - Mikey
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -30,30 +30,30 @@ jobs:
           ls
           docker pull adamrehn/ue4-runtime:latest
           docker run --mount type=bind,source=$(pwd),target=/home/ue4 adamrehn/ue4-runtime:latest /bin/bash -c "cd /home/ue4 && . ./build.sh"
- ### NOTE: I'm removing build_windows because it is eating too much time to debug and figure out how to get to work.
- ### This might be a good project for future semesters who know more about this than us. -Ben
- # build_windows:
-    # IMPORTANT ** This verison of windows may need to switch (It also may not have to, I don't have the depth of knowledge in this domain to know the answer - Mikey)
-    # Switched windows-2019 to windows-latest to avoid what Mikey was talking about above
- #   runs-on: windows-latest
- #   steps:
- #     - uses: actions/checkout@v2
- #     - name: Windows Build
- #       run: |
- #        docker pull adamrehn/ue4-build-prerequisites:ltsc2019
- #        docker run --mount type=bind,source="D:\a\BroncoDrome\BroncoDrome",target="C:\Program Files\BroncoDrome" adamrehn/ue4-build-prerequisites:ltsc2019 Cmd.exe /C "C:\Program Files\BroncoDrome\build.cmd"
-    # I am assuming we will make a build.bat and a clean.bat
-    # DO we need a windows docker here, or should we force github actions to download unreal EVERY TIME IT WANTS TO RUN MUAHHAHAHAH (But really though, we are using git lfs, we could just import a binary/libraries needed for aspecific version of windows and run off of that.. IDK, you decide) -Mikey
-      
+  ### NOTE: I'm removing build_windows because it is eating too much time to debug and figure out how to get to work.
+  ### This might be a good project for future semesters who know more about this than us. -Ben
+  # build_windows:
+  # IMPORTANT ** This verison of windows may need to switch (It also may not have to, I don't have the depth of knowledge in this domain to know the answer - Mikey)
+  # Switched windows-2019 to windows-latest to avoid what Mikey was talking about above
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Windows Build
+  #       run: |
+  #        docker pull adamrehn/ue4-build-prerequisites:ltsc2019
+  #        docker run --mount type=bind,source="D:\a\BroncoDrome\BroncoDrome",target="C:\Program Files\BroncoDrome" adamrehn/ue4-build-prerequisites:ltsc2019 Cmd.exe /C "C:\Program Files\BroncoDrome\build.cmd"
+  # I am assuming we will make a build.bat and a clean.bat
+  # DO we need a windows docker here, or should we force github actions to download unreal EVERY TIME IT WANTS TO RUN MUAHHAHAHAH (But really though, we are using git lfs, we could just import a binary/libraries needed for aspecific version of windows and run off of that.. IDK, you decide) -Mikey
+
   lint:
-  # using super-lint from github
-  # Documentation: https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
+    # using super-lint from github
+    # Documentation: https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
     runs-on: ubuntu-latest
 
     steps:
       # Checks out our code
       - uses: actions/checkout@v2
-      
+
       # add the linter
       - name: Super-Linter
         uses: github/super-linter@v4.8.7
