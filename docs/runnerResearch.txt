@@ -3,7 +3,7 @@ runner research
 RunnerWheel.cpp:
 handels wheel width and radius
 skid threshold
-sterring angle
+steerring angle
 friction force
 soring rate and suspension
 
