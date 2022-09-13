@@ -38,6 +38,7 @@ design careers to work on a relevant project for their capstone.
 |-------------------|---------------|
 | Quinn Shultz      | AI Programmer |
 | Damian Sappington | AI Programmer |
+| Camron Collinsworth | AI Programmer |
 
 ## Project Setup
 
