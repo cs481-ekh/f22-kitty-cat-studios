@@ -1,7 +1,10 @@
 # BroncoDrome  
 ![BroncoDrome](https://github.com/cs481-ekh/s22-gregg/actions/workflows/main.yml/badge.svg)  
 
-BroncoDrome is a 3rd person vehicular combat game being developed using Unreal Engine 4. This project was created to satisfy the requirements of CS 481 - Senior Design, but it will likely be the start of a multi-semester project that new groups will incrementally take over. This project will be an opportunity for CS students who are interested in game design careers to work on a relevant project for their capstone. 
+BroncoDrome is a 3rd person vehicular combat game being developed using Unreal Engine 4. This project was created to
+satisfy the requirements of CS 481 - Senior Design, but it will likely be the start of a multi-semester project that new
+groups will incrementally take over. This project will be an opportunity for CS students who are interested in game
+design careers to work on a relevant project for their capstone.
 
 ## Contributors Fall 2021
 
@@ -29,6 +32,13 @@ BroncoDrome is a 3rd person vehicular combat game being developed using Unreal E
 | Joseph Kitzhaber | Programmer                        |
 | Marie Phelan     | AI Programmer                     |
 
+## Contributors Fall 2022
+
+| Name              | Role          |
+|-------------------|---------------|
+| Quinn Shultz      | AI Programmer |
+| Damian Sappington | AI Programmer |
+| Camron Collinsworth | AI Programmer |
 
 ## Project Setup
 
@@ -39,7 +49,7 @@ BroncoDrome is developed using [Unreal 4.26.0](https://www.unrealengine.com/en-U
 ### Git LFS and Unreal/Git Integration
 
 This repository uses Git LFS, which means that large binary assets are stored in a separate location from this repository. If assets don’t seem to show up in your editor, try entering the following command in the root directory to pull these assets:
-```
+```bash
 git lfs pull
 ```
 
@@ -55,8 +65,8 @@ Now, most assets (namely Blueprint assets) will have small icons indicating thei
 
 ### Building
 
-- Download the Epic Games Launcher: https://www.epicgames.com/store/en-US/download
-- Download Unreal Engine: https://www.unrealengine.com/en-US/
+- Download the [Epic Games Launcher](https://www.epicgames.com/store/en-US/download)
+- Download [Unreal Engine](https://www.unrealengine.com/en-US/)
 -- ENSURE THAT YOUR VERSION IS 4.26chaos
 - Clone this repository
 - Launch the Unreal Engine from the Epic Games Launcher
