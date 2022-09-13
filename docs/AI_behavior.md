@@ -1,6 +1,6 @@
-## AI Behavior
+# AI Behavior
 
-# Observations
+## Observations
 
 AI doesn't seek out player car or run away. Most of the AI cars are spinning in circles,
 shooting aimlessly until the player gets within it's radius. From then, the car will shoot
@@ -15,7 +15,7 @@ AIs shooting is accurate on the player if the player is not moving quickly past 
 car. If the player car is moving at its max velocity, it seems the AI can't keep up with
 its targeting. While consistent, it's not good for even a beginner level AI.
 
-# Suggestions
+## Suggestions
 
 * Have enemy AI stop targetting each other
 * Get AI cars to path around the area, either running away from the player or seeking the player out
