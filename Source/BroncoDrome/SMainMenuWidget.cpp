@@ -67,8 +67,7 @@ void SMainMenuWidget::InitBroncoSave(int level) const {
               UBroncoSaveGame::StaticClass()))) {
     save->score = 0;
     save->mapsBeaten = level;
-    if (UGameplayStatics::SaveGameToSlot(save, save->SaveName, 0)) {
-    }
+    UGameplayStatics::SaveGameToSlot(save, save->SaveName, 0);
   }
 }
 
@@ -151,14 +150,12 @@ void SMainMenuWidget::OnHScoreDebug(const FText &InText, ETextCommit::Type) {
   if (!playerScore.IsNumeric()) {
     // THEN print an error
     UE_LOG(LogTemp, Warning, TEXT("NON-NUMERIC DIGITS FOUND IN SCORE"));
-  }
   // ELSE IF the playerScore is too short
-  else if (trimmed.Len() < 3 || trimmed.IsEmpty()) {
+  } else if (trimmed.Len() < 3 || trimmed.IsEmpty()) {
     // THEN print an error
     UE_LOG(LogTemp, Warning, TEXT("NAME NOT LONG ENOUGH"));
-  }
   // ELSE IF name has a number in it
-  else if (nameNumber) {
+  } else if (nameNumber) {
     // THEN print an error
     UE_LOG(LogTemp, Warning, TEXT("NAME CONTAINS NUMBERS"));
   } else {
@@ -395,9 +392,9 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                                                         // FText not FString
                                          .Justification(ETextJustify::Center)
                                          .ColorAndOpacity(FColor::Orange)]
-                  //-------------------USE THIS FOR PROOF OF CONCEPT/DEBUGGING
-                  // HIGH SCORES-----------------//
-                  //+ SVerticalBox::Slot()
+                  // -------------------USE THIS FOR PROOF OF CONCEPT/DEBUGGING
+                  // HIGH SCORES----------------- //
+                  // + SVerticalBox::Slot()
                   //	.Padding(ButtonPadding)
                   //	[
                   //		SNew(SEditableTextBox)
@@ -407,7 +404,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                   //	.Text(hscoreText)
                   //	.OnTextCommitted(this, &SMainMenuWidget::OnHScoreDebug)
                   //	]
-                  //---------------------------------------------------------------------------------------//
+                  // --------------------------------------------------------------------------------------- //
 
     ] +
          SOverlay::Slot()
