@@ -1,0 +1,7 @@
+﻿---
+BreakBeforeBraces: Attach
+Language: Cpp
+SpacesBeforeTrailingComments: '2'
+UseTab: Never
+
+...
