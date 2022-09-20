@@ -20,3 +20,11 @@ its targeting. While consistent, it's not good for even a beginner level AI.
 * Have enemy AI stop targetting each other
 * Get AI cars to path around the area, either running away from the player or seeking the player out
 * Fix collision collider not de-spawning when AI car is destroyed
+
+## States
+
+- Fighting
+The enemy runner should chase down the player while firing.
+
+- Fleeing
+The enemy runner should continually put more distance between themselves and the player in this state.
