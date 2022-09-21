@@ -4,9 +4,34 @@
 #include "../../Runner/Runner.h"
 #include "../../StageActors/ParticleSpawner.h"
 
+#include "Sound/SoundCue.h"
+#include "Components/InputComponent.h"
+#include "Components/AudioComponent.h"
+
 // Sets default values
 APowerUpMaster::APowerUpMaster()
 {
+	// Setup powerup sound effects
+	static ConstructorHelpers::FObjectFinder<USoundCue> speedCue(
+		TEXT("'/Game/Assets/Sound/Powerups/speed_Cue.speed_Cue'"));
+    speedAudioCue = speedCue.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> healthCue(
+        TEXT("'/Game/Assets/Sound/Powerups/health_Cue.health_Cue'"));
+    healthAudioCue = healthCue.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> damageUpCue(
+        TEXT("'/Game/Assets/Sound/Powerups/damageUp_Cue.damageUp_Cue'"));
+    damageUpAudioCue = damageUpCue.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> killBallCue(
+        TEXT("'/Game/Assets/Sound/Powerups/killBall_Cue.killBall_Cue'"));
+    killBallAudioCue = killBallCue.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> spongeCue(
+        TEXT("'/Game/Assets/Sound/Powerups/sponge_Cue.sponge_Cue'"));
+    spongeAudioCue = spongeCue.Object; 
+
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -84,23 +109,28 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 		switch (powerTypeIndex) {
 			case 0:
 				dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20); //Health
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
+				dynamic_cast<ARunner*>(OtherActor)->PlaySound(healthAudioCue);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
 				break;
 			case 1:
 				dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f); //Speed Which doesn't work and I don't know how to fix it
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
+                dynamic_cast<ARunner*>(OtherActor)->PlaySound(speedAudioCue);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
 				break;
 			case 2:
 				dynamic_cast<ARunner*>(OtherActor)->AddToDamage(10); //Damage
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
+				dynamic_cast<ARunner*>(OtherActor)->PlaySound(damageUpAudioCue);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
 				break;
 			case 3:
 				dynamic_cast<ARunner*>(OtherActor)->obstainShotAbsorbPower(5); //ShotAbsorb default 5
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power ShotAbsorb"), *GetDebugName(this)));
+				dynamic_cast<ARunner*>(OtherActor)->PlaySound(spongeAudioCue);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power ShotAbsorb"), *GetDebugName(this)));
 				break;
 			case 4:
 				dynamic_cast<ARunner*>(OtherActor)->obstainKillBallPower(1); //KillBall default 1
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power KillBall!"), *GetDebugName(this)));
+				dynamic_cast<ARunner*>(OtherActor)->PlaySound(killBallAudioCue);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power KillBall!"), *GetDebugName(this)));
 				break;
 
 		}

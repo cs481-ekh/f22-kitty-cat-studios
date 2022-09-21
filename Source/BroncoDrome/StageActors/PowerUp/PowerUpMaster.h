@@ -36,6 +36,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUpAbility, meta = (AllowPrivateAccess = "true"))
 		int powerTypeIndex; //What power it is. This is changed in the Unreal Engine Editor, not code.
 
+public:  // Sound
+    UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue *speedAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+    class USoundCue *healthAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+    class USoundCue *damageUpAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+    class USoundCue *killBallAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+    class USoundCue *spongeAudioCue;
+
 
 private:
 	void HideActor();
