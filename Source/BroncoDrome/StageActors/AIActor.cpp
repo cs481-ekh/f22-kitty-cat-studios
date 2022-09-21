@@ -272,6 +272,12 @@ void AAIActor::drawTargetLine(FVector location) {
 	}
 }
 
+/*
+* For now, I believe we should keep this function for testing
+* our tags and to shoot. If we use an if statement to have
+* raycast look for our AIRunner tag, then shoot, that might
+* give us better functionality
+*/
 void AAIActor::ShotDecision(FVector location) {
 	if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
 		shotCount++;
