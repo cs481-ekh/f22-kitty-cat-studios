@@ -15,7 +15,6 @@
 ### AI Target Locking
 
 * QueryLockOnEngage() **Line 224**
-    * For now, I believe we should keep this function for testing our tags and to shoot. If we use an if statement to have raycast look for our AIRunner tag, then shoot, that might give us better functionality.
 
 * QueryLockOnDisengage() **Line 237**
 
