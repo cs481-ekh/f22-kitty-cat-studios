@@ -3,6 +3,7 @@
 
 #include "AISpawner.h"
 #include "AIActor.h"
+#include "Math/Vector.h"
 
 // Sets default values
 AAISpawner::AAISpawner():AActor()
@@ -13,21 +14,26 @@ AAISpawner::AAISpawner():AActor()
 }
 
 // Used to find out how many AI there are
+/*
 int AAISpawner::GetAmountOfAI() {
 	return amountOfAI;
 }
+*/
 
 // Called when the game starts or when spawned
 void AAISpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (canSpawn)
+	if (canSpawn) // this function is currently not called as canSpawn isn't set till true till after the game startts
 	{
+          /*
 		for (amountOfAI = 0; amountOfAI < maxAI; amountOfAI++) {
 			//FVector loc = FVector(FMath::RandRange(bounds.Min.X, bounds.Max.X), FMath::RandRange(bounds.Min.Y, bounds.Max.Y), -100);
-			FVector loc = FVector(FMath::RandRange(bounds.Min.X, bounds.Max.X), FMath::RandRange(bounds.Min.Y, bounds.Max.Y), 400);
-
+            FVector loc = GetActorLocation();
+                        GEngine->AddOnScreenDebugMessage(
+                            -1, 5.f, FColor::Red,
+                            FString::Printf(TEXT("%f"), GetActorLocation().X));
 			FRotator roc = FRotator(0, 0, 0);
 			AAIActor *ai = GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, roc);
 			if (amountOfAI == 0) { //Defensive unit
@@ -48,7 +54,7 @@ void AAISpawner::BeginPlay()
 			 
 
 			aiActors.Add(ai);
-		}
+		}*/
 		//Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())->SetEnemiesLeft(maxAI);
 	}
 
@@ -59,18 +65,17 @@ void AAISpawner::BeginPlay()
 void AAISpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (canSpawn)
+	
+	if (canSpawn && spawnEnabled && !AISpawned)
 	{
-		if (amountOfAI < maxAI) {
-
-			for (int i = amountOfAI; i < maxAI; i++, amountOfAI++) {
-
-				FVector loc = FVector(FMath::RandRange(bounds.Min.X, bounds.Max.X), FMath::RandRange(bounds.Min.Y, bounds.Max.Y), 400);
-				FRotator roc = FRotator(0, 0, 0);
-				aiActors.Add(GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, roc));
-			}
-		}
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("SPAWNING!")));
+        FVector loc = GetActorLocation();
+		FRotator roc = FRotator(0, 0, 0);
+		aiActors.Add(GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, roc));
+        int len = sizeof(aiActors) / sizeof(aiActors[0]);
+                //GEngine->AddOnScreenDebugMessage(
+                //    -1, 5.f, FColor::Red, FString::Printf(TEXT("length: %d"), len));
+        AISpawned = true;
 	}
 }
 

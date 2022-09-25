@@ -33,9 +33,7 @@ private:
 		TSubclassOf<AAIActor> ActorToSpawn = AAIActor::StaticClass();
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-		int maxAI = 3;
-
-	int amountOfAI = 0;
+        bool spawnEnabled;
 	
 	FIntRect bounds = FIntRect(-5720, -3510, 6810, 3490);
 
@@ -46,7 +44,7 @@ private:
 	int actorLocationIndex = 0;
 
 	bool canSpawn = false;
+    bool AISpawned = false;
 
 	FTimerHandle handler;
-
 };
