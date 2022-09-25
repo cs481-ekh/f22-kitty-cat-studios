@@ -82,7 +82,10 @@ FHitResult* AAIActor::Raycast(FVector to)
 	FVector start = GetActorLocation();
 	bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, start + to, ECC_WorldDynamic, collisionParams);
 	if (hit) {
-		oHit = &outHit;
+	  oHit = &outHit;
+	  if (ARunnerObserver::IsRunnerVisible(*this, *player_runner, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST)){
+	    lastSeenPlayerLocation = player_runner->GetActorLocation(); // if player runner is seen, update location where player is last seen
+	  }
 		return oHit;
 	}
 	else {
