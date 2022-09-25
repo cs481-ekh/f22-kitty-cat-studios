@@ -1,4 +1,6 @@
 // // Copyright (C) Dromies 2021. All Rights Reserved.
+/* Marking for AI team to edit*/
+/* AIActor is parent class to AIGoKart *//* AIActor is parent class to AIGoKart */
 
 #pragma once
 
