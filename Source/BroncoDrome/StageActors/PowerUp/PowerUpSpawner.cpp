@@ -39,7 +39,7 @@ void APowerUpSpawner::Tick(float DeltaTime)
 
 }
 
-void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRotator rot */)
+void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRotator rot, FName tag */)
 {
 
 	const auto rot = this->GetActorRotation();
@@ -53,6 +53,7 @@ void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRota
 	
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Power Up Spawned"), *GetDebugName(this)));
 	powerUp = World->SpawnActor<APowerUpMaster>(powerUpClass, loc, rot, SpawnParams);
+        powerUp->PowerUpTag = (FName ("PowerUP"));
 		
 	GetWorldTimerManager().SetTimer(spawnTimeHandle, this, &APowerUpSpawner::spawnPowerUp, spawnTime, false);
 

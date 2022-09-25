@@ -19,6 +19,7 @@ public:
 	int GetTimeTillExpiration();
 
 
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 		class UStaticMeshComponent* Mesh;
@@ -35,6 +36,9 @@ public:
 		float RotationScale = 90.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUpAbility, meta = (AllowPrivateAccess = "true"))
 		int powerTypeIndex; //What power it is. This is changed in the Unreal Engine Editor, not code.
+  
+        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUpAbility, meta = (AllowPrivateAccess = "true"))
+                  FName PowerUpTag; // holds tag value
 
 
 private:
@@ -54,6 +58,8 @@ private:
 	bool gotten = false;
 
 	FDateTime spawnTime;
+
+
 
 protected:
 	// Called when the game starts or when spawned
