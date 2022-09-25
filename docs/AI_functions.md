@@ -15,8 +15,10 @@
 ### AI Target Locking
 
 * QueryLockOnEngage() **Line 224**
+    * This method is checking a timer and the Runner current lock on status to either start a timer to for locking on or start a count down for the remaining time the Runner can be locked on to it's current target. This method may be fine to keep unless we don't want the AI to stop targeting based off of a timer, instead distances and priority targets.
 
 * QueryLockOnDisengage() **Line 237**
+    * Just like QueryLockOnEngage(), this method is checking if it should stop targeting the opposing Runner.
 
 * LockOn() **Line 249**
     * This function will check if it's currently locked on to a Runner. If not, it'll attempt to locate the closest Runner and lock on. If it is locked on, it'll stop targetting whichever Runner it was targeting and stop the lock on timer.
