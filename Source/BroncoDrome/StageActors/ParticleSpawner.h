@@ -11,7 +11,12 @@ UENUM()
 enum ParticleType
 {
 	Poof UMETA(DisplayName = "Poof"),
-	BigPoof UMETA(DisplayName = "BigPoof")
+	BigPoof UMETA(DisplayName = "BigPoof"),
+	Health UMETA(DisplayName = "Health"),
+	DamageUp UMETA(DisplayName = "DamageUp"),
+	Speed UMETA(DisplayName = "Speed"),
+	KillBall UMETA(DisplayName = "KillBall"),
+	Sponge UMETA(DisplayName = "Sponge")
 };
 
 UCLASS()
@@ -37,7 +42,22 @@ public:		// Blueprint Members
 	UObjectPool* PoofPool;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
-	UObjectPool* BigPoofPool; 
+	UObjectPool* BigPoofPool;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
+	UObjectPool* HealthPool;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
+	UObjectPool* DamageUpPool;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
+	UObjectPool* SpeedPool;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
+	UObjectPool* KillBallPool;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
+	UObjectPool* SpongePool;
 
 public:		// Static API
 

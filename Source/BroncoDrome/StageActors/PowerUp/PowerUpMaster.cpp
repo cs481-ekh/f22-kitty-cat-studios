@@ -110,32 +110,39 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 			case 0:
 				dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20); //Health
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(healthAudioCue);
+				AParticleSpawner::SpawnParticle(Health, GetActorLocation(), FVector(), 1.f);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
 				break;
 			case 1:
 				dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f); //Speed Which doesn't work and I don't know how to fix it
                 dynamic_cast<ARunner*>(OtherActor)->PlaySound(speedAudioCue);
+				AParticleSpawner::SpawnParticle(Speed, GetActorLocation(), FVector(), 1.f);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
 				break;
 			case 2:
 				dynamic_cast<ARunner*>(OtherActor)->AddToDamage(10); //Damage
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(damageUpAudioCue);
+				AParticleSpawner::SpawnParticle(DamageUp, GetActorLocation(), FVector(), 1.f);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
 				break;
 			case 3:
 				dynamic_cast<ARunner*>(OtherActor)->obstainShotAbsorbPower(5); //ShotAbsorb default 5
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(spongeAudioCue);
+				AParticleSpawner::SpawnParticle(Sponge, GetActorLocation(), FVector(), 1.f);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power ShotAbsorb"), *GetDebugName(this)));
 				break;
 			case 4:
 				dynamic_cast<ARunner*>(OtherActor)->obstainKillBallPower(1); //KillBall default 1
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(killBallAudioCue);
+				AParticleSpawner::SpawnParticle(KillBall, GetActorLocation(), FVector(), 1.f);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power KillBall!"), *GetDebugName(this)));
+				break;
+			default:
+				AParticleSpawner::SpawnParticle(BigPoof, GetActorLocation(), FVector(), 1.f);
 				break;
 
 		}
 
-		AParticleSpawner::SpawnParticle(BigPoof, GetActorLocation(), FVector(), 1.f); //Poof it is gone
 		Destroy(); //Remove actor when picked up
 	}
 
