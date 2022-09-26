@@ -33,9 +33,13 @@ struct FDifficultyParameters {
   double fireRateMod;
 
   // constructor
-  FDifficultyParameters(FName diff) {
-    difficulty = diff;
+  FDifficultyParameters() {
+    difficulty = FName(TEXT("Medium"));
+    
+  }
 
+  void setParams(FName diff) {
+    difficulty = diff;
     switch (difficulty.ToString()) {
     case "Easy":
       damageMod = healthMod = fireRateMod = 0.8;
@@ -112,6 +116,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+        FDifficultyParameters DifficultyParams = new FDifficultyParameters();
 
 	FHitResult* Raycast(FVector to);
 	FVector GetDirection();
@@ -126,6 +131,6 @@ private:
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
 	void LockOn();
-        FDifficultyParameters DifficultyParams;
+        
 };
 

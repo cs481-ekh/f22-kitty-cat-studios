@@ -31,6 +31,9 @@ void AAISpawner::BeginPlay()
 
 			FRotator roc = FRotator(0, 0, 0);
 			AAIActor *ai = GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, roc);
+
+		        /* SET AI DIFFICULTY, MUST BE FURTHER IMPLEMENTED WHEN SPAWNING AI*/
+		        ai->DifficultyParams.setParams("Medium");
 			if (amountOfAI == 0) { //Defensive unit
 				ai->max_speed = 700.0f;
 				ai->shot_rate = 90;
