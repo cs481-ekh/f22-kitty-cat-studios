@@ -34,11 +34,16 @@ private:
 		TSubclassOf<AAIActor> ActorToSpawn = AAIActor::StaticClass();
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-		int maxAI = 3;
+        bool spawnEnabled = true; // Can be disabled for debugging or difficulty
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+        int respawnTimer= 200; // How often to spawn new AI, until max AI is reached
+
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+        int maxAI = 1; // Maximum amount of AI actors this spawner can spawn
 
 	int amountOfAI = 0;
-	
-	FIntRect bounds = FIntRect(-5720, -3510, 6810, 3490);
+  int respawnClock = 0;
 
 	FTimerHandle SpawnerTimerHandler;
 
@@ -47,7 +52,7 @@ private:
 	int actorLocationIndex = 0;
 
 	bool canSpawn = false;
+    bool AISpawned = false;
 
 	FTimerHandle handler;
-
 };
