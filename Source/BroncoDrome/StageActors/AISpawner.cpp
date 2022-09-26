@@ -1,8 +1,10 @@
 // // Copyright (C) Dromies 2021. All Rights Reserved.
+/* Marking for AI team to edit*/
 
 
 #include "AISpawner.h"
 #include "AIActor.h"
+#include "Math/Vector.h"
 
 // Sets default values
 AAISpawner::AAISpawner():AActor()
@@ -13,9 +15,11 @@ AAISpawner::AAISpawner():AActor()
 }
 
 // Used to find out how many AI there are
+/*
 int AAISpawner::GetAmountOfAI() {
 	return amountOfAI;
 }
+*/
 
 // Called when the game starts or when spawned
 void AAISpawner::BeginPlay()

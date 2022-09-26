@@ -1,4 +1,5 @@
 // // Copyright (C) Dromies 2021. All Rights Reserved.
+/* Marking for AI team to edit*/
 
 #pragma once
 
@@ -42,7 +43,7 @@ private:
         int maxAI = 1; // Maximum amount of AI actors this spawner can spawn
 
 	int amountOfAI = 0;
-    int respawnClock = 0;
+  int respawnClock = 0;
 
 	FTimerHandle SpawnerTimerHandler;
 
@@ -51,7 +52,7 @@ private:
 	int actorLocationIndex = 0;
 
 	bool canSpawn = false;
+    bool AISpawned = false;
 
 	FTimerHandle handler;
-
 };
