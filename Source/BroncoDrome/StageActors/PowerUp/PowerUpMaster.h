@@ -36,9 +36,6 @@ public:
 		float RotationScale = 90.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUpAbility, meta = (AllowPrivateAccess = "true"))
 		int powerTypeIndex; //What power it is. This is changed in the Unreal Engine Editor, not code.
-  
-        UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUpAbility, meta = (AllowPrivateAccess = "true"))
-                  FName PowerUpTag; // holds tag value
 
 
 private:

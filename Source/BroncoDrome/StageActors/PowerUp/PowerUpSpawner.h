@@ -13,10 +13,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Spawning PowerUP")
 		TSubclassOf<class APowerUpMaster> powerUpClass;
-
-        UPROPERTY(EditAnywhere, Category = "Tags")
-        TSubclassOf<class APowerUpMaster> powerUpTag;
-
+  
 	//Mesh
 	UPROPERTY(VisibleDefaultsOnly)
 		UStaticMeshComponent* PowerUpSpawnerMeshComponent;
