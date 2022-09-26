@@ -8,6 +8,7 @@
 
 * ShotDecision(FVector location) **Line 281**
     * For now, I believe we should keep this function for testing our tags and to shoot. If we use an if statement to have raycast look for our AIRunner tag, then shoot, that might give us better functionality.
+    * Called in Tick to make a shot decision every 30 frames
 
 * Fire() **Line 291**
     * This seems to be functional, it’s doing some checks and then spawning the object to try and hit the player or AI runner.
@@ -29,7 +30,11 @@
 ###  AI Movement
 
 * Raycast(FVector to) **Line 74**
+    * Using a single line raycast used for targeting Runners and getting distances"?".
 
 * GetDirection() **Line 92**
+    * Using the Raycast() method, we compare each directions distance to see if it's less than our latest closest value. If it is, update the closest value and the each result. 
 
 * MoveDecision(FVector location) **Line 164**
+    * Takes in GetDirection() as a variable and checks for what movement to do next. Also checks if the AI Runner is defensive or not.
+    * Called in Tick to make move decision every 3 frames
