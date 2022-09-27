@@ -28,3 +28,34 @@ The enemy runner should chase down the player while firing.
 
 - Fleeing
 The enemy runner should continually put more distance between themselves and the player in this state.
+
+                           Enemy runner
+                               NOT
+                           taking┼damage
+                           │           │
+                           │           │
+                       ┌───▼───┐       │
+                       │       ├───────┘
+                       │       │
+                       │Fighting
+  No buttons           │       │
+┌───pressed───┐        │       ├──Quit─────┐
+│             │        └───▲──┬┘  game     │
+│         ┌───▼───┐        │  │        ┌───▼───┐
+│         │       │        │  │        │       │
+│         │ Main  │ Game   │  │        │ End   │
+└─────────┤ Menu  ├─start──┘  │        │ Game  │
+          │       │           │        │       │
+          │       │       Enemy runner │       │
+          └───────┘       taking damage└───▲───┘
+                           │               │
+                       ┌───▼───┐           │
+                       │       │           │
+                       │       ├──Quit─────┘
+                       │Fleeing│  game
+                       │       │
+                       │       ├───────┐
+                       └───▲───┘       │
+                           │           │
+                           │Enemy runner
+                           │taking┼damage
