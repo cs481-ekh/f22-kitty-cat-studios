@@ -563,6 +563,9 @@ void ARunner::AddToHealth(int newHealth) {
 		if (!this->isAI) {
 			DisableInput(GetWorld()->GetFirstPlayerController());
 		}
+		else {
+            Destroy(); // If an AI just died, destroy the actor so it is no longer in game
+		}
 														
 		/* This code will make it wait three second to respawn. Source: https://www.codegrepper.com/code-examples/cpp/unreal+engine+delay+c%2B%2B */
 		
