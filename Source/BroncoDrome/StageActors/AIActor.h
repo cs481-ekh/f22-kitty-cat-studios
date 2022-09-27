@@ -40,15 +40,17 @@ struct FDifficultyParameters {
 
   void setParams(FName diff) {
     difficulty = diff;
-    switch (difficulty.ToString()) {
-    case "Easy":
+    if(diff == TEXT("Easy")) {
       damageMod = healthMod = fireRateMod = 0.8;
-    case "Medium":
-      damageMod = healthMod = fireRateMod = 1.0;
-    case "Hard":
-      damageMod = healthMod = fireRateMod = 1.2;
-    default:
-      damageMod = healthMod = fireRateMod = 1.0;
+    }
+    else if(diff == TEXT("Medium")) {
+      damageMod = healthMod = fireRateMod = 0.8;
+    }
+    else if(diff == TEXT("Hard")) {
+      damageMod = healthMod = fireRateMod = 0.8;
+    }
+    else { // this really shouldnt happen, but we'll just go with medium
+      damageMod = healthMod = fireRateMod = 0.8;
     }
   }
 
@@ -116,7 +118,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-        FDifficultyParameters DifficultyParams = new FDifficultyParameters();
+        FDifficultyParameters DifficultyParams;
 
 	FHitResult* Raycast(FVector to);
 	FVector GetDirection();
