@@ -29,6 +29,7 @@ The enemy runner should chase down the player while firing.
 - Fleeing
 The enemy runner should continually put more distance between themselves and the player in this state.
 
+```
                            Enemy runner
                                NOT
                            taking┼damage
@@ -59,3 +60,4 @@ The enemy runner should continually put more distance between themselves and the
                            │           │
                            │Enemy runner
                            │taking┼damage
+```
