@@ -514,11 +514,13 @@ void ARunner::AddToHealth(int newHealth) {
 	}
 	/* This is when a runner has lost all of its health */
 	else if (health <= 0) {
+        health = 0;
         if (this->isAI) {  // If an AI just died, destroy the actor and move on, otherwise update player accordingly
 			HUD->DecrementEnemiesLeft();
             Destroy();
             return;
-        } 
+        }
+        HUD->SetHealth(health);
 		//KillBall PowerUp
 		killBallOn = false;
 		killBallShots = 0;
@@ -551,7 +553,7 @@ void ARunner::AddToHealth(int newHealth) {
 														
 		/* This code will make it wait three second to respawn. Source: https://www.codegrepper.com/code-examples/cpp/unreal+engine+delay+c%2B%2B */
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning in 3 seconds..."), *GetDebugName(this)));
-		if (HUD->getLives()>1 && HUD->getLives()<3 && HUD->getEnemiesLeft() > 0) {
+		if (HUD->getLives()> 0 && HUD->getEnemiesLeft() > 0) {
 			HUD->SetTimeLeft(3);
 			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 				{
@@ -566,7 +568,6 @@ void ARunner::AddToHealth(int newHealth) {
 									Respawn();	// After three seconds, the runner respawns at one of the four corners
 									EnableInput(GetWorld()->GetFirstPlayerController());
 									Mover->Activate();
-									HUD->SetHealth(health);
 								}, 1, false
 							);
 						}, 1, false
@@ -574,6 +575,8 @@ void ARunner::AddToHealth(int newHealth) {
 				}, 1, false
 			);
 		}
+    } else if (!this->isAI) {
+        HUD->SetHealth(health);
 	}
 }
 
@@ -583,7 +586,7 @@ void ARunner::Respawn() {
 	int respawnAttemptCounter = 0;	// Keep track of how many times respawning has failed. If it's failed more than 5 times, it's probably stuck in an infinite loop so just give up
 	while (GetActorLocation() == CurrentLocation) {	// Continue attempting to relocate the runner until it has been moved to a respawn point
 		if (respawnAttemptCounter > 5) {
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning has been attempted multiple times without success, aborting respawn attempts to prevent an infinite loop!"), *GetDebugName(this)));
+			// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning has been attempted multiple times without success, aborting respawn attempts to prevent an infinite loop!"), *GetDebugName(this)));
 			return;
 		}
 		int selectedPoint = rand() % 4;	// Grab a random number 0 - 3, each number represents one of the map's corners
@@ -596,6 +599,7 @@ void ARunner::Respawn() {
 	SetActorEnableCollision(true);
 	SetActorTickEnabled(true);
 	health = 100;	// Reset to full health
+    HUD->SetHealth(health);
 	if (!this->isAI) HUD->SetDead(false);
 }
 
