@@ -14,6 +14,11 @@ AParticleSpawner::AParticleSpawner()
 
 	PoofPool = CreateDefaultSubobject<UObjectPool>(TEXT("Poof Pool"));
 	BigPoofPool = CreateDefaultSubobject<UObjectPool>(TEXT("Big Poof Pool"));
+	HealthPool = CreateDefaultSubobject<UObjectPool>(TEXT("Health Pool"));
+	DamageUpPool = CreateDefaultSubobject<UObjectPool>(TEXT("Damage Up Pool"));
+	SpeedPool = CreateDefaultSubobject<UObjectPool>(TEXT("Speed Pool"));
+	KillBallPool = CreateDefaultSubobject<UObjectPool>(TEXT("KillBall Pool"));
+	SpongePool = CreateDefaultSubobject<UObjectPool>(TEXT("Sponge Pool"));
 }
 
 // Called when the game starts or when spawned
@@ -51,6 +56,21 @@ APoolableObject* AParticleSpawner::SpawnParticle(ParticleType particle, const FV
 	case ParticleType::BigPoof:
 		pool = SingletonInstance->BigPoofPool;
 		break;
+    case ParticleType::Health:
+        pool = SingletonInstance->HealthPool;
+        break;
+    case ParticleType::DamageUp:
+      pool = SingletonInstance->DamageUpPool;
+      break;
+    case ParticleType::Speed:
+      pool = SingletonInstance->SpeedPool;
+      break;
+    case ParticleType::KillBall:
+      pool = SingletonInstance->KillBallPool;
+      break;
+    case ParticleType::Sponge:
+      pool = SingletonInstance->SpongePool;
+      break;
 	default:
 		UE_LOG(LogTemp, Warning, TEXT("Particle type has not been set up yet! Cannot spawn."));
 		return nullptr;
