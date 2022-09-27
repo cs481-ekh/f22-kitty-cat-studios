@@ -33,17 +33,29 @@ private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AAIActor> ActorToSpawn = AAIActor::StaticClass();
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-        bool spawnEnabled = true; // Can be disabled for debugging or difficulty
+	// Can be disabled for debugging or difficulty
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true")) 
+        bool spawnEnabled = true; 
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-        int respawnTimer= 200; // How often to spawn new AI, until max AI is reached
+	// How often to spawn new AI, until max AI is reached
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true")) 
+        int respawnTimer= 200; 
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-        int maxAI = 1; // Maximum amount of AI actors this spawner can spawn
+	// Maximum amount of AI actors this spawner can spawn
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true")) 
+        int maxAI = 1; 
+
+	// Difficulty of AI this spawner will spawn
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (GetOptions = "GetNameOptions", AllowPrivateAccess = "true")) 
+        FName difficultySetting = FName(TEXT("Medium"));  
+
+    UFUNCTION(CallInEditor)
+        TArray<FString> GetNameOptions() const {
+          return {TEXT("Easy"), TEXT("Medium"), TEXT("Hard")};
+        }
 
 	int amountOfAI = 0;
-  int respawnClock = 0;
+    int respawnClock = 0;
 
 	FTimerHandle SpawnerTimerHandler;
 
