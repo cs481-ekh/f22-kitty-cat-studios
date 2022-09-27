@@ -102,6 +102,8 @@ public:
 
 	bool defensive = false; //0=true; 1=false; 2=false;
 
+        FVector lastSeenPlayerLocation; // location of the last player as seen by raycast
+
 	AAIActor();
 
 	void UpdateLocation(FVector point);

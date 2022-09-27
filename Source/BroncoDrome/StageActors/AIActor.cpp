@@ -82,9 +82,9 @@ FHitResult* AAIActor::Raycast(FVector to)
 	FVector start = GetActorLocation();
 	bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, start + to, ECC_WorldDynamic, collisionParams);
 	if (hit) {
-		oHit = &outHit;
-		return oHit;
-	}
+	  oHit = &outHit;
+	  return oHit;
+	  }
 	else {
 		return nullptr;
 	}
@@ -222,14 +222,16 @@ void AAIActor::MoveDecision(FVector location) {
 
 //=======FOR AI SHOOTING
 
-void AAIActor::QueryLockOnEngage(){
-	// Check to see if timer is valid
-	if (!m_LockOnQueryTimer.IsValid() || !player_runner)
-		return;
-	// Query to see if other runner is visible
-	if (ARunnerObserver::IsRunnerVisible(*this, *player_runner, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST))
-		// Loop another engagement query timer
-		GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
+void AAIActor::QueryLockOnEngage() {
+        // Check to see if timer is valid
+        if (!m_LockOnQueryTimer.IsValid() || !player_runner)
+          return;
+        // Query to see if other runner is visible
+        if (ARunnerObserver::IsRunnerVisible(*this, *player_runner, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST)){
+          // Loop another engagement query timer
+          GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
+        }
+  
 	else
 		// Start disengage timer
 		GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnDisengage, LOCK_ON_NON_VISIBLE_TIME, false);
@@ -243,9 +245,9 @@ void AAIActor::QueryLockOnDisengage(){
 	if (ARunnerObserver::IsRunnerVisible(*this, *player_runner, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST))
 		// Return to engagemenet query timer
 		GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
-	else
-		// Stop targeting, target has been invisible for too long
-		player_runner = nullptr;
+	else 
+	      player_runner = nullptr;
+	
 }
 void AAIActor::LockOn(){
 	// Currently locked on?
@@ -309,6 +311,8 @@ void AAIActor::Fire() {
 void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direction) {
 	auto curr_location = GetActorLocation();
 	auto curr_direction = GetActorRotation();
+        lastSeenPlayerLocation = player_location;
+
 
 	// FOR RANDOM MOVES IF WE WANT
 	//FNavLocation ResultLocation = FNavLocation();
@@ -345,6 +349,8 @@ void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direct
 {
 	auto curr_location = GetActorLocation();
 	auto curr_direction = GetActorRotation();
+        lastSeenPlayerLocation = player_location;
+        
 
 	auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(player_location, curr_location);
 	auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
