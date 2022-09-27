@@ -14,8 +14,61 @@
 #include "../StageActors/OrbProjectile.h"
 
 #include "CoreMinimal.h"
+#include "DSP/AudioDebuggingUtilities.h"
 #include "GameFramework/Actor.h"
 #include "AIActor.generated.h"
+
+/**
+ * Struct to store and access difficulty parameters for AI actors
+ */
+USTRUCT(BlueprintType)
+struct FDifficultyParameters {
+  GENERATED_BODY()
+  
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FName difficulty;
+
+  double damageMod;
+  double healthMod;
+  double fireRateMod;
+
+  // constructor
+  FDifficultyParameters() {
+    difficulty = FName(TEXT("Medium"));
+    
+  }
+
+  void setParams(FName diff) {
+    difficulty = diff;
+    switch (difficulty.ToString()) {
+    case "Easy":
+      damageMod = healthMod = fireRateMod = 0.8;
+    case "Medium":
+      damageMod = healthMod = fireRateMod = 1.0;
+    case "Hard":
+      damageMod = healthMod = fireRateMod = 1.2;
+    default:
+      damageMod = healthMod = fireRateMod = 1.0;
+    }
+  }
+
+  /*
+   *get the difficulty modifier for ai damage 
+   */
+  double getDifficultyDamageModifier() {return damageMod;}
+
+  /*
+ *get the difficulty modifier for ai health 
+ */
+  double getDifficultyHealthModifier() {return healthMod;}
+
+  /*
+  *get the difficulty modifier for ai fire rate 
+  */
+  double getDifficultyFireRateModifier() {return fireRateMod;}
+  
+};
+
 
 UCLASS()
 class BRONCODROME_API AAIActor : public ARunner
@@ -63,6 +116,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+        FDifficultyParameters DifficultyParams = new FDifficultyParameters();
 
 	FHitResult* Raycast(FVector to);
 	FVector GetDirection();
@@ -77,5 +131,6 @@ private:
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
 	void LockOn();
+        
 };
 
