@@ -45,7 +45,6 @@ design careers to work on a relevant project for their capstone.
 | Annika McCain | General Programmer |
 | Cameron Sewell | General Programmer |
 
-
 ## Project Setup
 
 ### Development Environment

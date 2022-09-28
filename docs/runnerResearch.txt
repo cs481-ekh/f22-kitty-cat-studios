@@ -1,0 +1,31 @@
+runner research
+
+RunnerWheel.cpp:
+handles wheel width and radius
+skid threshold
+steering angle
+friction force
+soring rate and suspension
+
+runner.cpp
+handles movement and speed
+
+runner1
+big tires
+springy suspension 
+large friction force
+little to no slip
+slower but big jumps?
+
+runner 2
+fast
+small tires
+no spring in suspension
+lots of slip
+fast but can jump too high
+
+sprint 1 make the game handle multiple runner options
+sprint 1 runner 1
+sprint 2 runner 2
+sprint 3 new runner or fix/improve old ones
+sprint ?? designing the look of the runners could be part of a assets/graphics focused sprint.
