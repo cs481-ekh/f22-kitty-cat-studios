@@ -15,21 +15,21 @@ on:
 
 jobs:
   # We will have two workflows... build_linux and build_windows
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+ # build:
+ #   # The type of runner that the job will run on
+ #   runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks out our code
-      - uses: actions/checkout@v2
+ #   steps:
+ #     # Checks out our code
+ #     - uses: actions/checkout@v2
 
       # Runs an Unreal docker image and mounts our codebase as a source. For questions on this ask Mikey
-      - name: Ubuntu Build
-        run: |
-          ls
-          docker pull adamrehn/ue4-runtime:latest
-          docker run --mount type=bind,source=$(pwd),target=/home/ue4 adamrehn/ue4-runtime:latest /bin/bash -c "cd /home/ue4 && . ./build.sh"
+ #     - name: Ubuntu Build
+ #       run: |
+ #         ls
+ #         docker pull adamrehn/ue4-runtime:latest
+ #         docker run --mount type=bind,source=$(pwd),target=/home/ue4 adamrehn/ue4-runtime:latest /bin/bash -c "cd /home/ue4 && . ./build.sh"
   ### NOTE: I'm removing build_windows because it is eating too much time to debug and figure out how to get to work.
   ### This might be a good project for future semesters who know more about this than us. -Ben
   # build_windows:
