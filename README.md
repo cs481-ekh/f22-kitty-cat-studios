@@ -39,6 +39,11 @@ design careers to work on a relevant project for their capstone.
 | Quinn Shultz      | AI Programmer |
 | Damian Sappington | AI Programmer |
 | Camron Collinsworth | AI Programmer |
+| Andrew Jacobsson | AI Programmer |
+| Tavi Kohn | General Programmer |
+| Nathan Maroko | General Programmer |
+| Annika McCain | General Programmer |
+| Cameron Sewell | General Programmer |
 
 ## Project Setup
 
