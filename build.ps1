@@ -2,7 +2,6 @@
 # (i.e. "SET UNREAL_HOME <path_to_unreal>")
 
 $PROJECT_HOME=(Get-Location).Path
-$COOK_PROJECT=True
 
 Write-Output "REMOVING OLD BRONCODROME ARTIFACTS"
 Remove-Item -Recurse Output\*
