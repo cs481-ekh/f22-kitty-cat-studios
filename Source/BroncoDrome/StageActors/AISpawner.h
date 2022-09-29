@@ -1,4 +1,5 @@
 // // Copyright (C) Dromies 2021. All Rights Reserved.
+/* Marking for AI team to edit*/
 
 #pragma once
 
@@ -32,12 +33,29 @@ private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
 		TSubclassOf<AAIActor> ActorToSpawn = AAIActor::StaticClass();
 
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-		int maxAI = 3;
+	// Can be disabled for debugging or difficulty
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true")) 
+        bool spawnEnabled = true; 
+
+	// How often to spawn new AI, until max AI is reached
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true")) 
+        int respawnTimer= 200; 
+
+	// Maximum amount of AI actors this spawner can spawn
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true")) 
+        int maxAI = 1; 
+
+	// Difficulty of AI this spawner will spawn
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (GetOptions = "GetNameOptions", AllowPrivateAccess = "true")) 
+        FName difficultySetting = FName(TEXT("Medium"));  
+
+    UFUNCTION(CallInEditor)
+        TArray<FString> GetNameOptions() const {
+          return {TEXT("Easy"), TEXT("Medium"), TEXT("Hard")};
+        }
 
 	int amountOfAI = 0;
-	
-	FIntRect bounds = FIntRect(-5720, -3510, 6810, 3490);
+    int respawnClock = 0;
 
 	FTimerHandle SpawnerTimerHandler;
 
@@ -46,7 +64,7 @@ private:
 	int actorLocationIndex = 0;
 
 	bool canSpawn = false;
+    bool AISpawned = false;
 
 	FTimerHandle handler;
-
 };

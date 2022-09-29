@@ -19,6 +19,7 @@ public:
 	int GetTimeTillExpiration();
 
 
+
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 		class UStaticMeshComponent* Mesh;
@@ -70,6 +71,8 @@ private:
 	bool gotten = false;
 
 	FDateTime spawnTime;
+
+
 
 protected:
 	// Called when the game starts or when spawned

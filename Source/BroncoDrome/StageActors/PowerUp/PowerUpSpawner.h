@@ -13,7 +13,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Spawning PowerUP")
 		TSubclassOf<class APowerUpMaster> powerUpClass;
-
+  
 	//Mesh
 	UPROPERTY(VisibleDefaultsOnly)
 		UStaticMeshComponent* PowerUpSpawnerMeshComponent;

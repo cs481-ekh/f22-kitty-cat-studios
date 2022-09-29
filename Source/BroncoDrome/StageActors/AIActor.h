@@ -1,4 +1,6 @@
 // // Copyright (C) Dromies 2021. All Rights Reserved.
+/* Marking for AI team to edit*/
+/* AIActor is parent class to AIGoKart *//* AIActor is parent class to AIGoKart */
 
 #pragma once
 
@@ -14,6 +16,60 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "AIActor.generated.h"
+
+/**
+ * Struct to store and access difficulty parameters for AI actors
+ */
+USTRUCT(BlueprintType)
+struct FDifficultyParameters {
+  GENERATED_BODY()
+  
+  UPROPERTY(EditAnywhere, BlueprintReadWrite)
+  FName difficulty;
+
+  double damageMod;
+  double healthMod;
+  double fireRateMod;
+
+  // constructor
+  FDifficultyParameters() {
+    difficulty = FName(TEXT("Medium"));
+    
+  }
+
+  void setParams(FName diff) {
+    difficulty = diff;
+    if(diff == TEXT("Easy")) {
+      damageMod = healthMod = fireRateMod = 0.8;
+    }
+    else if(diff == TEXT("Medium")) {
+      damageMod = healthMod = fireRateMod = 0.8;
+    }
+    else if(diff == TEXT("Hard")) {
+      damageMod = healthMod = fireRateMod = 0.8;
+    }
+    else { // this really shouldnt happen, but we'll just go with medium
+      damageMod = healthMod = fireRateMod = 0.8;
+    }
+  }
+
+  /*
+   *get the difficulty modifier for ai damage 
+   */
+  double getDifficultyDamageModifier() {return damageMod;}
+
+  /*
+ *get the difficulty modifier for ai health 
+ */
+  double getDifficultyHealthModifier() {return healthMod;}
+
+  /*
+  *get the difficulty modifier for ai fire rate 
+  */
+  double getDifficultyFireRateModifier() {return fireRateMod;}
+  
+};
+
 
 UCLASS()
 class BRONCODROME_API AAIActor : public ARunner
@@ -46,6 +102,8 @@ public:
 
 	bool defensive = false; //0=true; 1=false; 2=false;
 
+        FVector lastSeenPlayerLocation; // location of the last player as seen by raycast
+
 	AAIActor();
 
 	void UpdateLocation(FVector point);
@@ -61,6 +119,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+        FDifficultyParameters DifficultyParams;
 
 	FHitResult* Raycast(FVector to);
 	FVector GetDirection();
@@ -75,5 +134,6 @@ private:
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
 	void LockOn();
+        
 };
 
