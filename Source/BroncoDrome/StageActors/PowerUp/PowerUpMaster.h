@@ -68,6 +68,8 @@ private:
 private:
 	bool hidden = false;
 
+	bool canExpire = false;
+
 	bool gotten = false;
 
 	FDateTime spawnTime;

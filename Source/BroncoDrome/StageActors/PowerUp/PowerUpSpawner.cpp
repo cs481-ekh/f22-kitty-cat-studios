@@ -50,7 +50,12 @@ void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRota
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
 	auto World = GetWorld();
-	
+		
+	if (powerUp != NULL) { //This is done to prevent powerup duplication
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Power Up Destroyed"), *GetDebugName(this)));
+        powerUp->Destroy();
+	}
+
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Power Up Spawned"), *GetDebugName(this)));
 	powerUp = World->SpawnActor<APowerUpMaster>(powerUpClass, loc, rot, SpawnParams);
 	GetWorldTimerManager().SetTimer(spawnTimeHandle, this, &APowerUpSpawner::spawnPowerUp, spawnTime, false);

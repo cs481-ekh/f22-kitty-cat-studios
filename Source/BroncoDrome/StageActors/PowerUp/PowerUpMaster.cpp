@@ -43,7 +43,8 @@ void APowerUpMaster::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUpMaster::ShowExpiration, 9.0f, false);
+	if (canExpire)
+		GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUpMaster::ShowExpiration, 9.0f, false);
 
 	Mesh->SetGenerateOverlapEvents(true);
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &APowerUpMaster::ExecuteFunction);
@@ -102,7 +103,8 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 		SetActorHiddenInGame(false);
 		SetActorEnableCollision(false);
 		SetActorTickEnabled(true);
-		GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUpMaster::HideActor, 1.5f, true);
+		if(canExpire)
+			GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUpMaster::HideActor, 1.5f, true);
 		RotationScale = 600.0f;
 
 		//Add various calls to car methods in this switch statement to accomplish power up stuff.
