@@ -15,11 +15,10 @@ AAISpawner::AAISpawner():AActor()
 }
 
 // Used to find out how many AI there are
-/*
 int AAISpawner::GetAmountOfAI() {
-	return amountOfAI;
+	return maxAI;
 }
-*/
+
 
 // Called when the game starts or when spawned
 void AAISpawner::BeginPlay()

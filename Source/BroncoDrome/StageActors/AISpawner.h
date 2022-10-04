@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "BroncoDrome/StageActors/AIActor.h"
+#include "BroncoDrome/StageActors/AISpawnerController.h"
 #include "GameFramework/Actor.h"
 #include "AISpawner.generated.h"
 
