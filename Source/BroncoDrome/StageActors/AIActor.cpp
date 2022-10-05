@@ -271,18 +271,26 @@ void AAIActor::drawTargetLine(FVector location) {
 	if (player_runner) {
 		ARunner::AimBlaster(player_runner, GetWorld()->GetDeltaSeconds());
 		LockOn();
-		// Fire();
+		
+		if (shotCount < shot_rate) {  // shot timer (currently set to
+                                              // one shot every 30 frames
+			shotCount++;
+            return;
+        }
+        shotCount = 0;  // Reset timer
+        // drawTargetLine(location);
+        Fire();
 	}
 }
 
 void AAIActor::ShotDecision(FVector location) {
-	if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
-		shotCount++;
-		return;
-	}
-	shotCount = 0; //Reset timer
+	//if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
+		//shotCount++;
+		//return;
+	//}
+	//shotCount = 0; //Reset timer
 	// drawTargetLine(location);
-	Fire();
+	//Fire();
 }
 
 void AAIActor::Fire() {
