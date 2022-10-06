@@ -13,9 +13,21 @@ AAISpawner::AAISpawner():AActor()
 
 }
 
-// Used to find out how many AI there are
-int AAISpawner::GetAmountOfAI() {
-	return maxAI;
+bool AAISpawner::Spawn(FName difficultySetting) 
+{
+  if ((onlySpawnOnce && amountSpawned > 0) || !spawnEnabled) return false;
+  FVector loc = GetActorLocation();
+  FRotator roc = FRotator(0, 0, 0);
+  AAIActor *ai = GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, roc);
+  // Uncomment the following line at a future date when difficulty settings are implemented
+  // ai->DifficultyParams.setParams(difficultySetting);
+  amountSpawned++;
+  return true;
+}
+
+FVector AAISpawner::GetSpawnLocation() {
+  FVector loc = GetActorLocation();
+  return loc;
 }
 
 
@@ -23,7 +35,7 @@ int AAISpawner::GetAmountOfAI() {
 void AAISpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(handler, this, &AAISpawner::AllowSpawning, 12.0f, false); // Begin spawning AI
+	//GetWorldTimerManager().SetTimer(handler, this, &AAISpawner::AllowSpawning, 12.0f, false); // Begin spawning AI
 }
 
 // Called every frame, will currently spawn AI (at the spawner location) based on the respawn timer interval until max have spawned. AI currently do not respawn
@@ -31,6 +43,7 @@ void AAISpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
+	/*
 	respawnClock++;
 	if (respawnClock > respawnTimer && canSpawn && spawnEnabled && amountOfAI < maxAI)
 	{
@@ -43,6 +56,7 @@ void AAISpawner::Tick(float DeltaTime)
         amountOfAI++;
         respawnClock = 0;
 	}
+	*/
 }
 
 // Enable AI spawning
