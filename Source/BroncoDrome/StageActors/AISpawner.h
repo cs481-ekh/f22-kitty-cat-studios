@@ -1,5 +1,4 @@
-// // Copyright (C) Dromies 2021. All Rights Reserved.
-/* Marking for AI team to edit*/
+// Copyright (C) KITTY CAT STUDIOS 2022. All Rights Reserved.
 
 #pragma once
 
