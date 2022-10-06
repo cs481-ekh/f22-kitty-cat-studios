@@ -150,6 +150,9 @@ private: // HUD
 	ARunnerHUD *HUD;
 	float speedUpdateTimer = 0; 
 
+public:
+	ARunnerHUD* GetRunnerHUD();
+
 public: // Input functions
 	void ThrottleInput(float in);
 	void SteeringInput(float in);

@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "PowerupWidget.h"
+#include "Blueprint/UserWidget.h"
 #include "PowerUpMaster.generated.h"
 
 UCLASS()
@@ -36,6 +38,8 @@ public:
 		float RotationScale = 90.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUpAbility, meta = (AllowPrivateAccess = "true"))
 		int powerTypeIndex; //What power it is. This is changed in the Unreal Engine Editor, not code.
+	UPROPERTY(BlueprintReadOnly)
+		class UPowerupWidget *powerupTextWidget;
 
 public:  // Sound
     UPROPERTY(BlueprintReadOnly, Category = "Audio")

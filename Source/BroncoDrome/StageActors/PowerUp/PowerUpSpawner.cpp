@@ -53,6 +53,7 @@ void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRota
 		
 	if (powerUp != NULL) { //This is done to prevent powerup duplication
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Power Up Destroyed"), *GetDebugName(this)));
+		powerUp->SetActorEnableCollision(false);
         powerUp->Destroy();
 	}
 

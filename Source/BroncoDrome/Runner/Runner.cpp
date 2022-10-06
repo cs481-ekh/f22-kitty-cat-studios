@@ -792,3 +792,7 @@ void ARunner::MovementDriftState::Tick(float DeltaTime)
 {
 	// TODO: Simulate drift, rotate kart at root bone?
 }
+
+// Get Runner HUD ------------------------------------------
+
+ARunnerHUD* ARunner::GetRunnerHUD() { return HUD; }
