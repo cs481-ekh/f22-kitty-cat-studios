@@ -157,9 +157,15 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 			HUD->ShowPowerupWidget(selectedPowerUp);			
 		}
         
+		powerupSpawner->PowerUpDestroyed();
 		Destroy(); //Remove actor when picked up
 	}
 
+}
+
+void APowerUpMaster::SetSpawner(APowerUpSpawner* spawner) 
+{
+  powerupSpawner = spawner;
 }
 
 int APowerUpMaster::GetTimeTillExpiration()

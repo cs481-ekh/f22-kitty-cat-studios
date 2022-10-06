@@ -24,7 +24,6 @@ void APowerUpSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetWorldTimerManager().SetTimer(spawnTimeHandle, this, &APowerUpSpawner::spawnPowerUp, spawnTime, false);
 	spawnPowerUp();
 
 
@@ -39,6 +38,11 @@ void APowerUpSpawner::Tick(float DeltaTime)
 
 }
 
+void APowerUpSpawner::PowerUpDestroyed() 
+{
+	GetWorldTimerManager().SetTimer(spawnTimeHandle, this, &APowerUpSpawner::spawnPowerUp, spawnTime, false);
+}
+
 void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRotator rot, FName tag */)
 {
 
@@ -49,17 +53,11 @@ void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRota
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
-	auto World = GetWorld();
-		
-	if (powerUp != NULL) { //This is done to prevent powerup duplication
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Power Up Destroyed"), *GetDebugName(this)));
-		powerUp->SetActorEnableCollision(false);
-        powerUp->Destroy();
-	}
+	auto World = GetWorld();		
 
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Power Up Spawned"), *GetDebugName(this)));
 	powerUp = World->SpawnActor<APowerUpMaster>(powerUpClass, loc, rot, SpawnParams);
-	GetWorldTimerManager().SetTimer(spawnTimeHandle, this, &APowerUpSpawner::spawnPowerUp, spawnTime, false);
+    powerUp->SetSpawner(this);
 
 }
 

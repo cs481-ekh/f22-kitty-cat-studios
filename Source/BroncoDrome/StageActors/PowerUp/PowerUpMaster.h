@@ -2,8 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PowerupWidget.h"
 #include "Blueprint/UserWidget.h"
+#include "PowerUpSpawner.h"
 #include "PowerUpMaster.generated.h"
 
 UCLASS()
@@ -57,6 +57,8 @@ public:  // Sound
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
     class USoundCue *spongeAudioCue;
 
+public:
+    void SetSpawner(APowerUpSpawner *spawner);
 
 private:
 	void HideActor();
@@ -77,6 +79,8 @@ private:
 	bool gotten = false;
 
 	FDateTime spawnTime;
+
+	APowerUpSpawner *powerupSpawner;
 
 
 
