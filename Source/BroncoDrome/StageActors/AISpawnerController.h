@@ -15,9 +15,6 @@ public:
 	AAISpawnerController();
     // Called every frame
     virtual void Tick(float DeltaTime) override;
-
-    int getMaxAI();
-
     // void decrementActiveAI(); TODO future function, will decrement activeAI and increment totalDead (will be called when AI runner is destroyed)
 
 
@@ -27,19 +24,31 @@ protected:
 
 
 private:
-
+    void Init();
+    void SpawnCheck();
+    void AttemptSpawn(AActor* spawnPoint);
+    // Total number of spawn points on this map
+    int numSpawnPoints = 0;
     // Number of AI currently in the game
     int activeAI = 0; 
     // Store total number of dead AI
     int totalDead = 0;
+    // Store total number of AI that have been spawned over the game's lifetime
+    int totalSpawned = 0;
+    // List of spawn points
+    TArray<AActor*> spawnPoints;
+    // Init Timer handler
+    FTimerHandle handler;
+    // Spawn timer handler
+    FTimerHandle SpawnTimerHandler;
 
     // Interval to check (in seconds) if an AI needs to be respawned
     UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-        int respawnCheckInSecs = 5;
+        float respawnCheckInSecs = 5.0f;
 
     // Maximum amount of AI actors that are allowed to be spawned on the map. This should typically be equal to or lower than the number of AISpawner points
     UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-        int maxAIs = 5; 
+        int maxAI = 5; 
 
     // The total number of times AI can be spawned in a given map (correlating to totalDead). This would likely only be relevant in a wave-type gamemode
     UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
