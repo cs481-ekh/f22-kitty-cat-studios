@@ -575,7 +575,9 @@ void ARunner::AddToHealth(int newHealth) {
 				}, 1, false
 			);
 		}
-    } else if (!this->isAI) {
+    }
+	
+	if (!this->isAI) {
         HUD->SetHealth(health);
 	}
 }
