@@ -138,6 +138,12 @@ public: // Sound
 	class USoundCue* laserAudioCue;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* spongeBreakAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* spongeTinkAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
 	class UAudioComponent* engineAudioComponent;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
