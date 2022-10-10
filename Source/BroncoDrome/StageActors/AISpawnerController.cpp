@@ -3,6 +3,7 @@
 
 #include "AISpawner.h"
 #include "AIActor.h"
+#include "Math/Vector.h"
 
 // Sets default values
 AAISpawnerController::AAISpawnerController() : AActor() {
@@ -32,6 +33,7 @@ void AAISpawnerController::Init() {
             AAISpawnerController::AttemptSpawn(sp);
 		}
 	}
+    AAISpawnerController::UpdateRunners();
 
 	// Set spawnCheck interval. Will check if AI need to be respawned based on respawnCheckInSecs
 	GetWorldTimerManager().SetTimer(SpawnTimerHandler, this, &AAISpawnerController::SpawnCheck, respawnCheckInSecs, true);	
@@ -40,20 +42,46 @@ void AAISpawnerController::Init() {
 // Is called based on respawnCheckInSecs
 // TODO: Account for respawnRadius, maxRespawns, waveSpawning
 void AAISpawnerController::SpawnCheck() {
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWN CHECK, active AI: %d"), activeAI));
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWN CHECK, active AI: %d"), activeAI));
 	if (activeAI >= maxAI) return;
+    AAISpawnerController::UpdateRunners();
 	if (randomSpawning) { // Randomly spawns a single AI at a random spawn point
-		int randSpawnPoint = FMath::RandRange(0, (numSpawnPoints - 1));
-        int currSpawnPoint = 0;
+		
+        // First check for valid spawn points (if there is a free spawn point where there is no runner in its radius)
+		int numValidSpawnPoints = 0;
+		TArray<AActor*> validSpawnPoints;
 		for (auto &sp: spawnPoints) {
-            if (currSpawnPoint == randSpawnPoint) {
-			    AAISpawnerController::AttemptSpawn(sp);
-				//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWNED AI AT SPAWNER: %d"), currSpawnPoint));
-				return;
-            } else {
-			    currSpawnPoint++;
-		    }
+             float curDistance;
+             bool validSpawn = true;
+             for (auto &runner : runners) {
+                 curDistance = FVector::Dist(sp->GetActorLocation(), runner->GetActorLocation());
+                 if (curDistance < respawnRadius) {
+                     validSpawn = false;
+                     break;
+				 }
+             }
+             if (validSpawn) {
+				 numValidSpawnPoints++;
+				 validSpawnPoints.Add(sp);
+             }
 		}
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Valid spawn points: %d"), numValidSpawnPoints));
+
+		// If there's a valid spawn point, spawn a new runner at a random valid spawn point
+		if (numValidSpawnPoints > 0) {
+			int randSpawnPoint = FMath::RandRange(0, (numValidSpawnPoints - 1));
+			int currSpawnPoint = 0;
+			for (auto &sp: validSpawnPoints) {
+				if (currSpawnPoint == randSpawnPoint) {
+					AAISpawnerController::AttemptSpawn(sp);
+					 GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWNED AI AT SPAWNER: %d"), currSpawnPoint));
+					return;
+				} else {
+					currSpawnPoint++;
+				}
+			}
+		}
+
 	} else {
 		for (auto &sp: spawnPoints) {
 			if (activeAI < maxAI) {
@@ -75,6 +103,11 @@ void AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
 void AAISpawnerController::DecrementActiveAI() {
   activeAI--;
   //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("ACTIVE AI DECREMENTED, NEW VAL: %d"), activeAI));
+}
+
+// Updates the list of AI runners
+void AAISpawnerController::UpdateRunners() {
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIActor::StaticClass(), runners);
 }
 
 // Called every frame, will currently spawn AI (at the spawner location) based on the respawn timer interval until max have spawned. AI currently do not respawn
