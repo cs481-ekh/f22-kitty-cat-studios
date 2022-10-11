@@ -48,6 +48,9 @@ struct FDifficultyParameters {
     for (AActor* actor: FoundActors) {
       ARunner* current = (ARunner*) actor;
       if(!current->isAI) {
+        if (current->numDeaths > 0) {
+          // update things
+        }
         if (current->numDeaths > 1) {
           // update things
         }
