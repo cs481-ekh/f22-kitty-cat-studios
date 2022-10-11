@@ -2,7 +2,7 @@
 
 
 #include "AISpawner.h"
-#include "AIActor.h"
+#include "../Runner/Runner.h"
 #include "Math/Vector.h"
 
 // Sets default values
@@ -112,7 +112,14 @@ void AAISpawnerController::DecrementActiveAI() {
 
 // Updates the list of AI runners
 void AAISpawnerController::UpdateRunners() {
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAIActor::StaticClass(), runners);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARunner::StaticClass(), runners);
+    /* numRunners should be equal to activeAI + 1 (since it includes player)
+    int numRunners = 0;
+	for (auto &runner : runners) {
+          numRunners++;
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("num runners: %d"), numRunners));*/
 }
 
 // Called every frame, will currently spawn AI (at the spawner location) based on the respawn timer interval until max have spawned. AI currently do not respawn
