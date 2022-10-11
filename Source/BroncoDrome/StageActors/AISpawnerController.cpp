@@ -20,7 +20,7 @@ void AAISpawnerController::BeginPlay() {
     for (auto &Spwner : spawnPoints) {
         numSpawnPoints++;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Cyan, FString::Printf(TEXT("NUMBER OF SPAWN POINTS: %d"), numSpawnPoints));
+	//GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Cyan, FString::Printf(TEXT("NUMBER OF SPAWN POINTS: %d"), numSpawnPoints));
 
 	GetWorldTimerManager().SetTimer(handler, this, &AAISpawnerController::Init, 12.0f, false);  // Begin spawning AI after cutscene ends
 }
@@ -38,9 +38,9 @@ void AAISpawnerController::Init() {
 }
 
 // Is called based on respawnCheckInSecs
-// TODO: Account for respawnRadius, maxRespawns, waveSpawning, dead AI
+// TODO: Account for respawnRadius, maxRespawns, waveSpawning
 void AAISpawnerController::SpawnCheck() {
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWN CHECK, active AI: %d"), activeAI));
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWN CHECK, active AI: %d"), activeAI));
 	if (activeAI >= maxAI) return;
 	if (randomSpawning) { // Randomly spawns a single AI at a random spawn point
 		int randSpawnPoint = FMath::RandRange(0, (numSpawnPoints - 1));
@@ -48,7 +48,7 @@ void AAISpawnerController::SpawnCheck() {
 		for (auto &sp: spawnPoints) {
             if (currSpawnPoint == randSpawnPoint) {
 			    AAISpawnerController::AttemptSpawn(sp);
-				GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWNED AI AT SPAWNER: %d"), currSpawnPoint));
+				//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWNED AI AT SPAWNER: %d"), currSpawnPoint));
 				return;
             } else {
 			    currSpawnPoint++;
@@ -69,6 +69,12 @@ void AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
     ((AAISpawner*)spawnPoint)->Spawn("Medium");
     activeAI++;
 	totalSpawned++;
+}
+
+// Decrements the current number of ActiveAI (this is done when an AI runner dies) so that AI will respawn
+void AAISpawnerController::DecrementActiveAI() {
+  activeAI--;
+  //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("ACTIVE AI DECREMENTED, NEW VAL: %d"), activeAI));
 }
 
 // Called every frame, will currently spawn AI (at the spawner location) based on the respawn timer interval until max have spawned. AI currently do not respawn

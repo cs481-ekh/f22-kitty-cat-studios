@@ -15,7 +15,7 @@ public:
 	AAISpawnerController();
     // Called every frame
     virtual void Tick(float DeltaTime) override;
-    // void decrementActiveAI(); TODO future function, will decrement activeAI and increment totalDead (will be called when AI runner is destroyed)
+    void DecrementActiveAI();
 
 
 protected:
