@@ -8,7 +8,7 @@ In Fall 2022, the spawning system for BroncoDrome was overhauled. Previously, sp
 
 The relevant controller files are located at 
 ```
-/Source/BroncoDrome/StageActors/AISpawnerController.cpp and .h
+/Source/BroncoDrome/StageActors/AISpawnerController.cpp and /Source/BroncoDrome/StageActors/AISpawnerController.h
 ```
 
 In essence, the spawner controller will grab and store all other spawner objects on the map as well as periodically keep track of the current number of active runners. It will use this information and its configured parameters to call spawn methods on the AISpawners and respawn AI at the available spawn points.
@@ -19,7 +19,7 @@ In game, you can search for an actor object **MyAISpawnerController** which is a
 
 The relevant spawner files are located at 
 ```
-/Source/BroncoDrome/StageActors/AISpawner.cpp and .h
+/Source/BroncoDrome/StageActors/AISpawner.cpp and /Source/BroncoDrome/StageActors/AISpawner.h
 ```
 
 These spawner points are designed to be easy for map creators to place and shift around. They have a couple of unique properties for debugging, but in general their default values are preferred and only their location should be modified.
