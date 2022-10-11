@@ -12,10 +12,13 @@
 #include "../Runner/Runner.h"
 #include "../StageActors/RunnerObserver.h"
 #include "../StageActors/OrbProjectile.h"
-
+#include "Engine/World.h"
 #include "CoreMinimal.h"
+#include "AITestsCommon.h"
 #include "GameFramework/Actor.h"
 #include "AIActor.generated.h"
+
+
 
 /**
  * Struct to store and access difficulty parameters for AI actors
@@ -35,6 +38,22 @@ struct FDifficultyParameters {
   FDifficultyParameters() {
     difficulty = FName(TEXT("Medium"));
     
+  }
+
+  void updateDifficulty() {
+    // get all actors 
+    TArray<AActor*> FoundActors; 
+    UGameplayStatics::GetAllActorsOfClass(FAITestHelpers::GetWorld(), ARunner::StaticClass(), FoundActors);
+
+    for (AActor* actor: FoundActors) {
+      ARunner* current = (ARunner*) actor;
+      if(!current->isAI) {
+        if (current->numDeaths > 1) {
+          // update things
+        }
+      }
+    }
+
   }
 
   void setParams(FName diff) {
