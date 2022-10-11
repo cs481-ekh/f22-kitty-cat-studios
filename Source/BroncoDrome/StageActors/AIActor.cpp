@@ -68,7 +68,11 @@ void AAIActor::Tick(float DeltaTime)
 		m_TorqueInput.Z = 0;
 	}
 	// Mover->SetSteeringInput(in);
-// MoveTowardsPlayer();
+
+	// TODO: Set defensive variable according to runner health
+	// TODO: Remove if already handled in the Movement function
+	if(!defensive)
+          MoveTowardsPlayer(GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 
 }
 

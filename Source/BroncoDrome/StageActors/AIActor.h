@@ -100,7 +100,7 @@ public:
 	int aiId;
 	int shot_rate = 90; //interval for AI shots //0=90; 1= 50; 2= 70;
 
-	bool defensive = false; //0=true; 1=false; 2=false;
+	bool defensive = false; // fighting / fleeing state variable
 
         FVector lastSeenPlayerLocation; // location of the last player as seen by raycast
 
