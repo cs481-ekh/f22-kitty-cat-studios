@@ -1,5 +1,5 @@
 // // Copyright (C) Team Gregg 2022. All Rights Reserved.
-
+#pragma once
 
 #include "PowerUpSpawner.generated.h"
 
@@ -29,6 +29,7 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+    void PowerUpDestroyed();
 	APowerUpMaster* powerUp;
 
 	UFUNCTION()

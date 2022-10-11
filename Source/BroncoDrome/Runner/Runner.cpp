@@ -41,6 +41,16 @@ ARunner::ARunner()
 	);
 	laserAudioCue = laserCue.Object;
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> spongeBreakCue(
+		TEXT("'/Game/Assets/Sound/Powerups/spongeBroke_Cue.spongeBroke_Cue'")
+	);
+	spongeBreakAudioCue = spongeBreakCue.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> spongeTinkCue(
+		TEXT("'/Game/Assets/Sound/Powerups/spongeTink_Cue.spongeTink_Cue'")
+	);
+	spongeTinkAudioCue = spongeTinkCue.Object;
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> engineCue(
 		TEXT("'/Game/Assets/Sound/Engine/EngineCue.EngineCue'")
 	);
@@ -644,8 +654,11 @@ void ARunner::hitMe(int damage) {
 	if (shotAbsorbOn) { //ShotAbsorb third (Not timed or damage constrainted but is shot constrainted instead) 
 		shotAbsorbHits = shotAbsorbHits - 1;
 		if (shotAbsorbHits <= 0) {
+			PlaySound(spongeBreakAudioCue);
 			shotAbsorbOn = false;
+			return;
 		}
+		PlaySound(spongeTinkAudioCue);
 	} else { //No power ups prevent the Shot from hitting runner
 		AddToHealth(damage); //Damage should be negative when passed into function
 	}
@@ -792,3 +805,7 @@ void ARunner::MovementDriftState::Tick(float DeltaTime)
 {
 	// TODO: Simulate drift, rotate kart at root bone?
 }
+
+// Get Runner HUD ------------------------------------------
+
+ARunnerHUD* ARunner::GetRunnerHUD() { return HUD; }

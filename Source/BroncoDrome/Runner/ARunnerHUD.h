@@ -9,6 +9,7 @@
 #include "PauseWidgets.h"
 #include "WinWidget.h"
 #include "LoseWidget.h"
+#include "../StageActors/PowerUp/PowerupWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "ARunnerHUD.generated.h"
 
@@ -36,6 +37,9 @@ public:	// Constructors
 	//LoseBP Variables
 	UPROPERTY(EditDefaultsOnly, Category = "LoseWidget")
 		TSubclassOf<UUserWidget> LoseWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "PowerupWidget")
+		TSubclassOf<UUserWidget> PowerupWidgetClass;
 	UPROPERTY()
 		UWorld* world;
 
@@ -61,6 +65,9 @@ private:	// Members
 	//Widget for the Lose Screen
 	UPROPERTY()
 		ULoseWidget* m_LoseWidget;
+
+	UPROPERTY()
+		UPowerupWidget* m_PowerupWidget;
 
 		
 
@@ -89,4 +96,5 @@ public:
 	void DecrementAnemonies();
 	int getLives();
 	int getEnemiesLeft();
+	void ShowPowerupWidget(FString powerupText);
 };
