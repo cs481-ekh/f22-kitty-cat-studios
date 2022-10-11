@@ -69,6 +69,7 @@ void AAIActor::Tick(float DeltaTime)
 	}
 	// Mover->SetSteeringInput(in);
 
+	// TODO: Set defensive variable according to runner health
 	// TODO: Remove if already handled in the Movement function
 	if(!defensive)
           MoveTowardsPlayer(GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
