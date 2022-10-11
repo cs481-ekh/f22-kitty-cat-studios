@@ -582,6 +582,7 @@ void ARunner::AddToHealth(int newHealth) {
     }
 	
 	if (!this->isAI) {
+	  this->numDeaths ++; // increase the number of deaths
         HUD->SetHealth(health);
 	}
 }

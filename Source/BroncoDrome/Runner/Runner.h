@@ -116,6 +116,7 @@ public: // Attributes
 	int playerDamage = 20; //Default damage
 	int gameTime = 180; //Time per level, in seconds
 	int AIToKill = 3;
+        int numDeaths = 0;
 	FTimerHandle GameTimeHandler; //For tick
 
 	//KillBall
