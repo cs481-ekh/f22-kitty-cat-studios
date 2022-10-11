@@ -40,6 +40,12 @@ struct FDifficultyParameters {
     
   }
 
+
+  void decrementDifficulty() {
+    damageMod = healthMod = fireRateMod -= 0.1;
+
+  }
+
   void updateDifficulty() {
     // get all actors 
     TArray<AActor*> FoundActors; 
@@ -49,10 +55,10 @@ struct FDifficultyParameters {
       ARunner* current = (ARunner*) actor;
       if(!current->isAI) {
         if (current->numDeaths > 0) {
-          // update things
+          decrementDifficulty();
         }
         if (current->numDeaths > 1) {
-          // update things
+          decrementDifficulty();
         }
       }
     }
