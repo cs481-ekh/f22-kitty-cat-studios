@@ -26,6 +26,7 @@ protected:
 private:
     void Init();
     void SpawnCheck();
+    void UpdateRunners();
     void AttemptSpawn(AActor* spawnPoint);
     // Total number of spawn points on this map
     int numSpawnPoints = 0;
@@ -37,6 +38,8 @@ private:
     int totalSpawned = 0;
     // List of spawn points
     TArray<AActor*> spawnPoints;
+    // List of active runners
+    TArray<AActor*> runners;
     // Init Timer handler
     FTimerHandle handler;
     // Spawn timer handler
@@ -56,7 +59,7 @@ private:
 
     // Radius around the spawner that must be clear of other actors to successfully spawn at a particular spawn point
     UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-        int respawnRadius = 300; 
+        int respawnRadius = 1000; 
 
     // If true, at next respawn will choose a random valid spawn point, otherwise spawns equally in order
     UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
