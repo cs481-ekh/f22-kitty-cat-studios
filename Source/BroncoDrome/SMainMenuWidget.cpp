@@ -37,7 +37,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs) {
         FPaths::ConvertRelativePathToFull(FPaths::ProjectConfigDir()) +
         TEXT("/highScores.txt");
     FFileHelper::SaveStringToFile(
-        TEXT(""), *FilePath, FFileHelper::EEncodingOptions::AutoDetect,
+        TEXT("BEN 3000\nMAR 2500\nDJR 2000\nDOU 1500\nROS 1000\nJOY 800\nSAU 600\nPLC 400\nTST 200\nDBG 0"), *FilePath, FFileHelper::EEncodingOptions::AutoDetect,
         &IFileManager::Get(), EFileWrite::FILEWRITE_Append);
   }
 
