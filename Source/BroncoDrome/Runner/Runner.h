@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "WheeledVehiclePawn.h"
 #include "ARunnerHUD.h"
+#include "../StageActors/AISpawnerController.h"
 #include "Runner.generated.h"
 
 // ----------------------------------------------------------------------
@@ -176,6 +177,7 @@ private:
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
 	void Pause(); 
+	AAISpawnerController* spawnController;
 
 public:
 	bool IsGrounded();
