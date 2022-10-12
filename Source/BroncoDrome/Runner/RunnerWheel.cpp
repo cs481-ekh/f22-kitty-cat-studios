@@ -28,7 +28,7 @@ URunnerWheel::URunnerWheel()
 	SuspensionMaxRaise = 15.f;
 	SuspensionMaxDrop = 15.f;
 
-	/*Switch(runnerSelected)
+	switch(runnerSelected)
 	{
 		case(Speed):
 			WheelRadius = 10.f;
@@ -70,7 +70,7 @@ URunnerWheel::URunnerWheel()
 			SuspensionMaxRaise = 15.f;
 			SuspensionMaxDrop = 15.f;
 			break;
-		Default:
+		default:
 			WheelRadius = 15.f;
 			WheelWidth = 30.f;
 			LateralFrictionForceMultiplier = 8.f;
@@ -83,6 +83,6 @@ URunnerWheel::URunnerWheel()
 			SuspensionMaxRaise = 15.f;
 			SuspensionMaxDrop = 15.f;
 			break;
-	}*/
+	}
 
 }
