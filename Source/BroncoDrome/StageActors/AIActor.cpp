@@ -8,7 +8,7 @@
 
 #include "DrawDebugHelpers.h"
 #include "AISpawner.h"
-
+#include "GameFramework/Character.h"
 
 
 // Sets default values
@@ -27,6 +27,7 @@ AAIActor::AAIActor() : ARunner()
 void AAIActor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
 
 	PlayerInputComponent->ClearActionBindings();
 	PlayerInputComponent->ClearBindingValues();
@@ -73,7 +74,8 @@ void AAIActor::Tick(float DeltaTime)
 	// TODO: Remove if already handled in the Movement function
 	if(!defensive)
           MoveTowardsPlayer(GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
-
+        
+  
 }
 
 FHitResult* AAIActor::Raycast(FVector to)

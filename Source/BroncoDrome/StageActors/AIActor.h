@@ -14,11 +14,8 @@
 #include "../StageActors/OrbProjectile.h"
 #include "Engine/World.h"
 #include "CoreMinimal.h"
-#include "AITestsCommon.h"
 #include "GameFramework/Actor.h"
 #include "AIActor.generated.h"
-
-
 
 /**
  * Struct to store and access difficulty parameters for AI actors
@@ -39,32 +36,9 @@ struct FDifficultyParameters {
     difficulty = FName(TEXT("Medium"));
     
   }
-
-
   void decrementDifficulty() {
     damageMod = healthMod = fireRateMod -= 0.1;
-
   }
-
-  void updateDifficulty() {
-    // get all actors 
-    TArray<AActor*> FoundActors; 
-    UGameplayStatics::GetAllActorsOfClass(FAITestHelpers::GetWorld(), ARunner::StaticClass(), FoundActors);
-
-    for (AActor* actor: FoundActors) {
-      ARunner* current = (ARunner*) actor;
-      if(!current->isAI) {
-        if (current->numDeaths > 0) {
-          decrementDifficulty();
-        }
-        if (current->numDeaths > 1) {
-          decrementDifficulty();
-        }
-      }
-    }
-
-  }
-
   void setParams(FName diff) {
     difficulty = diff;
     if(diff == TEXT("Easy")) {
@@ -78,6 +52,15 @@ struct FDifficultyParameters {
     }
     else { // this really shouldnt happen, but we'll just go with medium
       damageMod = healthMod = fireRateMod = 0.8;
+    }
+  }
+
+  void checkForUpdates(AActor* actor) {
+    ARunner cur = (ARunner*) actor;
+    if(!current->isAI) {
+      if (current->numDeaths > 1) {
+        // update things
+      }
     }
   }
 
@@ -157,6 +140,7 @@ public:
 	void ShotDecision(FVector location); //called in Tick to make a shot decision every 30 frames
 private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
+        ARunner* current; 
 	void Fire();
 	void drawTargetLine(FVector location);
 	void QueryLockOnEngage();
