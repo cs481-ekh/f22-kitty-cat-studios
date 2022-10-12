@@ -14,7 +14,21 @@ URunnerWheel::URunnerWheel()
 	enum RunnerStats{Speed, Traction, Balanced};
 	RunnerStats runnerSelected = Balanced;
 
-	Switch(runnerSelected)
+	
+	// Other attributes
+	WheelRadius = 15.f;
+	WheelWidth = 30.f;
+	LateralFrictionForceMultiplier = 8.f;
+	SideSlipModifier = 1.f;
+	SlipThreshold = 12.f;
+	SkidThreshold = 12.f;
+	SuspensionDampingRatio = 2.f;
+	MaxSteerAngle = 22.5f;
+	SpringRate = 750.f;
+	SuspensionMaxRaise = 15.f;
+	SuspensionMaxDrop = 15.f;
+
+	/*Switch(runnerSelected)
 	{
 		case(Speed):
 			WheelRadius = 10.f;
@@ -69,6 +83,6 @@ URunnerWheel::URunnerWheel()
 			SuspensionMaxRaise = 15.f;
 			SuspensionMaxDrop = 15.f;
 			break;
-	}
+	}*/
 
 }
