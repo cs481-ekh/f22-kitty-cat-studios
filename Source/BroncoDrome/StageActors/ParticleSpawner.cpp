@@ -76,6 +76,7 @@ APoolableObject* AParticleSpawner::SpawnParticle(ParticleType particle, const FV
 		return nullptr;
 	}
 
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Particle spawned")));
 	auto* object = pool->SpawnObject(worldLocation, worldVelocity, lifespan);
 	return object;
 }
