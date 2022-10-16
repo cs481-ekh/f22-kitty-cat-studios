@@ -39,6 +39,7 @@ void AAIActor::BeginPlay()
 	Super::BeginPlay();
 	last_location = GetActorLocation();
 	NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
+        DifficultyParams = FDifficultyParameters();
 }
 
 // Called every frame
@@ -74,8 +75,15 @@ void AAIActor::Tick(float DeltaTime)
 	// TODO: Remove if already handled in the Movement function
 	if(!defensive)
           MoveTowardsPlayer(GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
-        
-  
+
+        if (player_runner != NULL) { // runner may not have seen them, but when they do, difficulty will be updated
+          if(player_runner->numDeaths > 1 && !hasReduced) {
+            hasReduced = true;
+            DifficultyParams.decrementDifficulty();
+            
+          }
+          
+        }
 }
 
 FHitResult* AAIActor::Raycast(FVector to)

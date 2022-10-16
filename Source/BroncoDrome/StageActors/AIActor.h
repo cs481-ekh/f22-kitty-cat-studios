@@ -34,7 +34,6 @@ struct FDifficultyParameters {
   // constructor
   FDifficultyParameters() {
     difficulty = FName(TEXT("Medium"));
-    
   }
   void decrementDifficulty() {
     damageMod = healthMod = fireRateMod -= 0.1;
@@ -54,15 +53,7 @@ struct FDifficultyParameters {
       damageMod = healthMod = fireRateMod = 0.8;
     }
   }
-
-  void checkForUpdates(AActor* actor) {
-    ARunner cur = (ARunner*) actor;
-    if(!current->isAI) {
-      if (current->numDeaths > 1) {
-        // update things
-      }
-    }
-  }
+  
 
   /*
    *get the difficulty modifier for ai damage 
@@ -140,7 +131,7 @@ public:
 	void ShotDecision(FVector location); //called in Tick to make a shot decision every 30 frames
 private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
-        ARunner* current; 
+        bool hasReduced = false;
 	void Fire();
 	void drawTargetLine(FVector location);
 	void QueryLockOnEngage();
