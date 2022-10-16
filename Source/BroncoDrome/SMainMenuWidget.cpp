@@ -8,7 +8,7 @@
 #include "MenuHUD.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
-#include <Runtime\Engine\Public\ImageUtils.h>
+//#include <Runtime\Engine\Public\ImageUtils.h>
 
 #define LOCTEXT_NAMESPACE "MainMenu"
 
