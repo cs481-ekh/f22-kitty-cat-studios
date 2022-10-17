@@ -30,6 +30,7 @@ void AAISpawnerController::Init() {
 	// Initially populate all spawners with an AI, if below maxAI threshold, on game start
     for (auto &sp: spawnPoints) {
 		if (activeAI < maxAI) {
+			activeAI++;
 			((AAISpawner *)sp)->Spawn("Medium");
 		}
 	}
@@ -45,7 +46,6 @@ void AAISpawnerController::Init() {
 void AAISpawnerController::SpawnCheck() {
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWN CHECK, active AI: %d"), activeAI));
 	if (activeAI >= maxAI) return;
-  //AAISpawnerController::UpdateRunners();
 	if (randomSpawning) { // Randomly spawns a single AI at a random spawn point
 		int numValidSpawnPoints = numSpawnPoints;
 		TArray<AActor*> validSpawnPoints;
@@ -123,13 +123,22 @@ void AAISpawnerController::DecrementActiveAI(AActor* destroyedRunner) {
 // Updates the list of AI runners
 void AAISpawnerController::UpdateRunners() {
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ARunner::StaticClass(), runners);
-    /* numRunners should be equal to activeAI + 1 (since it includes player)
+    // numRunners should be equal to activeAI + 1 (since it includes player)
     int numRunners = 0;
 	for (auto &runner : runners) {
-          numRunners++;
+      if (!((ARunner*)runner)->isAI) {
+            playerRunner = runner;
+			// GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("added player runner")));
+	  }
+      numRunners++;
 	}
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("num runners: %d"), numRunners));*/
+	// GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("num runners: %d"), numRunners));
+}
+
+// Returns the pointer to the player runner
+AActor* AAISpawnerController::GetPlayer() {
+	return ((ARunner*)playerRunner);
 }
 
 // Called every frame, will currently spawn AI (at the spawner location) based on the respawn timer interval until max have spawned. AI currently do not respawn

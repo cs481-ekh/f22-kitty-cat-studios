@@ -16,7 +16,7 @@ public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
     void DecrementActiveAI(AActor* destroyedRunner);
-
+    AActor* GetPlayer();
 
 protected:
 	// Called when the game starts or when spawned
@@ -40,6 +40,8 @@ private:
     TArray<AActor*> spawnPoints;
     // List of active runners
     TArray<AActor*> runners;
+    // Player Runner pointer
+    AActor* playerRunner;
     // Init Timer handler
     FTimerHandle handler;
     // Spawn timer handler
