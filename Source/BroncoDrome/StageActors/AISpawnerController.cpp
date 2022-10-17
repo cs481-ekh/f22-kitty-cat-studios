@@ -138,8 +138,24 @@ void AAISpawnerController::UpdateRunners() {
 
 // Returns the pointer to the player runner
 AActor* AAISpawnerController::GetPlayer() {
-	return ((ARunner*)playerRunner);
+	return playerRunner;
 }
+
+// Returns the pointer to the closest runner to a particular point
+AActor* AAISpawnerController::GetClosestRunnerToPoint(FVector pt) {
+	float curDistance;
+    float bestDistance = 1000000;
+	AActor* closestRunner = NULL;
+	for (auto &runner : runners) {
+		curDistance = FVector::Dist(pt, runner->GetActorLocation());
+		if (curDistance < bestDistance) {
+			bestDistance = curDistance;
+			closestRunner = runner;
+		}
+	}
+	return closestRunner;
+}
+
 
 // Called every frame, will currently spawn AI (at the spawner location) based on the respawn timer interval until max have spawned. AI currently do not respawn
 void AAISpawnerController::Tick(float DeltaTime) {
