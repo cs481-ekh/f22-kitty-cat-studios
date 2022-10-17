@@ -15,7 +15,7 @@ public:
 	AAISpawnerController();
     // Called every frame
     virtual void Tick(float DeltaTime) override;
-    void DecrementActiveAI();
+    void DecrementActiveAI(AActor* destroyedRunner);
 
 
 protected:

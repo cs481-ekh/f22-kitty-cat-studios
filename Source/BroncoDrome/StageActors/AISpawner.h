@@ -19,7 +19,7 @@ public:
 
 	void AllowSpawning();
 
-	bool Spawn(FName difficultySetting);
+	AActor* Spawn(FName difficultySetting);
 
 	FVector GetSpawnLocation();
 
