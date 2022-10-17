@@ -17,6 +17,7 @@ public:
     virtual void Tick(float DeltaTime) override;
     void DecrementActiveAI(AActor* destroyedRunner);
     AActor* GetPlayer();
+    AActor* GetClosestRunnerToPoint(FVector);
 
 protected:
 	// Called when the game starts or when spawned
