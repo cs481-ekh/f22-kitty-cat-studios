@@ -44,21 +44,6 @@ public:		// Blueprint Members
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
 	UObjectPool* BigPoofPool;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
-	UObjectPool* HealthPool;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
-	UObjectPool* DamageUpPool;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
-	UObjectPool* SpeedPool;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
-	UObjectPool* KillBallPool;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Pool, meta = (AllowPrivateAccess = "true"))
-	UObjectPool* SpongePool;
-
 public:		// Static API
 
 	// Singleton instance
