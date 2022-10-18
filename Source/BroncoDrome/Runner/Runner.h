@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "WheeledVehiclePawn.h"
 #include "ARunnerHUD.h"
+#include "../StageActors/AISpawnerController.h"
 #include "Runner.generated.h"
 
 // ----------------------------------------------------------------------
@@ -138,6 +139,12 @@ public: // Sound
 	class USoundCue* laserAudioCue;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* spongeBreakAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* spongeTinkAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
 	class UAudioComponent* engineAudioComponent;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
@@ -149,6 +156,9 @@ public: // Sound
 private: // HUD
 	ARunnerHUD *HUD;
 	float speedUpdateTimer = 0; 
+
+public:
+	ARunnerHUD* GetRunnerHUD();
 
 public: // Input functions
 	void ThrottleInput(float in);
@@ -167,6 +177,7 @@ private:
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
 	void Pause(); 
+	AAISpawnerController* spawnController;
 
 public:
 	bool IsGrounded();

@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Blueprint/UserWidget.h"
+#include "PowerUpSpawner.h"
 #include "PowerUpMaster.generated.h"
 
 UCLASS()
@@ -36,6 +38,8 @@ public:
 		float RotationScale = 90.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PowerUpAbility, meta = (AllowPrivateAccess = "true"))
 		int powerTypeIndex; //What power it is. This is changed in the Unreal Engine Editor, not code.
+	UPROPERTY(BlueprintReadOnly)
+		class UPowerupWidget *powerupTextWidget;
 
 public:  // Sound
     UPROPERTY(BlueprintReadOnly, Category = "Audio")
@@ -53,6 +57,8 @@ public:  // Sound
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
     class USoundCue *spongeAudioCue;
 
+public:
+    void SetSpawner(APowerUpSpawner *spawner);
 
 private:
 	void HideActor();
@@ -68,9 +74,13 @@ private:
 private:
 	bool hidden = false;
 
+	bool canExpire = false;
+
 	bool gotten = false;
 
 	FDateTime spawnTime;
+
+	APowerUpSpawner *powerupSpawner;
 
 
 

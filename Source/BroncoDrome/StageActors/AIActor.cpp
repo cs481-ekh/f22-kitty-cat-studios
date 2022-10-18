@@ -12,9 +12,9 @@
 
 
 // Sets default values
-AAIActor::AAIActor(): ARunner()
+AAIActor::AAIActor() : ARunner()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	isAI = true;
 	// ARunner::aiId = AISpawner::GetAmountOfAI();
@@ -67,8 +67,12 @@ void AAIActor::Tick(float DeltaTime)
 		m_TorqueInput.X = 0;
 		m_TorqueInput.Z = 0;
 	}
-		// Mover->SetSteeringInput(in);
-	// MoveTowardsPlayer();
+	// Mover->SetSteeringInput(in);
+
+	// TODO: Set defensive variable according to runner health
+	// TODO: Remove if already handled in the Movement function
+	if(!defensive)
+          MoveTowardsPlayer(GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 
 }
 
@@ -82,16 +86,16 @@ FHitResult* AAIActor::Raycast(FVector to)
 	FVector start = GetActorLocation();
 	bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, start + to, ECC_WorldDynamic, collisionParams);
 	if (hit) {
-	  oHit = &outHit;
-	  return oHit;
-	  }
+		oHit = &outHit;
+		return oHit;
+	}
 	else {
 		return nullptr;
 	}
 }
 
 FVector AAIActor::GetDirection() {
-	
+
 	FVector result = FVector(0.0f, 0.0f, 0.0f);
 	float closest = 9999999.0f;
 
@@ -223,21 +227,21 @@ void AAIActor::MoveDecision(FVector location) {
 //=======FOR AI SHOOTING
 
 void AAIActor::QueryLockOnEngage() {
-        // Check to see if timer is valid
-        if (!m_LockOnQueryTimer.IsValid() || !player_runner)
-          return;
-        // Query to see if other runner is visible
-        if (ARunnerObserver::IsRunnerVisible(*this, *player_runner, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST)){
-          // Loop another engagement query timer
-          GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
-        }
-  
+	// Check to see if timer is valid
+	if (!m_LockOnQueryTimer.IsValid() || !player_runner)
+		return;
+	// Query to see if other runner is visible
+	if (ARunnerObserver::IsRunnerVisible(*this, *player_runner, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST)) {
+		// Loop another engagement query timer
+		GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
+	}
+
 	else
 		// Start disengage timer
 		GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnDisengage, LOCK_ON_NON_VISIBLE_TIME, false);
 }
 
-void AAIActor::QueryLockOnDisengage(){
+void AAIActor::QueryLockOnDisengage() {
 	// Check to see if timer is valid
 	if (!m_LockOnQueryTimer.IsValid() || !player_runner)
 		return;
@@ -245,20 +249,20 @@ void AAIActor::QueryLockOnDisengage(){
 	if (ARunnerObserver::IsRunnerVisible(*this, *player_runner, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST))
 		// Return to engagemenet query timer
 		GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
-	else 
-	      player_runner = nullptr;
-	
+	else
+		player_runner = nullptr;
+
 }
-void AAIActor::LockOn(){
+void AAIActor::LockOn() {
 	// Currently locked on?
-	if (!player_runner){
+	if (!player_runner) {
 		// Target closest visible Runner (may return null)
 		player_runner = ARunnerObserver::GetClosestRunner(*this, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST);
 		// If found target, start query tick
 		if (player_runner)
 			GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &AAIActor::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
 	}
-	else{
+	else {
 		// Clear currently locked-on Runner
 		player_runner = nullptr;
 		// Stop any timers that may be running
@@ -268,21 +272,52 @@ void AAIActor::LockOn(){
 void AAIActor::drawTargetLine(FVector location) {
 	//ARunner *player_runner = ARunnerObserver::GetPlayer(*this, 32000.f, 100.f, true);
 	player_runner = ARunnerObserver::GetPlayer(*this, 32000.f, 100.f, true);
+	ARunner* aRunner = ARunnerObserver::GetClosestRunner(*this, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST);
+	ARunner* setTargetRunner;
+
 	if (player_runner) {
-		ARunner::AimBlaster(player_runner, GetWorld()->GetDeltaSeconds());
+
+		setTargetRunner = player_runner;
+
+		ARunner::AimBlaster(setTargetRunner, GetWorld()->GetDeltaSeconds());
 		LockOn();
-		// Fire();
+
+		if (shotCount < shot_rate) {  // shot timer (currently set to
+											  // one shot every 30 frames
+			shotCount++;
+			return;
+		}
+		shotCount = 0;  // Reset timer
+		// drawTargetLine(location);
+		Fire();
+
+	}
+	else if (aRunner) {
+
+		setTargetRunner = aRunner;
+
+		ARunner::AimBlaster(setTargetRunner, GetWorld()->GetDeltaSeconds());
+		LockOn();
+
+		if (shotCount < shot_rate) {  // shot timer (currently set to
+											  // one shot every 30 frames
+			shotCount++;
+			return;
+		}
+		shotCount = 0;  // Reset timer
+		// drawTargetLine(location);
+		Fire();
 	}
 }
 
 void AAIActor::ShotDecision(FVector location) {
-	if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
-		shotCount++;
-		return;
-	}
-	shotCount = 0; //Reset timer
+	//if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
+		//shotCount++;
+		//return;
+	//}
+	//shotCount = 0; //Reset timer
 	// drawTargetLine(location);
-	Fire();
+	//Fire();
 }
 
 void AAIActor::Fire() {
@@ -311,7 +346,7 @@ void AAIActor::Fire() {
 void AAIActor::MoveAwayFromPlayer(FVector player_location, FRotator player_direction) {
 	auto curr_location = GetActorLocation();
 	auto curr_direction = GetActorRotation();
-        lastSeenPlayerLocation = player_location;
+	lastSeenPlayerLocation = player_location;
 
 
 	// FOR RANDOM MOVES IF WE WANT
@@ -349,8 +384,8 @@ void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direct
 {
 	auto curr_location = GetActorLocation();
 	auto curr_direction = GetActorRotation();
-        lastSeenPlayerLocation = player_location;
-        
+	lastSeenPlayerLocation = player_location;
+
 
 	auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(player_location, curr_location);
 	auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);

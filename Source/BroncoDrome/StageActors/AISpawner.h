@@ -1,10 +1,10 @@
-// // Copyright (C) Dromies 2021. All Rights Reserved.
-/* Marking for AI team to edit*/
+// Copyright (C) KITTY CAT STUDIOS 2022. All Rights Reserved.
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "BroncoDrome/StageActors/AIActor.h"
+#include "BroncoDrome/StageActors/AISpawnerController.h"
 #include "GameFramework/Actor.h"
 #include "AISpawner.generated.h"
 
@@ -19,7 +19,9 @@ public:
 
 	void AllowSpawning();
 
-	int GetAmountOfAI();
+	bool Spawn(FName difficultySetting);
+
+	FVector GetSpawnLocation();
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,34 +39,14 @@ private:
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true")) 
         bool spawnEnabled = true; 
 
-	// How often to spawn new AI, until max AI is reached
+	// Can be disabled for debugging or difficulty
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true")) 
-        int respawnTimer= 200; 
+        bool onlySpawnOnce = false; 
 
-	// Maximum amount of AI actors this spawner can spawn
-	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true")) 
-        int maxAI = 1; 
-
-	// Difficulty of AI this spawner will spawn
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (GetOptions = "GetNameOptions", AllowPrivateAccess = "true")) 
-        FName difficultySetting = FName(TEXT("Medium"));  
-
-    UFUNCTION(CallInEditor)
-        TArray<FString> GetNameOptions() const {
-          return {TEXT("Easy"), TEXT("Medium"), TEXT("Hard")};
-        }
-
-	int amountOfAI = 0;
+	int amountSpawned = 0;
     int respawnClock = 0;
 
-	FTimerHandle SpawnerTimerHandler;
-
-	TArray<AAIActor*> aiActors;
-
-	int actorLocationIndex = 0;
-
 	bool canSpawn = false;
-    bool AISpawned = false;
 
 	FTimerHandle handler;
 };

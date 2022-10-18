@@ -69,6 +69,18 @@ void ARunnerHUD::BeginPlay()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
 	}
+	//Powerup Widget Enabling
+	if(PowerupWidgetClass){
+       m_PowerupWidget = CreateWidget<UPowerupWidget>(GetWorld(), PowerupWidgetClass);
+       m_PowerupWidget->AddToViewport();
+       m_PowerupWidget->SetVisibility(ESlateVisibility::Hidden);
+	   if(m_LoseWidget == NULL)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Powerup Widget not verified"));
+	} 
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
+	}
 }
 
 void ARunnerHUD::DrawHUD()
@@ -169,6 +181,13 @@ void ARunnerHUD::YouLose()
 		m_LoseWidget->AddToViewport(); //Displays the lose screen
 		UGameplayStatics::SetGamePaused(world, true); //Pauses Game
 	}
+}
+
+void ARunnerHUD::ShowPowerupWidget(FString powerupText) 
+{
+    m_PowerupWidget->SetVisibility(ESlateVisibility::Visible);
+	m_PowerupWidget->SetPowerupText(powerupText);	
+	m_PowerupWidget->PlayFadeInAnimation(); //This animation fades the widget in and out
 }
 
 /* Rough details for adding a new widget to the HUD:

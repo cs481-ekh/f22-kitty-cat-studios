@@ -43,7 +43,8 @@ void APowerUpMaster::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUpMaster::ShowExpiration, 9.0f, false);
+	if (canExpire)
+		GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUpMaster::ShowExpiration, 9.0f, false);
 
 	Mesh->SetGenerateOverlapEvents(true);
 	Mesh->OnComponentBeginOverlap.AddDynamic(this, &APowerUpMaster::ExecuteFunction);
@@ -102,8 +103,11 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 		SetActorHiddenInGame(false);
 		SetActorEnableCollision(false);
 		SetActorTickEnabled(true);
-		GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUpMaster::HideActor, 1.5f, true);
+		if(canExpire)
+			GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUpMaster::HideActor, 1.5f, true);
 		RotationScale = 600.0f;
+
+		FString selectedPowerUp = FString("");
 
 		//Add various calls to car methods in this switch statement to accomplish power up stuff.
 		switch (powerTypeIndex) {
@@ -112,40 +116,56 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(healthAudioCue);
 				AParticleSpawner::SpawnParticle(Health, GetActorLocation(), FVector(), 1.f);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
+				selectedPowerUp = FString("HEALTH");
 				break;
 			case 1:
 				dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f); //Speed Which doesn't work and I don't know how to fix it
                 dynamic_cast<ARunner*>(OtherActor)->PlaySound(speedAudioCue);
 				AParticleSpawner::SpawnParticle(Speed, GetActorLocation(), FVector(), 1.f);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
+				selectedPowerUp = FString("SPEED");
 				break;
 			case 2:
 				dynamic_cast<ARunner*>(OtherActor)->AddToDamage(10); //Damage
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(damageUpAudioCue);
 				AParticleSpawner::SpawnParticle(DamageUp, GetActorLocation(), FVector(), 1.f);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
+				selectedPowerUp = FString("EXTRA DAMAGE");
 				break;
 			case 3:
 				dynamic_cast<ARunner*>(OtherActor)->obstainShotAbsorbPower(5); //ShotAbsorb default 5
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(spongeAudioCue);
 				AParticleSpawner::SpawnParticle(Sponge, GetActorLocation(), FVector(), 1.f);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power ShotAbsorb"), *GetDebugName(this)));
+				selectedPowerUp = FString("SHOT ABSORB");
 				break;
 			case 4:
 				dynamic_cast<ARunner*>(OtherActor)->obstainKillBallPower(1); //KillBall default 1
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(killBallAudioCue);
 				AParticleSpawner::SpawnParticle(KillBall, GetActorLocation(), FVector(), 1.f);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power KillBall!"), *GetDebugName(this)));
+				selectedPowerUp = FString("KILL BALL");
 				break;
 			default:
 				AParticleSpawner::SpawnParticle(BigPoof, GetActorLocation(), FVector(), 1.f);
 				break;
 
 		}
-
+		if(dynamic_cast<ARunner*>(OtherActor)->IsPlayerControlled())
+		{
+			ARunnerHUD *HUD = dynamic_cast<ARunner*>(OtherActor)->GetRunnerHUD();
+			HUD->ShowPowerupWidget(selectedPowerUp);			
+		}
+        
+		powerupSpawner->PowerUpDestroyed();
 		Destroy(); //Remove actor when picked up
 	}
 
+}
+
+void APowerUpMaster::SetSpawner(APowerUpSpawner* spawner) 
+{
+  powerupSpawner = spawner;
 }
 
 int APowerUpMaster::GetTimeTillExpiration()
