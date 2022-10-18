@@ -61,3 +61,7 @@ void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRota
 
 }
 
+//The real implementation for this method is inside of an actual PowerUpSpawner child blueprint
+//The blueprint activates the particle system
+void APowerUpSpawner::SpawnParticles_Implementation() {} 
+

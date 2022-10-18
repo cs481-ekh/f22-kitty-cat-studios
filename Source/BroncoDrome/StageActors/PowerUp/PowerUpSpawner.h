@@ -18,7 +18,6 @@ public:
 	UPROPERTY(VisibleDefaultsOnly)
 		UStaticMeshComponent* PowerUpSpawnerMeshComponent;
 
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -35,6 +34,10 @@ public:
 	UFUNCTION()
 		//void spawnPowerUp(APowerUpMaster* powerUp, FVector loc, FRotator rot);
 		void spawnPowerUp();
+
+public:
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = APowerUpSpawner)
+	void SpawnParticles();
 
 private:
 	
