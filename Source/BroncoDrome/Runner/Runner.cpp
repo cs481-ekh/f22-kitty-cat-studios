@@ -530,7 +530,7 @@ void ARunner::AddToHealth(int newHealth) {
         health = 0;
         if (this->isAI) {  // If an AI just died, destroy the actor and move on, otherwise update player accordingly
 			HUD->DecrementEnemiesLeft();
-			spawnController->DecrementActiveAI();
+			spawnController->DecrementActiveAI(this);
             Destroy();
             return;
         }

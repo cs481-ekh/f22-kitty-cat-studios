@@ -13,16 +13,16 @@ AAISpawner::AAISpawner():AActor()
 
 }
 
-bool AAISpawner::Spawn(FName difficultySetting) 
+AActor* AAISpawner::Spawn(FName difficultySetting) 
 {
-  if ((onlySpawnOnce && amountSpawned > 0) || !spawnEnabled) return false;
+  if ((onlySpawnOnce && amountSpawned > 0) || !spawnEnabled) return NULL;
   FVector loc = GetActorLocation();
   FRotator roc = FRotator(0, 0, 0);
   AAIActor *ai = GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, roc);
   // Uncomment the following line at a future date when difficulty settings are implemented
   // ai->DifficultyParams.setParams(difficultySetting);
   amountSpawned++;
-  return true;
+  return ai;
 }
 
 FVector AAISpawner::GetSpawnLocation() {
