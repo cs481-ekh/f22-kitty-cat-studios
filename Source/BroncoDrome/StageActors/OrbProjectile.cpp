@@ -18,7 +18,7 @@ AOrbProjectile::AOrbProjectile()
 }
 void AOrbProjectile::FireOrbInDirection(const FVector& Direction, AActor* Runner)
 {
-	ProjectileMovementComponent->Velocity = (Direction+0.02) * ProjectileMovementComponent->InitialSpeed;
+	ProjectileMovementComponent->Velocity = (Direction+0.012) * ProjectileMovementComponent->InitialSpeed;
 	RunnerParent = Runner; 
 }
 // Called when the game starts or when spawned
