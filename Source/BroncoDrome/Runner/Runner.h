@@ -145,6 +145,12 @@ public: // Sound
 	class USoundCue* spongeTinkAudioCue;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* runnerHitAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* runnerExplosionAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
 	class UAudioComponent* engineAudioComponent;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")

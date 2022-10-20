@@ -51,6 +51,16 @@ ARunner::ARunner()
 	);
 	spongeTinkAudioCue = spongeTinkCue.Object;
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> runnerHitCue(
+		TEXT("'/Game/Assets/Sound/Hit_Hurt_Cue.Hit_Hurt_Cue'")
+	);
+	runnerHitAudioCue = runnerHitCue.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> runnerExplosionCue(
+		TEXT("'/Game/Assets/Sound/Runner_Explosion_Cue.Runner_Explosion_Cue'")
+	);
+	runnerExplosionAudioCue = runnerExplosionCue.Object;
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> engineCue(
 		TEXT("'/Game/Assets/Sound/Engine/EngineCue.EngineCue'")
 	);
@@ -522,18 +532,22 @@ void ARunner::LoseScreen() {
 
 void ARunner::AddToHealth(int newHealth) {
 	health += newHealth;
+	if (newHealth < 0 && !(health <= 0)) {
+		PlaySound(runnerHitAudioCue);
+	}
 	if (health >= 100) {
 		health = 100;
 	}
 	/* This is when a runner has lost all of its health */
 	else if (health <= 0) {
         health = 0;
+		PlaySound(runnerExplosionAudioCue);
         if (this->isAI) {  // If an AI just died, destroy the actor and move on, otherwise update player accordingly
 			HUD->DecrementEnemiesLeft();
 			spawnController->DecrementActiveAI(this);
             Destroy();
             return;
-        }
+        }       
         HUD->SetHealth(health);
 		//KillBall PowerUp
 		killBallOn = false;
