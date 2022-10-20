@@ -12,7 +12,7 @@
 #include "../Runner/Runner.h"
 #include "../StageActors/RunnerObserver.h"
 #include "../StageActors/OrbProjectile.h"
-
+#include "Engine/World.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "AIActor.generated.h"
@@ -34,9 +34,10 @@ struct FDifficultyParameters {
   // constructor
   FDifficultyParameters() {
     difficulty = FName(TEXT("Medium"));
-    
   }
-
+  void decrementDifficulty() {
+    damageMod = healthMod = fireRateMod -= 0.1;
+  }
   void setParams(FName diff) {
     difficulty = diff;
     if(diff == TEXT("Easy")) {
@@ -52,6 +53,7 @@ struct FDifficultyParameters {
       damageMod = healthMod = fireRateMod = 0.8;
     }
   }
+  
 
   /*
    *get the difficulty modifier for ai damage 
@@ -129,6 +131,7 @@ public:
 	void ShotDecision(FVector location); //called in Tick to make a shot decision every 30 frames
 private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
+        bool hasReduced = false;
 	void Fire();
 	void drawTargetLine(FVector location);
 	void QueryLockOnEngage();

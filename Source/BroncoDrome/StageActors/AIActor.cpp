@@ -8,7 +8,7 @@
 
 #include "DrawDebugHelpers.h"
 #include "AISpawner.h"
-
+#include "GameFramework/Character.h"
 
 
 // Sets default values
@@ -27,6 +27,7 @@ AAIActor::AAIActor() : ARunner()
 void AAIActor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
 
 	PlayerInputComponent->ClearActionBindings();
 	PlayerInputComponent->ClearBindingValues();
@@ -38,6 +39,7 @@ void AAIActor::BeginPlay()
 	Super::BeginPlay();
 	last_location = GetActorLocation();
 	NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
+        DifficultyParams = FDifficultyParameters();
 }
 
 // Called every frame
@@ -74,6 +76,18 @@ void AAIActor::Tick(float DeltaTime)
 	if(!defensive)
           MoveTowardsPlayer(GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 
+        player_runner = ARunnerObserver::GetPlayer(*this, 38000.f, 180.f, true);
+
+
+        if (player_runner != NULL && !player_runner->isAI) { // runner may not have seen them, but when they do, difficulty will be updated
+          if(player_runner->lives == 1 && !hasReduced) {
+            //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("TESTY DESTY"), *GetDebugName(this)));
+            hasReduced = true;
+            DifficultyParams.decrementDifficulty();
+            
+          }
+          
+        }
 }
 
 FHitResult* AAIActor::Raycast(FVector to)
@@ -176,6 +190,10 @@ void AAIActor::MoveDecision(FVector location) {
 
 	// auto player_location = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
 	auto closest_runner = ARunnerObserver::GetClosestRunner(*this);
+        if (!closest_runner->isAI) {
+          player_runner = closest_runner;
+        }
+  
 	// auto closest_runner = ARunnerObserver::GetPlayer(*this);
 	auto player_location = closest_runner->GetActorLocation();
 	auto player_direction = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation();

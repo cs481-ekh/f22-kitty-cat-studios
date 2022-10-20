@@ -616,7 +616,9 @@ void ARunner::Respawn() {
 	SetActorTickEnabled(true);
 	health = 100;	// Reset to full health
     HUD->SetHealth(health);
-	if (!this->isAI) HUD->SetDead(false);
+	if (!this->isAI) {
+	  HUD->SetDead(false);
+	}
 }
 
 void ARunner::AddToScore(int newScore) {
