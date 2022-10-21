@@ -542,18 +542,10 @@ void ARunner::AddToHealth(int newHealth) {
 		shotAbsorbOn = false;
 		shotAbsorbHits = 0;
 
-        HUD->SetDead(true);
-		lives--;
-		HUD->DecrementLivesLeft();
-		if (lives <= 0) {
-			LoseScreen();
-		}
-		FVector CurrentLocation = GetActorLocation();	// We want to keep track of where the runner was when it died
-
-		
 		/* This code will make it seem to disappear. Source: https://forums.unrealengine.com/t/disable-an-actor/4738/22 */
 
 		/* Stop its movement and teleport it up to prevent collisions first */
+		FVector CurrentLocation = GetActorLocation();	// We want to keep track of where the runner was when it died
 		Mover->Deactivate();
 		const FVector higher = { CurrentLocation.X, CurrentLocation.Y, CurrentLocation.Z + 100 };
 		const FRotator newOrientation = { 0, 0, 0 };
@@ -564,6 +556,14 @@ void ARunner::AddToHealth(int newHealth) {
 
 		/* If the player just died, they shouldn't be able to move until they respawn */
         DisableInput(GetWorld()->GetFirstPlayerController());
+        
+		if (lives <= 0) {
+			HUD->SetHealth(health);
+			LoseScreen();
+			return;
+		} else {
+            HUD->SetDead(true);
+		}
 														
 		/* This code will make it wait three second to respawn. Source: https://www.codegrepper.com/code-examples/cpp/unreal+engine+delay+c%2B%2B */
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning in 3 seconds..."), *GetDebugName(this)));
@@ -618,6 +618,8 @@ void ARunner::Respawn() {
 			currSpawnPoint++;
 		}
 	}
+    lives--;
+    HUD->DecrementLivesLeft();
 }
 
 void ARunner::AddToScore(int newScore) {
