@@ -559,6 +559,7 @@ void ARunner::AddToHealth(int newHealth) {
 
         HUD->SetDead(true);
 		if (lives <= 0) {
+			HUD->SetHealth(health);
 			LoseScreen();
 			return;
 		}
