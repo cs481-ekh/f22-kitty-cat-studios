@@ -596,28 +596,27 @@ void ARunner::AddToHealth(int newHealth) {
 	}
 }
 
-/* Tries to move the runner to one of the four corners of the map. If it fails 5 times, it will not teleport it because something went wrong and an infinite loop is likely */
+/* Respawns the player at a random AI spawn point. Will prioritize a random valid point (no AI nearby) but if there are no valid respawn points, will just pick a random spawn point */
 void ARunner::Respawn() {
-	FVector CurrentLocation = GetActorLocation();	// We want to keep track of where the runner was when it died
-	int respawnAttemptCounter = 0;	// Keep track of how many times respawning has failed. If it's failed more than 5 times, it's probably stuck in an infinite loop so just give up
-	while (GetActorLocation() == CurrentLocation) {	// Continue attempting to relocate the runner until it has been moved to a respawn point
-		if (respawnAttemptCounter > 5) {
-			// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning has been attempted multiple times without success, aborting respawn attempts to prevent an infinite loop!"), *GetDebugName(this)));
+    TArray<AActor *> validSpawnPoints = spawnController->GetValidSpawnPoints();
+    int numValidSpawnPoints = spawnController->GetNumValidSpawnPoints();
+	int randSpawnPoint = FMath::RandRange(0, (numValidSpawnPoints - 1));
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Num valid spawn points: %d"), numValidSpawnPoints));
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Attempting respawn at AT SPAWNER: %d"), randSpawnPoint));
+	int currSpawnPoint = 0;
+	for (auto &sp : validSpawnPoints) {
+		if (currSpawnPoint == randSpawnPoint) {
+			TeleportTo(sp->GetActorLocation(), this->GetActorRotation());
+			SetActorHiddenInGame(false);
+			SetActorEnableCollision(true);
+			SetActorTickEnabled(true);
+			health = 100;
+			HUD->SetHealth(health);
+			HUD->SetDead(false);
 			return;
+		} else {
+			currSpawnPoint++;
 		}
-		int selectedPoint = rand() % 4;	// Grab a random number 0 - 3, each number represents one of the map's corners
-		FVector newLocation = { (float)(4700 * (pow(-1, ((selectedPoint + 1) / 2)))) , (float)(3600 * (pow(-1, (selectedPoint / 2)))), (float)(0) };	// Use math to pick the location of the chosen corner
-		FRotator newOrientation = { (float)(0), (float)(225 + 90 * selectedPoint) , (float)(0) };	// Use math to rotate the runner the amount that is appropriate for the selected corner
-		TeleportTo(newLocation, newOrientation);	// Try to teleport to the calculated corner with the calculated rotation
-		respawnAttemptCounter++;
-	}
-	SetActorHiddenInGame(false);
-	SetActorEnableCollision(true);
-	SetActorTickEnabled(true);
-	health = 100;	// Reset to full health
-    HUD->SetHealth(health);
-	if (!this->isAI) {
-	  HUD->SetDead(false);
 	}
 }
 
