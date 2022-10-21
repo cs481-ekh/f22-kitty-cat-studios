@@ -596,8 +596,15 @@ void ARunner::AddToHealth(int newHealth) {
 	}
 }
 
-/* Tries to move the runner to one of the four corners of the map. If it fails 5 times, it will not teleport it because something went wrong and an infinite loop is likely */
+/* Respawns the player at a random AI spawn point. Will prioritize a random valid point (no AI nearby) but if there are no valid respawn points, will just pick a random spawn point */
 void ARunner::Respawn() {
+    TArray<AActor *> validSpawnPoints = spawnController->GetValidSpawnPoints();
+    int numValidSpawnPoints = spawnController->GetNumValidSpawnPoints();
+	int randSpawnPoint = FMath::RandRange(0, (numValidSpawnPoints - 1));
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Num valid spawn points: %d"), numValidSpawnPoints));
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Attempting respawn at AT SPAWNER: %d"), randSpawnPoint));
+
+     
 	FVector CurrentLocation = GetActorLocation();	// We want to keep track of where the runner was when it died
 	int respawnAttemptCounter = 0;	// Keep track of how many times respawning has failed. If it's failed more than 5 times, it's probably stuck in an infinite loop so just give up
 	while (GetActorLocation() == CurrentLocation) {	// Continue attempting to relocate the runner until it has been moved to a respawn point
@@ -619,6 +626,7 @@ void ARunner::Respawn() {
 	if (!this->isAI) {
 	  HUD->SetDead(false);
 	}
+	
 }
 
 void ARunner::AddToScore(int newScore) {
