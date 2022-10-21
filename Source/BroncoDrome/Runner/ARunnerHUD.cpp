@@ -170,17 +170,17 @@ void ARunnerHUD::YouLose()
 {
 	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
 		load->score += m_Widgets->getScore();  //Update the score for the playthrough
-		class APlayerController* Mouse;
-		Mouse = world->GetFirstPlayerController();
-		paused = true;
-		//Reveals mouse and enables clicking
-		Mouse->bShowMouseCursor = true;
-		Mouse->bEnableClickEvents = true;
-		Mouse->bEnableMouseOverEvents = true;
 		m_LoseWidget->setScore(load->score); //Sets score to display on the lose screen
-		m_LoseWidget->AddToViewport(); //Displays the lose screen
-		UGameplayStatics::SetGamePaused(world, true); //Pauses Game
 	}
+	class APlayerController* Mouse;
+	Mouse = world->GetFirstPlayerController();
+	paused = true;
+	//Reveals mouse and enables clicking
+	Mouse->bShowMouseCursor = true;
+	Mouse->bEnableClickEvents = true;
+	Mouse->bEnableMouseOverEvents = true;
+	m_LoseWidget->AddToViewport(); //Displays the lose screen
+	UGameplayStatics::SetGamePaused(world, true); //Pauses Game
 }
 
 void ARunnerHUD::ShowPowerupWidget(FString powerupText) 
