@@ -556,12 +556,13 @@ void ARunner::AddToHealth(int newHealth) {
 
 		/* If the player just died, they shouldn't be able to move until they respawn */
         DisableInput(GetWorld()->GetFirstPlayerController());
-
-        HUD->SetDead(true);
+        
 		if (lives <= 0) {
 			HUD->SetHealth(health);
 			LoseScreen();
 			return;
+		} else {
+            HUD->SetDead(true);
 		}
 														
 		/* This code will make it wait three second to respawn. Source: https://www.codegrepper.com/code-examples/cpp/unreal+engine+delay+c%2B%2B */
