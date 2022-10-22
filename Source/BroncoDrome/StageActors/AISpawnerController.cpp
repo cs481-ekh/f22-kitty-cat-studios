@@ -81,6 +81,7 @@ void AAISpawnerController::SpawnCheck() {
 
 }
 
+// Returns an array of pointers to valid AISpawner objects. If there are no valid AISpawners (due to nearby runners at all points, for example) then it will return all spawn points
 TArray<AActor*> AAISpawnerController::GetValidSpawnPoints() {
   TArray<AActor *> validSpawnPoints;
   numValidSpawnPoints = 0;
@@ -106,6 +107,7 @@ TArray<AActor*> AAISpawnerController::GetValidSpawnPoints() {
   return validSpawnPoints;
 }
 
+// Returns number of spawn points, associated with the value returned from GetValidSpawnPoints
 int AAISpawnerController::GetNumValidSpawnPoints() { 
 	if (numValidSpawnPoints > 0) {
 		return numValidSpawnPoints;
