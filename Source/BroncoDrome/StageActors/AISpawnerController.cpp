@@ -27,13 +27,9 @@ void AAISpawnerController::BeginPlay() {
 }
 
 void AAISpawnerController::Init() {
-	// Initially populate all spawners with an AI, if below maxAI threshold, on game start
-    for (auto &sp: spawnPoints) {
-		if (activeAI < maxAI) {
-			activeAI++;
-			((AAISpawner *)sp)->Spawn("Medium");
-		}
-	}
+	// Spawn initial set of runners
+    AAISpawnerController::SpawnCheck();
+
 	// Initializes set of runners as well as gets the player runner and sets the player runner pointer
     AAISpawnerController::UpdateRunners();
 
@@ -45,39 +41,64 @@ void AAISpawnerController::Init() {
 // TODO: Account for waveSpawning
 void AAISpawnerController::SpawnCheck() {
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWN CHECK, active AI: %d"), activeAI));
-	if (activeAI >= maxAI || totalSpawned >= maxRespawns) return;
-	if (randomSpawning) { // Randomly spawns a single AI at a random spawn point
-		TArray<AActor*> validSpawnPoints;
-		if (!ignoreRespawnRadius) {
-			// First check for valid spawn points (if there is a free spawn point where there is no runner in its radius)
-			validSpawnPoints = AAISpawnerController::GetValidSpawnPoints();
-		} else {
-			validSpawnPoints = spawnPoints;
-			numValidSpawnPoints = numSpawnPoints;
-		}
-
-		// If there's a valid spawn point, spawn a new runner at a random valid spawn point
-		if (numValidSpawnPoints > 0) {
-			int randSpawnPoint = FMath::RandRange(0, (numValidSpawnPoints - 1));
-			int currSpawnPoint = 0;
-			for (auto &sp: validSpawnPoints) {
-				if (currSpawnPoint == randSpawnPoint) {
+	if (totalSpawned >= maxRespawns) return;
+	if (waveSpawning) {
+        if (activeAI == 0 || waveSpawningInProgress) {
+            if (!waveSpawningInProgress) {
+				waveSize += waveIncrement;
+				waveSpawningInProgress = true;
+				GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("New wave spawning...")));
+				GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("Wave Size: %d"), waveSize));
+			}
+			
+			for (auto &sp : spawnPoints) {
+				if (totalSpawned < maxRespawns && currentWaveAmountSpawned < waveSize) {
 					AAISpawnerController::AttemptSpawn(sp);
-
-					//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWNED AI AT SPAWNER: %d"), currSpawnPoint));
-					return;
+					currentWaveAmountSpawned++;
 				} else {
-					currSpawnPoint++;
+                    waveSpawningInProgress = false;
+					currentWaveAmountSpawned = 0;
+					break;
 				}
 			}
 		}
 	} else {
-		for (auto &sp: spawnPoints) {
-            if (activeAI < maxAI && totalSpawned < maxRespawns) {
-				AAISpawnerController::AttemptSpawn(sp);
+		if (activeAI >= maxAI) return;
+        if (randomSpawning) { // Randomly spawns a single AI at a random spawn point
+			TArray<AActor*> validSpawnPoints;
+			if (!ignoreRespawnRadius) {
+				// First check for valid spawn points (if there is a free spawn point where there is no runner in its radius)
+				validSpawnPoints = AAISpawnerController::GetValidSpawnPoints();
+			} else {
+				validSpawnPoints = spawnPoints;
+				numValidSpawnPoints = numSpawnPoints;
+			}
+
+			// If there's a valid spawn point, spawn a new runner at a random valid spawn point
+			if (numValidSpawnPoints > 0) {
+				int randSpawnPoint = FMath::RandRange(0, (numValidSpawnPoints - 1));
+				int currSpawnPoint = 0;
+				for (auto &sp: validSpawnPoints) {
+					if (currSpawnPoint == randSpawnPoint) {
+						AAISpawnerController::AttemptSpawn(sp);
+
+						//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWNED AI AT SPAWNER: %d"), currSpawnPoint));
+						return;
+					} else {
+						currSpawnPoint++;
+					}
+				}
+			}
+		} else {
+			for (auto &sp: spawnPoints) {
+				if (activeAI < maxAI && totalSpawned < maxRespawns) {
+					AAISpawnerController::AttemptSpawn(sp);
+				}
 			}
 		}
 	}
+
+
 
 }
 
