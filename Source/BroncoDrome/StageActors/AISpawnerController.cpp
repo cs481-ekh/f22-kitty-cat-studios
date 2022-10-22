@@ -42,10 +42,10 @@ void AAISpawnerController::Init() {
 }
 
 // Is called based on respawnCheckInSecs
-// TODO: Account for maxRespawns, waveSpawning
+// TODO: Account for waveSpawning
 void AAISpawnerController::SpawnCheck() {
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWN CHECK, active AI: %d"), activeAI));
-	if (activeAI >= maxAI) return;
+	if (activeAI >= maxAI || totalSpawned >= maxRespawns) return;
 	if (randomSpawning) { // Randomly spawns a single AI at a random spawn point
 		TArray<AActor*> validSpawnPoints;
 		if (!ignoreRespawnRadius) {
@@ -73,7 +73,7 @@ void AAISpawnerController::SpawnCheck() {
 		}
 	} else {
 		for (auto &sp: spawnPoints) {
-			if (activeAI < maxAI) {
+            if (activeAI < maxAI && totalSpawned < maxRespawns) {
 				AAISpawnerController::AttemptSpawn(sp);
 			}
 		}
