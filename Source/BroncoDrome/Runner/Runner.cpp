@@ -558,7 +558,6 @@ void ARunner::AddToHealth(int newHealth) {
         DisableInput(GetWorld()->GetFirstPlayerController());
         
 		if (lives <= 0) {
-			HUD->SetHealth(health);
 			LoseScreen();
 			return;
 		} else {
@@ -567,7 +566,7 @@ void ARunner::AddToHealth(int newHealth) {
 														
 		/* This code will make it wait three second to respawn. Source: https://www.codegrepper.com/code-examples/cpp/unreal+engine+delay+c%2B%2B */
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning in 3 seconds..."), *GetDebugName(this)));
-		if (HUD->getLives()> 0 && HUD->getEnemiesLeft() > 0) {
+		if (HUD->getLives()> 0) {
 			HUD->SetTimeLeft(3);
 			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 				{
