@@ -42,7 +42,7 @@ public:		// Public Static API
 
         // get all actors of class
          template<typename T>
-         void FindAllActors(UWorld* World, TArray<T*>& Out);
+         void GetAllActorsOfClass(UWorld* World, TArray<T*>& Out);
 
 
 	// Runner visibility tests
