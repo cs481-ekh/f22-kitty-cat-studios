@@ -6,6 +6,8 @@
 #include "../Runner/Runner.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "EngineUtils.h"
+
 
 ARunnerObserver* ARunnerObserver::SingletonInstance = nullptr;
 
