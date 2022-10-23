@@ -182,5 +182,17 @@ bool ARunnerObserver::IsRunnerVisible(const ARunner& fromRunner, const ARunner& 
 	return true;
 	
 }
+/**
+ * UWorld - current world in play
+ * TArray - array to be populated with actors
+ */
+template <typename T> void ARunnerObserver::FindAllActors(UWorld *World, TArray<T *> &Out) {
+  for (TActorIterator<T> It(World); It; ++It)
+  {
+    Out.Add(*It);
+  }    
+
+}
+
 
 
