@@ -12,21 +12,22 @@ URunnerWheel::URunnerWheel()
 	bTractionControlEnabled = true;
 
 	enum RunnerStats{Speed, Traction, Balanced};
+    UPROPERTY([ BlueprintSetter, BlueprintReadWrite ]);
 	RunnerStats runnerSelected = Balanced;
 
 	
 	// Other attributes
-	WheelRadius = 15.f;
-	WheelWidth = 30.f;
-	LateralFrictionForceMultiplier = 8.f;
-	SideSlipModifier = 1.f;
-	SlipThreshold = 12.f;
-	SkidThreshold = 12.f;
-	SuspensionDampingRatio = 2.f;
-	MaxSteerAngle = 22.5f;
-	SpringRate = 750.f;
-	SuspensionMaxRaise = 15.f;
-	SuspensionMaxDrop = 15.f;
+	//WheelRadius = 15.f;
+	//WheelWidth = 30.f;
+	//LateralFrictionForceMultiplier = 8.f;
+	//SideSlipModifier = 1.f;
+	//SlipThreshold = 12.f;
+	//SkidThreshold = 12.f;
+	//SuspensionDampingRatio = 2.f;
+	//MaxSteerAngle = 22.5f;
+	//SpringRate = 750.f;
+	//SuspensionMaxRaise = 15.f;
+	//SuspensionMaxDrop = 15.f;
 
 	switch(runnerSelected)
 	{
