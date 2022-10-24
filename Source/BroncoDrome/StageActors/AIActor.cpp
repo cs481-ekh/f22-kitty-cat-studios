@@ -9,6 +9,7 @@
 #include "DrawDebugHelpers.h"
 #include "AISpawner.h"
 #include "GameFramework/Character.h"
+#include "Math/RandomStream.h"
 
 
 // Sets default values
@@ -39,7 +40,26 @@ void AAIActor::BeginPlay()
 	Super::BeginPlay();
 	last_location = GetActorLocation();
 	NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
-        DifficultyParams = FDifficultyParameters();
+    DifficultyParams = FDifficultyParameters();
+
+	// sets accuracyRange based on difficulty
+	// uses accuracyRange in Fire()
+	if(DifficultyParams.difficulty == TEXT("Easy")) {
+
+	  accuracyRange = FMath::FRandRange(0.000, 0.015);
+
+    } else if(DifficultyParams.difficulty == TEXT("Medium")) {
+
+	  accuracyRange = FMath::FRandRange(0.000, 0.008);
+
+    } else if(DifficultyParams.difficulty == TEXT("Hard")) {
+
+	  accuracyRange = FMath::FRandRange(0.000, 0.002);
+
+    } else { 
+
+	  accuracyRange = FMath::FRandRange(0.000, 0.008);
+    }
 }
 
 // Called every frame
@@ -339,6 +359,7 @@ void AAIActor::ShotDecision(FVector location) {
 }
 
 void AAIActor::Fire() {
+
 	if (AIProjectileClass) {
 		auto World = GetWorld();
 		if (!World) return;
@@ -350,7 +371,7 @@ void AAIActor::Fire() {
 		AOrbProjectile* Projectile = World->SpawnActor<AOrbProjectile>(AIProjectileClass, loc, rot, SpawnParams);
 		if (Projectile) {
 			PlaySound(laserAudioCue);
-			Projectile->FireOrbInDirection(rot.Vector(), this);
+			Projectile->FireOrbInDirection(rot.Vector()+accuracyRange, this);
 		}
 		else {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Projectile init error"), *GetDebugName(this)));
