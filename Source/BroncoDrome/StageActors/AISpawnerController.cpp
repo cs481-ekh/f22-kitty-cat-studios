@@ -167,7 +167,7 @@ void AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
         activeAI++;
         totalSpawned++;
     } else {
-     // TODO: if AI spawner isn't able to spawn an AI   
+        spawnPoints.remove(spawnPoint);
 	}
 }
 
