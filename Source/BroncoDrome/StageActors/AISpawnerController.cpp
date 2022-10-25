@@ -109,13 +109,18 @@ TArray<AActor*> AAISpawnerController::GetValidSpawnPoints() {
   for (auto &sp : spawnPoints) {
     float curDistance;
     bool validSpawn = true;
-    for (auto &runner : runners) {
-      curDistance = FVector::Dist(sp->GetActorLocation(), runner->GetActorLocation());
-      if (curDistance < respawnRadius) {
-        validSpawn = false;
-        break;
-      }
-    }
+	for (int32 i = 0; i < runners.Num(); ++i) {
+		if (runners.Num() != activeAI + 1) {
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Runner array size changed during iteration. VERY BAD TELL ANDREW")));
+			break;
+		}
+		auto &runner = runners[i];
+		curDistance = FVector::Dist(sp->GetActorLocation(), runner->GetActorLocation());
+		if (curDistance < respawnRadius) {
+			validSpawn = false;
+			break;
+		}
+	}
     if (validSpawn) {
       numValidSpawnPoints++;
       validSpawnPoints.Add(sp);
@@ -167,7 +172,7 @@ void AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
         activeAI++;
         totalSpawned++;
     } else {
-        spawnPoints.Remove(spawnPoint);
+        //spawnPoints.Remove(spawnPoint);
 	}
 }
 
