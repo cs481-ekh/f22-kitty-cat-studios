@@ -41,4 +41,6 @@ private:
 		UTexture2D* sdpLogo;
 	UPROPERTY()
 		UTexture2D* credits;
+    UPROPERTY()
+        UTexture2D *difficultyImage;
 };
