@@ -27,13 +27,9 @@ void AAISpawnerController::BeginPlay() {
 }
 
 void AAISpawnerController::Init() {
-	// Initially populate all spawners with an AI, if below maxAI threshold, on game start
-    for (auto &sp: spawnPoints) {
-		if (activeAI < maxAI) {
-			activeAI++;
-			((AAISpawner *)sp)->Spawn("Medium");
-		}
-	}
+	// Spawn initial set of runners
+    AAISpawnerController::SpawnCheck();
+
 	// Initializes set of runners as well as gets the player runner and sets the player runner pointer
     AAISpawnerController::UpdateRunners();
 
@@ -42,58 +38,89 @@ void AAISpawnerController::Init() {
 }
 
 // Is called based on respawnCheckInSecs
-// TODO: Account for maxRespawns, waveSpawning
+// TODO: Account for waveSpawning
 void AAISpawnerController::SpawnCheck() {
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWN CHECK, active AI: %d"), activeAI));
-	if (activeAI >= maxAI) return;
-	if (randomSpawning) { // Randomly spawns a single AI at a random spawn point
-		TArray<AActor*> validSpawnPoints;
-		if (!ignoreRespawnRadius) {
-			// First check for valid spawn points (if there is a free spawn point where there is no runner in its radius)
-			validSpawnPoints = AAISpawnerController::GetValidSpawnPoints();
-		} else {
-			validSpawnPoints = spawnPoints;
-			numValidSpawnPoints = numSpawnPoints;
-		}
-
-		// If there's a valid spawn point, spawn a new runner at a random valid spawn point
-		if (numValidSpawnPoints > 0) {
-			int randSpawnPoint = FMath::RandRange(0, (numValidSpawnPoints - 1));
-			int currSpawnPoint = 0;
-			for (auto &sp: validSpawnPoints) {
-				if (currSpawnPoint == randSpawnPoint) {
+	if (totalSpawned >= maxRespawns) return;
+	if (waveSpawning) {
+        if (activeAI == 0 || waveSpawningInProgress) {
+            if (!waveSpawningInProgress) {
+				waveSize += waveIncrement;
+				waveSpawningInProgress = true;
+				GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("New wave spawning...")));
+				GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("Wave Size: %d"), waveSize));
+			}
+			
+			for (auto &sp : spawnPoints) {
+				if (totalSpawned < maxRespawns && currentWaveAmountSpawned < waveSize) {
 					AAISpawnerController::AttemptSpawn(sp);
-
-					//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWNED AI AT SPAWNER: %d"), currSpawnPoint));
-					return;
+					currentWaveAmountSpawned++;
 				} else {
-					currSpawnPoint++;
+                    waveSpawningInProgress = false;
+					currentWaveAmountSpawned = 0;
+					break;
 				}
 			}
 		}
 	} else {
-		for (auto &sp: spawnPoints) {
-			if (activeAI < maxAI) {
-				AAISpawnerController::AttemptSpawn(sp);
+		if (activeAI >= maxAI) return;
+        if (randomSpawning) { // Randomly spawns a single AI at a random spawn point
+			TArray<AActor*> validSpawnPoints;
+			if (!ignoreRespawnRadius) {
+				// First check for valid spawn points (if there is a free spawn point where there is no runner in its radius)
+				validSpawnPoints = AAISpawnerController::GetValidSpawnPoints();
+			} else {
+				validSpawnPoints = spawnPoints;
+				numValidSpawnPoints = numSpawnPoints;
+			}
+
+			// If there's a valid spawn point, spawn a new runner at a random valid spawn point
+			if (numValidSpawnPoints > 0) {
+				int randSpawnPoint = FMath::RandRange(0, (numValidSpawnPoints - 1));
+				int currSpawnPoint = 0;
+				for (auto &sp: validSpawnPoints) {
+					if (currSpawnPoint == randSpawnPoint) {
+						AAISpawnerController::AttemptSpawn(sp);
+
+						//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWNED AI AT SPAWNER: %d"), currSpawnPoint));
+						return;
+					} else {
+						currSpawnPoint++;
+					}
+				}
+			}
+		} else {
+			for (auto &sp: spawnPoints) {
+				if (activeAI < maxAI && totalSpawned < maxRespawns) {
+					AAISpawnerController::AttemptSpawn(sp);
+				}
 			}
 		}
 	}
 
+
+
 }
 
+// Returns an array of pointers to valid AISpawner objects. If there are no valid AISpawners (due to nearby runners at all points, for example) then it will return all spawn points
 TArray<AActor*> AAISpawnerController::GetValidSpawnPoints() {
   TArray<AActor *> validSpawnPoints;
   numValidSpawnPoints = 0;
   for (auto &sp : spawnPoints) {
     float curDistance;
     bool validSpawn = true;
-    for (auto &runner : runners) {
-      curDistance = FVector::Dist(sp->GetActorLocation(), runner->GetActorLocation());
-      if (curDistance < respawnRadius) {
-        validSpawn = false;
-        break;
-      }
-    }
+	for (int32 i = 0; i < runners.Num(); ++i) {
+		if (runners.Num() != activeAI + 1) {
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Runner array size changed during iteration. VERY BAD TELL ANDREW")));
+			break;
+		}
+		auto &runner = runners[i];
+		curDistance = FVector::Dist(sp->GetActorLocation(), runner->GetActorLocation());
+		if (curDistance < respawnRadius) {
+			validSpawn = false;
+			break;
+		}
+	}
     if (validSpawn) {
       numValidSpawnPoints++;
       validSpawnPoints.Add(sp);
@@ -106,6 +133,7 @@ TArray<AActor*> AAISpawnerController::GetValidSpawnPoints() {
   return validSpawnPoints;
 }
 
+// Returns number of spawn points, associated with the value returned from GetValidSpawnPoints
 int AAISpawnerController::GetNumValidSpawnPoints() { 
 	if (numValidSpawnPoints > 0) {
 		return numValidSpawnPoints;
@@ -115,14 +143,36 @@ int AAISpawnerController::GetNumValidSpawnPoints() {
 
 // Spawns an AI at the provided spawnPoint when called
 void AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
-    AActor* newAI = ((AAISpawner*)spawnPoint)->Spawn("Medium");
+	AActor *newAI;
+    if (difficultySetting == "Random") {
+		int randDifficulty = FMath::RandRange(0, 2);
+		FName randDifficultyStr;
+		switch (randDifficulty) {
+			case 0:
+				randDifficultyStr = FName(TEXT("Easy"));
+				break;
+			case 1:
+                randDifficultyStr = FName(TEXT("Medium"));
+				break;
+			case 2:
+                randDifficultyStr = FName(TEXT("Hard"));
+				break;
+			default:
+				randDifficultyStr = FName(TEXT("Medium"));
+				break;
+		}
+		newAI = ((AAISpawner *)spawnPoint)->Spawn(randDifficultyStr);
+    } else {
+		newAI = ((AAISpawner *)spawnPoint)->Spawn(difficultySetting);
+	}
+    
 
-	if (newAI != NULL) {
+	if (IsValid(newAI)) {
 		runners.Add(newAI);
         activeAI++;
         totalSpawned++;
     } else {
-     // TODO: if AI spawner isn't able to spawn an AI   
+        //spawnPoints.Remove(spawnPoint);
 	}
 }
 

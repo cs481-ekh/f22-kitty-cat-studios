@@ -6,6 +6,8 @@
 #include "../Runner/Runner.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "EngineUtils.h"
+
 
 ARunnerObserver* ARunnerObserver::SingletonInstance = nullptr;
 
@@ -182,5 +184,17 @@ bool ARunnerObserver::IsRunnerVisible(const ARunner& fromRunner, const ARunner& 
 	return true;
 	
 }
+/**
+ * UWorld - current world in play
+ * TArray - array to be populated with actors
+ */
+template <typename T> void ARunnerObserver::GetAllActorsOfClass(UWorld *World, TArray<T *> &Out) {
+  for (TActorIterator<T> It(World); It; ++It)
+  {
+    Out.Add(*It);
+  }    
+
+}
+
 
 

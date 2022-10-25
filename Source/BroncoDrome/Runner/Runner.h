@@ -66,6 +66,9 @@ public: // Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapons, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent *BlasterCannon;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	class UMaterialInterface *HitMaterial;
+
 	UPROPERTY()
 		FTimerHandle TimerHandle;
 
@@ -128,6 +131,11 @@ public: // Attributes
 	bool isAI = false;
 	FTimerHandle RunnerStatusHandler;
 
+private:
+
+	TArray<UMaterialInterface *> originalMaterials;
+	bool isRed = false;
+
 public: // Sound
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
 	class USoundCue *thudAudioCue;
@@ -143,6 +151,12 @@ public: // Sound
 
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
 	class USoundCue* spongeTinkAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* runnerHitAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* runnerExplosionAudioCue;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
 	class UAudioComponent* engineAudioComponent;
@@ -176,7 +190,8 @@ private:
 	void Fire();
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
-	void Pause(); 
+	void Pause();
+	void FlashRed();
 	AAISpawnerController* spawnController;
 
 public:
@@ -194,6 +209,12 @@ public:
 	void AddToDamage(int addedDamage); //Can change damage
 	void obstainShotAbsorbPower(int hits); //ShotAbsorb 
 	void obstainKillBallPower(int shots); //KillBall
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ARunner)
+	void SpawnParticles();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ARunner)
+	void Visible(bool visible);
 
 	void AimBlaster(const class ARunner* targetRunner, const float deltaTime);
 
