@@ -102,6 +102,11 @@ public:
 	int aiId;
 	int shot_rate = 90; //interval for AI shots //0=90; 1= 50; 2= 70;
 
+        // reaction time variables
+        int frameCounter = 0;
+        int reactionTime;
+        enum LastDecision { MoveToPlayer, MoveToSpawner };
+
 	bool defensive = false; // fighting / fleeing state variable
 
         FVector lastSeenPlayerLocation; // location of the last player as seen by raycast
