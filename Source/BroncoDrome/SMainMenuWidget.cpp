@@ -214,6 +214,15 @@ void SMainMenuWidget::OnHScoreDebug(const FText &InText, ETextCommit::Type) {
   }
 }
 
+// This is the handler for the difficulty selection button on the main menu
+FReply SMainMenuWidget::OnDifficultyClicked() const {
+  if (OwningHUD.IsValid()) {
+    OwningHUD->RemoveMenu();  // get rid of current screen
+    OwningHUD->ShowMenu(5);   // show the difficulty selection screen
+  }
+  return FReply::Handled();
+}
+
 // This is the handler for the high score button on the main menu
 FReply SMainMenuWidget::OnHScoreClicked() const {
   if (OwningHUD.IsValid()) {
@@ -264,6 +273,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
   const FMargin ScorePadding = FMargin(550.f, 200.f);
   const FMargin TutPadding = FMargin(100.f, 75.f);
   const FMargin HScoreContentPadding = FMargin();
+  const FMargin DifficultyPadding = FMargin(550.f, 100.f);
   const FMargin ButtonPadding =
       FMargin(10.f);  // This is the space between buttons
 
@@ -271,6 +281,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
   const FText PlayDayText = LOCTEXT("PlayGameDay", "Play During the Day");
   const FText PlayNightText = LOCTEXT("PlayGameNight", "Play at Night");
   const FText PlayRainText = LOCTEXT("PlayGameRain", "Play in the Rain :)");
+  const FText SelectDifficultyText = LOCTEXT("SelectDifficulty", "Select Difficulty");
   const FText HighScoreText = LOCTEXT("HighScores", "High Scores");
   const FText QuitText = LOCTEXT("QuitGame", "Quit Game");
   const FText ReturnMain = LOCTEXT("Return", "Return to Main Menu");
@@ -302,12 +313,20 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
   score7 = FText::FromString(Result[7]);
   score8 = FText::FromString(Result[8]);
   score9 = FText::FromString(Result[9]);
+
+  easy = FText::FromString("Easy");
+  easyDescript = FText::FromString("Sissy mode i.e. Communications Major");
+  medium = FText::FromString("Medium");
+  mediumDescript = FText::FromString("What normal people choose i.e. Business Major");
+  hard = FText::FromString("Hard");
+  hardDescript = FText::FromString("Your parents have very high standards i.e. EE or Bio-chem");
   /*
           hOrM will tell us what screen to build
                   defaults to main menu
                   1 = high score screen
                   2 = first tutorial screen
                   3 = second tutorial screen
+                  5 = difficulty selection screen
   */
   switch (hOrM) {
   case 1:  // Build the high score screen
@@ -550,6 +569,118 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                                            .Justification(ETextJustify::Center)
                                            .ColorAndOpacity(FColor::Orange)]]]];
     break;
+
+  case 5:  // Build the difficulty selection screen
+    ChildSlot
+        
+        [SNew(SOverlay) +
+             SOverlay::Slot()
+                 .HAlign(HAlign_Fill)
+                 .VAlign(VAlign_Fill)[SNew(SImage).Image(BroncyImage)] +
+             //Easy Button
+             SOverlay::Slot()
+                 .HAlign(HAlign_Center)
+                 .VAlign(VAlign_Center)
+                 .Padding(DifficultyPadding)
+                 [SNew(SHorizontalBox)
+                     + SHorizontalBox::Slot().Padding(ButtonPadding)
+                     [SNew(SButton)
+                        .OnClicked(this, &SMainMenuWidget::OnReturnToMainClicked)
+                        .ButtonColorAndOpacity(FColor::Blue)
+                         [SNew(SVerticalBox)
+                          + SVerticalBox::Slot()
+                                [SNew(STextBlock)
+                                    .Font(ButtonTextStyle)
+                                    .Text(easy)
+                                    .Justification(ETextJustify::Center)
+                                    .ColorAndOpacity(FColor::Orange)]
+                          + SVerticalBox::Slot().Padding(0.f, 50.f)
+                                [SNew(STextBlock)
+                                    .Font(ButtonTextStyle)
+                                    .Text(easyDescript)
+                                    .Justification(ETextJustify::Center)
+                                    .ColorAndOpacity(FColor::Orange)
+                                    .AutoWrapText(true)
+                                    .MinDesiredWidth(600.f)]
+                         ]
+                    ]
+                    + SHorizontalBox::Slot().Padding(ButtonPadding)
+                    //Medium Button
+                    [SNew(SButton)
+                          .OnClicked(this, &SMainMenuWidget::OnReturnToMainClicked)
+                          .ButtonColorAndOpacity(FColor::Blue)
+                              [SNew(SVerticalBox) +
+                               SVerticalBox::Slot()
+                                   [SNew(STextBlock)
+                                        .Font(ButtonTextStyle)
+                                        .Text(medium)
+                                        .Justification(ETextJustify::Center)
+                                        .ColorAndOpacity(FColor::Orange)]
+                               + SVerticalBox::Slot()
+                                   [SNew(STextBlock)
+                                        .Font(ButtonTextStyle)
+                                        .Text(mediumDescript)
+                                        .Justification(ETextJustify::Center)
+                                        .ColorAndOpacity(FColor::Orange)
+                                        .AutoWrapText(true)
+                                        .MinDesiredWidth(600.f)]
+                               ]
+                    ]
+                    +  SHorizontalBox::Slot().Padding(ButtonPadding)
+                    //Hard Button
+                    [SNew(SButton)
+                          .OnClicked(this, &SMainMenuWidget::OnReturnToMainClicked)
+                          .ButtonColorAndOpacity(FColor::Blue)
+                              [SNew(SVerticalBox) +
+                               SVerticalBox::Slot()
+                                   [SNew(STextBlock)
+                                        .Font(ButtonTextStyle)
+                                        .Text(hard)
+                                        .Justification(ETextJustify::Center)
+                                        .ColorAndOpacity(FColor::Orange)] +
+                                SVerticalBox::Slot()
+                                   [SNew(STextBlock)
+                                        .Font(ButtonTextStyle)
+                                        .Text(hardDescript)
+                                        .Justification(ETextJustify::Center)
+                                        .ColorAndOpacity(FColor::Orange)
+                                        .AutoWrapText(true)
+                                        .MinDesiredWidth(600.f)]
+                              ]
+                    ]
+                ] +
+                SOverlay::Slot()
+                    .HAlign(HAlign_Right)
+                    .VAlign(VAlign_Bottom)
+                    .Padding(HScoreContentPadding)[
+                        // Title Text
+                        SNew(SVerticalBox)
+                        // Main Menu Button
+                        + SVerticalBox::Slot().Padding(ButtonPadding)
+                            [SNew(SButton)
+                                .OnClicked(this, &SMainMenuWidget::OnReturnToMainClicked)
+                                .ButtonColorAndOpacity(FColor::Blue)
+                                    [SNew(STextBlock)
+                                        .Font(ButtonTextStyle)
+                                        .Text(ReturnMain)
+                                        .Justification(ETextJustify::Center)
+                                        .ColorAndOpacity(FColor::Orange)]
+
+                            ] +
+                            // Quit Game Button
+                            SVerticalBox::Slot().Padding(ButtonPadding)
+                                [SNew(SButton)
+                                    .OnClicked(this, &SMainMenuWidget::OnQuitClicked)
+                                    .ButtonColorAndOpacity(FColor::Blue)
+                                        [SNew(STextBlock)
+                                                .Font(ButtonTextStyle)
+                                                .Text(QuitText)
+                                                .Justification(ETextJustify::Center)
+                                                .ColorAndOpacity(FColor::Orange)]
+                                ]
+                    ]
+        ];
+    break;
   default:  // Build the main menu
     ChildSlot
         [SNew(SOverlay) +
@@ -627,6 +758,16 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                                    .Text(PlayRainText)
                                    .Justification(ETextJustify::Center)
                                    .ColorAndOpacity(FColor::Orange)]]
+                 // Difficulty Selection
+                 + SVerticalBox::Slot().Padding(ButtonPadding)
+                       [SNew(SButton)
+                            .OnClicked(this, &SMainMenuWidget::OnDifficultyClicked)
+                            .ButtonColorAndOpacity(FColor::Blue)
+                                [SNew(STextBlock)
+                                     .Font(ButtonTextStyle)
+                                     .Text(SelectDifficultyText)
+                                     .Justification(ETextJustify::Center)
+                                     .ColorAndOpacity(FColor::Orange)]]
                  // High Score Button
                  + SVerticalBox::Slot().Padding(ButtonPadding)
 

@@ -22,6 +22,9 @@ AMenuHUD::AMenuHUD() {
 	sdpLogo = SDPLogoPath.Object; //Image for the SDP logo
 	static ConstructorHelpers::FObjectFinder<UTexture2D> CreditsPath(TEXT("Texture2D'/Game/Assets/Screenshots/credits.credits'"));
 	credits = CreditsPath.Object; //Image for the Credits page
+	static ConstructorHelpers::FObjectFinder<UTexture2D> DifficultyImagePath(TEXT("Texture2D'/Game/Assets/Screenshots/difficultyImage.difficultyImage'"));
+    difficultyImage = DifficultyImagePath.Object;
+
 }
 
 void AMenuHUD::BeginPlay()
@@ -51,6 +54,9 @@ void AMenuHUD::ShowMenu(int i)
 				break;
 			case 4:
 				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(credits); //This will load SMainMenuWidget with the credits page
+				break;
+			case 5:
+				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(difficultyImage); //This will load SMainMenuWidget with the difficulty selection page
 				break;
 			default:
 				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(BroncyImage).sdpLogo(sdpLogo); //This will load SMainMenuWidget with the main menu image
