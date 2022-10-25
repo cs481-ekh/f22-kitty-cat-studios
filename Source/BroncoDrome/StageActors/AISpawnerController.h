@@ -18,6 +18,8 @@ public:
     void DecrementActiveAI(AActor* destroyedRunner);
     AActor* GetPlayer();
     AActor* GetClosestRunnerToPoint(FVector);
+    TArray<AActor*> GetValidSpawnPoints();
+    int GetNumValidSpawnPoints();
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,6 +39,8 @@ private:
     int totalDead = 0;
     // Store total number of AI that have been spawned over the game's lifetime
     int totalSpawned = 0;
+    // Number of current available and valid spawn points
+    int numValidSpawnPoints = 0;
     // List of spawn points
     TArray<AActor*> spawnPoints;
     // List of active runners

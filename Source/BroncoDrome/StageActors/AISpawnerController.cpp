@@ -47,31 +47,14 @@ void AAISpawnerController::SpawnCheck() {
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWN CHECK, active AI: %d"), activeAI));
 	if (activeAI >= maxAI) return;
 	if (randomSpawning) { // Randomly spawns a single AI at a random spawn point
-		int numValidSpawnPoints = numSpawnPoints;
 		TArray<AActor*> validSpawnPoints;
-      if (!ignoreRespawnRadius) {
-        // First check for valid spawn points (if there is a free spawn point where there is no runner in its radius)
-        numValidSpawnPoints = 0;
-        for (auto &sp: spawnPoints) {
-           float curDistance;
-           bool validSpawn = true;
-           for (auto &runner : runners) {
-             curDistance = FVector::Dist(sp->GetActorLocation(), runner->GetActorLocation());
-             if (curDistance < respawnRadius) {
-               validSpawn = false;
-               break;
-             }
-           }
-           if (validSpawn) {
-             numValidSpawnPoints++;
-             validSpawnPoints.Add(sp);
-           }
-        }
-			  //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Valid spawn points: %d"), numValidSpawnPoints));
-      } else {
-           validSpawnPoints = spawnPoints;
-		  }
-
+		if (!ignoreRespawnRadius) {
+			// First check for valid spawn points (if there is a free spawn point where there is no runner in its radius)
+			validSpawnPoints = AAISpawnerController::GetValidSpawnPoints();
+		} else {
+			validSpawnPoints = spawnPoints;
+			numValidSpawnPoints = numSpawnPoints;
+		}
 
 		// If there's a valid spawn point, spawn a new runner at a random valid spawn point
 		if (numValidSpawnPoints > 0) {
@@ -81,14 +64,13 @@ void AAISpawnerController::SpawnCheck() {
 				if (currSpawnPoint == randSpawnPoint) {
 					AAISpawnerController::AttemptSpawn(sp);
 
-				    //GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWNED AI AT SPAWNER: %d"), currSpawnPoint));
+					//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("SPAWNED AI AT SPAWNER: %d"), currSpawnPoint));
 					return;
 				} else {
 					currSpawnPoint++;
 				}
 			}
 		}
-
 	} else {
 		for (auto &sp: spawnPoints) {
 			if (activeAI < maxAI) {
@@ -97,6 +79,38 @@ void AAISpawnerController::SpawnCheck() {
 		}
 	}
 
+}
+
+TArray<AActor*> AAISpawnerController::GetValidSpawnPoints() {
+  TArray<AActor *> validSpawnPoints;
+  numValidSpawnPoints = 0;
+  for (auto &sp : spawnPoints) {
+    float curDistance;
+    bool validSpawn = true;
+    for (auto &runner : runners) {
+      curDistance = FVector::Dist(sp->GetActorLocation(), runner->GetActorLocation());
+      if (curDistance < respawnRadius) {
+        validSpawn = false;
+        break;
+      }
+    }
+    if (validSpawn) {
+      numValidSpawnPoints++;
+      validSpawnPoints.Add(sp);
+    }
+  }
+  if (numValidSpawnPoints == 0) {
+    numValidSpawnPoints = numSpawnPoints;
+    return spawnPoints;
+  }
+  return validSpawnPoints;
+}
+
+int AAISpawnerController::GetNumValidSpawnPoints() { 
+	if (numValidSpawnPoints > 0) {
+		return numValidSpawnPoints;
+    } 
+	return numSpawnPoints;
 }
 
 // Spawns an AI at the provided spawnPoint when called
