@@ -51,6 +51,10 @@ private:
     FTimerHandle handler;
     // Spawn timer handler
     FTimerHandle SpawnTimerHandler;
+    // Flag if a wave spawn is in progress
+    bool waveSpawningInProgress = false;
+    // Counter to keep track of how many AI have spawned in the current wave
+    int currentWaveAmountSpawned = 0;
 
     // Interval to check (in seconds) if an AI needs to be respawned
     UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
@@ -75,6 +79,14 @@ private:
     // If true, will spawn all AI actors at once in a wave when all AI are dead, similar to how AI are spawned on game initialization (this will override ignoreRespawnRadius and randomSpawning)
     UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
         bool waveSpawning = false; 
+
+    // If wave spawning is enabled, when a wave spawns, this is the default size. NOTE: this overrides maxAI
+    UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+        int waveSize = 6; 
+
+    // If wave spawning is enabled, this is the amount of additional AI that will be added to the waveSize per each incrementing wave.
+    UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+        int waveIncrement = 1; 
 
     // If true, next spawn will be forced regardless of proximity to other runners (ignores the respawn radius)
     UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))

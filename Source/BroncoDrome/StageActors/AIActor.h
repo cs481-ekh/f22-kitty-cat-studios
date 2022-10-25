@@ -103,6 +103,12 @@ public:
 	int shot_rate = 90; //interval for AI shots //0=90; 1= 50; 2= 70;
 	float accuracyRange; // sets accuracy of AI Runners shot
 
+        // reaction time variables
+        int frameCounter = 0;
+        int reactionTime;
+        enum Decisions { MoveToPlayer, MoveToSpawner };
+        int lastDecision = -1;
+
 	bool defensive = false; // fighting / fleeing state variable
 
         FVector lastSeenPlayerLocation; // location of the last player as seen by raycast

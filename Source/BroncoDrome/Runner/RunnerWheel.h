@@ -17,5 +17,10 @@ class BRONCODROME_API URunnerWheel : public UChaosVehicleWheel
 public:		// Constructors
 
 	URunnerWheel();
-	
+
+	//UPROPERTY(BlueprintReadWrite)
+	int runnerSelected;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = URunnerWheel)
+        void SelectRunner(int i);
 };
