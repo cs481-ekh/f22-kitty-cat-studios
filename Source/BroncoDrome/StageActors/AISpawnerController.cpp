@@ -167,7 +167,7 @@ void AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
         activeAI++;
         totalSpawned++;
     } else {
-        spawnPoints.remove(spawnPoint);
+        spawnPoints.Remove(spawnPoint);
 	}
 }
 
