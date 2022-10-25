@@ -210,6 +210,12 @@ public:
 	void obstainShotAbsorbPower(int hits); //ShotAbsorb 
 	void obstainKillBallPower(int shots); //KillBall
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ARunner)
+	void SpawnParticles();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ARunner)
+	void Visible(bool visible);
+
 	void AimBlaster(const class ARunner* targetRunner, const float deltaTime);
 
 //Displays for winning and losing

@@ -139,7 +139,7 @@ void ARunner::BeginPlay()
 	{
 		ChangeMIntensity(1);
 		Super::BeginPlay();
-		SetActorHiddenInGame(true);
+		Visible(false);
 		DisableInput(GetWorld()->GetFirstPlayerController());
 		HUD = Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 		HUD->HideHUD(true);
@@ -156,7 +156,7 @@ void ARunner::BeginPlay()
 	{
 		Super::BeginPlay();
 		HUD = Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-		SetActorHiddenInGame(false);
+		Visible(true);
 		EnableInput(GetWorld()->GetFirstPlayerController());
 		InitStateMachines();
 		// Begin looping engine audio
@@ -171,7 +171,7 @@ void ARunner::BeginPlay()
 
 void ARunner::ReinstateAll()
 {
-	SetActorHiddenInGame(false);
+	Visible(true);
 	EnableInput(GetWorld()->GetFirstPlayerController());
 	HUD->HideHUD(false);
 
@@ -544,7 +544,8 @@ void ARunner::AddToHealth(int newHealth) {
         if (this->isAI) {  // If an AI just died, destroy the actor and move on, otherwise update player accordingly
 			HUD->DecrementEnemiesLeft();
 			spawnController->DecrementActiveAI(this);
-            Destroy();
+			SpawnParticles();
+			Destroy();			
             return;
         }       
         HUD->SetHealth(health);
@@ -571,9 +572,11 @@ void ARunner::AddToHealth(int newHealth) {
 		const FVector higher = { CurrentLocation.X, CurrentLocation.Y, CurrentLocation.Z + 100 };
 		const FRotator newOrientation = { 0, 0, 0 };
 		TeleportTo(higher, newOrientation);
-		SetActorHiddenInGame(true);
+		Visible(false);
 		SetActorEnableCollision(false);
 		SetActorTickEnabled(false);
+
+        SpawnParticles();
 
 		/* If the player just died, they shouldn't be able to move until they respawn */
         DisableInput(GetWorld()->GetFirstPlayerController());
@@ -624,7 +627,7 @@ void ARunner::Respawn() {
 		TeleportTo(newLocation, newOrientation);	// Try to teleport to the calculated corner with the calculated rotation
 		respawnAttemptCounter++;
 	}
-	SetActorHiddenInGame(false);
+	Visible(true);
 	SetActorEnableCollision(true);
 	SetActorTickEnabled(true);
 	health = 100;	// Reset to full health
@@ -748,6 +751,9 @@ void ARunner::FlashRed() {
 			0.2f, false);		
     }    
 }
+
+void ARunner::SpawnParticles_Implementation() {} 
+void ARunner::Visible_Implementation(bool visible) {}
 
 // Audio -------------------------------------------------------------------------------------------------------
 
