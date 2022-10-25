@@ -138,9 +138,31 @@ int AAISpawnerController::GetNumValidSpawnPoints() {
 
 // Spawns an AI at the provided spawnPoint when called
 void AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
-    AActor* newAI = ((AAISpawner*)spawnPoint)->Spawn("Medium");
+	AActor *newAI;
+    if (difficultySetting == "Random") {
+		int randDifficulty = FMath::RandRange(0, 2);
+		FName randDifficultyStr;
+		switch (randDifficulty) {
+			case 0:
+				randDifficultyStr = FName(TEXT("Easy"));
+				break;
+			case 1:
+                randDifficultyStr = FName(TEXT("Medium"));
+				break;
+			case 2:
+                randDifficultyStr = FName(TEXT("Hard"));
+				break;
+			default:
+				randDifficultyStr = FName(TEXT("Medium"));
+				break;
+		}
+		newAI = ((AAISpawner *)spawnPoint)->Spawn(randDifficultyStr);
+    } else {
+		newAI = ((AAISpawner *)spawnPoint)->Spawn(difficultySetting);
+	}
+    
 
-	if (newAI != NULL) {
+	if (IsValid(newAI)) {
 		runners.Add(newAI);
         activeAI++;
         totalSpawned++;
