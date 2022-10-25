@@ -105,7 +105,8 @@ public:
         // reaction time variables
         int frameCounter = 0;
         int reactionTime;
-        enum LastDecision { MoveToPlayer, MoveToSpawner };
+        enum Decisions { MoveToPlayer, MoveToSpawner };
+        int lastDecision = -1;
 
 	bool defensive = false; // fighting / fleeing state variable
 
