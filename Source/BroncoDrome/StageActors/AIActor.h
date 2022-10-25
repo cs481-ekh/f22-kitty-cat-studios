@@ -101,6 +101,7 @@ public:
 	int shotCount = 0; //acts as a timer for AI shot function
 	int aiId;
 	int shot_rate = 90; //interval for AI shots //0=90; 1= 50; 2= 70;
+	float accuracyRange; // sets accuracy of AI Runners shot
 
         // reaction time variables
         int frameCounter = 0;
