@@ -40,12 +40,14 @@ void AAIActor::BeginPlay()
 	last_location = GetActorLocation();
 	NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
         DifficultyParams = FDifficultyParameters();
+        reactionTime = 6;
 }
 
 // Called every frame
 void AAIActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+        frameCounter++;
 	if (IsGrounded()) {
 		// Mover->SetThrottleInput(1.0f);
 		auto location = GetActorLocation(); //Obtains the (x,y,z) vector loction of the AI
@@ -73,10 +75,11 @@ void AAIActor::Tick(float DeltaTime)
 
 	// TODO: Set defensive variable according to runner health
 	// TODO: Remove if already handled in the Movement function
-	if(!defensive)
-          MoveTowardsPlayer(GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
+        // i dont think that we need this.  move towards player will be called in move decision higher up in the code
+	//if(!defensive)
+         // MoveTowardsPlayer(GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f));
 
-        player_runner = ARunnerObserver::GetPlayer(*this, 38000.f, 180.f, true);
+        //player_runner = ARunnerObserver::GetPlayer(*this, 38000.f, 180.f, true);
 
 
         if (player_runner != NULL && !player_runner->isAI) { // runner may not have seen them, but when they do, difficulty will be updated
@@ -181,63 +184,85 @@ FVector AAIActor::GetDirection() {
 }
 
 void AAIActor::MoveDecision(FVector location) {
+  if (count != update_rate) {
+    count++;
+    return;
+  }
+  count = 0;
 
-	if (count != update_rate) {
-		count++;
-		return;
-	}
-	count = 0;
-
-	// auto player_location = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-	auto closest_runner = ARunnerObserver::GetClosestRunner(*this);
-        if (!closest_runner->isAI) {
-          player_runner = closest_runner;
-        }
+  // auto player_location = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+  auto closest_runner = ARunnerObserver::GetClosestRunner(*this);
+  if (!closest_runner->isAI) {
+    player_runner = closest_runner;
+  }
   
-	// auto closest_runner = ARunnerObserver::GetPlayer(*this);
-	auto player_location = closest_runner->GetActorLocation();
-	auto player_direction = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation();
+  // auto closest_runner = ARunnerObserver::GetPlayer(*this);
+  auto player_location = closest_runner->GetActorLocation();
+  auto player_direction = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation();
 
-	auto curr_location = GetActorLocation();
-	auto curr_direction = GetActorRotation();
+  auto curr_location = GetActorLocation();
+  auto curr_direction = GetActorRotation();
 
-	auto forward_vec = GetActorForwardVector();
-	// ActorGetDistanceToCollision()
-	// ActorLineTraceSingle()
-	auto dir = GetDirection();
-	reverse = dir.Equals(FVector::ForwardVector);
+  auto forward_vec = GetActorForwardVector();
+  // ActorGetDistanceToCollision()
+  // ActorLineTraceSingle()
+  auto dir = GetDirection();
+  reverse = dir.Equals(FVector::ForwardVector);
 
-	//this vector may be coming from the center of objects, which is why runners used to continuously run into objects
-	if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
+  //this vector may be coming from the center of objects, which is why runners used to continuously run into objects
+  if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
 
-		if (dir.Equals(FVector::ForwardVector)) {
-			Mover->SetSteeringInput(-1.0f);
-			ThrottleInput(-1.0f);
-		}
-		else if (dir.Equals(FVector::LeftVector)) {
-			Mover->SetSteeringInput(1.0f);
-			ThrottleInput(1.0f);
-		}
-		else if (dir.Equals(FVector::RightVector)) {
-			Mover->SetSteeringInput(-1.0f);
-			ThrottleInput(1.0f);
-		}
-		else if (dir.Equals((FVector::LeftVector + FVector::ForwardVector))) {
-			Mover->SetSteeringInput(1.0f);
-			ThrottleInput(-1.0f);
-		}
-		else if (dir.Equals((FVector::RightVector + FVector::ForwardVector))) {
-			Mover->SetSteeringInput(-1.0f);
-			ThrottleInput(-1.0f);
-		}
-	}
+    if (dir.Equals(FVector::ForwardVector)) {
+      Mover->SetSteeringInput(-1.0f);
+      ThrottleInput(-1.0f);
+    }
+    else if (dir.Equals(FVector::LeftVector)) {
+      Mover->SetSteeringInput(1.0f);
+      ThrottleInput(1.0f);
+    }
+    else if (dir.Equals(FVector::RightVector)) {
+      Mover->SetSteeringInput(-1.0f);
+      ThrottleInput(1.0f);
+    }
+    else if (dir.Equals((FVector::LeftVector + FVector::ForwardVector))) {
+      Mover->SetSteeringInput(1.0f);
+      ThrottleInput(-1.0f);
+    }
+    else if (dir.Equals((FVector::RightVector + FVector::ForwardVector))) {
+      Mover->SetSteeringInput(-1.0f);
+      ThrottleInput(-1.0f);
+    }
+  }
+
+          
+          if (frameCounter >= reactionTime && player_runner != NULL){
+          // there are no nearby runners, should try to move towards 
+          if (ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 1000) {
+            //TODO another nested if to check if there is a nearby power up, which is still a pain to do
+            //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("no nearby runners"), *GetDebugName(this)));
+            lastDecision = 1;
+            reactionTime = FMath::RandRange(4,12);
+          }
+        }
+        
 	else if (defensive) {
-		MoveAwayFromPlayer(player_location, player_direction);
-		ThrottleInput(-1.0f);
+	        if(frameCounter >= reactionTime || lastDecision == 0) {
+	         // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("defensive"), *GetDebugName(this)));
+	          MoveAwayFromPlayer(player_location, player_direction);
+	          ThrottleInput(-1.0f);
+	          lastDecision = 0;
+	          reactionTime = FMath::RandRange(4,12);
+
+	        }
 	}
 	else {
-		MoveTowardsPlayer(player_location, player_direction);
-		ThrottleInput(1.0f);
+	  if(frameCounter >= reactionTime || lastDecision == 0) {
+	    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("!defensive"), *GetDebugName(this)));
+	    MoveTowardsPlayer(player_location, player_direction);
+	    ThrottleInput(1.0f);
+	    lastDecision = 0;
+            reactionTime = FMath::RandRange(4,12);
+	  }
 	}
 
 }
