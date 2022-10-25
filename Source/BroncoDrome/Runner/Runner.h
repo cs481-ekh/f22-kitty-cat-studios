@@ -66,6 +66,9 @@ public: // Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapons, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent *BlasterCannon;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+	class UMaterialInterface *HitMaterial;
+
 	UPROPERTY()
 		FTimerHandle TimerHandle;
 
@@ -128,6 +131,11 @@ public: // Attributes
 	bool isAI = false;
 	FTimerHandle RunnerStatusHandler;
 
+private:
+
+	TArray<UMaterialInterface *> originalMaterials;
+	bool isRed = false;
+
 public: // Sound
 	UPROPERTY(BlueprintReadOnly, Category = "Audio")
 	class USoundCue *thudAudioCue;
@@ -182,7 +190,8 @@ private:
 	void Fire();
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
-	void Pause(); 
+	void Pause();
+	void FlashRed();
 	AAISpawnerController* spawnController;
 
 public:

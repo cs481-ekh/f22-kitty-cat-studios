@@ -129,9 +129,7 @@ ARunner::ARunner()
 	killBallShots = 0;
 	//ShotAbsorb PowerUp
 	shotAbsorbOn = false;
-	shotAbsorbHits = 0;
-
-
+	shotAbsorbHits = 0;	
 }
 
 void ARunner::BeginPlay()
@@ -534,6 +532,7 @@ void ARunner::AddToHealth(int newHealth) {
 	health += newHealth;
 	if (newHealth < 0 && !(health <= 0)) {
 		PlaySound(runnerHitAudioCue);
+		FlashRed();
 	}
 	if (health >= 100) {
 		health = 100;
@@ -729,6 +728,25 @@ void ARunner::FixRotation()
 
 	// Finally, apply combined input + fixed torque to the runner
 	RootMesh->AddTorqueInRadians(runnerTorque * GetWorld()->DeltaTimeSeconds, FName("b_Root"), true);
+}
+
+void ARunner::FlashRed() {
+    if (!isRed) {
+		originalMaterials = BodyMesh->GetMaterials();
+		for (int i = 0; i < BodyMesh->GetMaterials().Num(); i++) {
+		  BodyMesh->SetMaterial(i, HitMaterial);
+		}
+		isRed = true;
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle,
+			[&]() {
+			  for (int i = 0; i < originalMaterials.Num(); i++) {
+				BodyMesh->SetMaterial(i, originalMaterials[i]);
+			  }
+			  isRed = false;
+			},
+			0.2f, false);		
+    }    
 }
 
 // Audio -------------------------------------------------------------------------------------------------------
