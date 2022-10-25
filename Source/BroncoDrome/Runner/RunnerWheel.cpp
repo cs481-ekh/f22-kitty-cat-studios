@@ -11,26 +11,26 @@ URunnerWheel::URunnerWheel()
 	bAffectedByEngine = true;
 	bTractionControlEnabled = true;
 
-	enum RunnerStats{Speed, Traction, Balanced};
-	RunnerStats runnerSelected = Balanced;
+	//enum RunnerStats{Speed, Traction, Balanced};
+    
+	runnerSelected = 2;
 
-	
 	// Other attributes
-	WheelRadius = 15.f;
-	WheelWidth = 30.f;
-	LateralFrictionForceMultiplier = 8.f;
-	SideSlipModifier = 1.f;
-	SlipThreshold = 12.f;
-	SkidThreshold = 12.f;
-	SuspensionDampingRatio = 2.f;
-	MaxSteerAngle = 22.5f;
-	SpringRate = 750.f;
-	SuspensionMaxRaise = 15.f;
-	SuspensionMaxDrop = 15.f;
+	//WheelRadius = 15.f;
+	//WheelWidth = 30.f;
+	//LateralFrictionForceMultiplier = 8.f;
+	//SideSlipModifier = 1.f;
+	//SlipThreshold = 12.f;
+	//SkidThreshold = 12.f;
+	//SuspensionDampingRatio = 2.f;
+	//MaxSteerAngle = 22.5f;
+	//SpringRate = 750.f;
+	//SuspensionMaxRaise = 15.f;
+	//SuspensionMaxDrop = 15.f;
 
 	switch(runnerSelected)
 	{
-		case(Speed):
+		case(0): //speed
 			WheelRadius = 10.f;
 			WheelWidth = 30.f;
 			LateralFrictionForceMultiplier = 4.f;
@@ -43,7 +43,7 @@ URunnerWheel::URunnerWheel()
 			SuspensionMaxRaise = 10.f;
 			SuspensionMaxDrop = 10.f;
 			break;
-		case(Traction):
+		case(1)://Traction
 			WheelRadius = 20.f;
 			WheelWidth = 35.f;
 			LateralFrictionForceMultiplier = 10.f;
@@ -56,7 +56,7 @@ URunnerWheel::URunnerWheel()
 			SuspensionMaxRaise = 20.f;
 			SuspensionMaxDrop = 20.f;
 			break;
-		case(Balanced):
+		case(2)://Balanced
 			// Other attributes
 			WheelRadius = 15.f;
 			WheelWidth = 30.f;
@@ -86,3 +86,5 @@ URunnerWheel::URunnerWheel()
 	}
 
 }
+
+	void URunnerWheel::SelectRunner_Implementation(int i) { runnerSelected = i; }

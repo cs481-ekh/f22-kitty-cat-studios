@@ -8,6 +8,7 @@
 
 #include "RunnerObserver.generated.h"
 
+
 UCLASS()
 class BRONCODROME_API ARunnerObserver : public AActor
 {
@@ -38,6 +39,11 @@ public:		// Public Static API
 	// Pretty much the DMV
 	static void RegisterRunner(class ARunner& runner);
 	static void DeregisterRunner(class ARunner& runner);
+
+        // get all actors of class
+         template<typename T>
+         void GetAllActorsOfClass(UWorld* World, TArray<T*>& Out);
+
 
 	// Runner visibility tests
 	static class ARunner* GetClosestRunner(const class ARunner& fromRunner, float maxDistance = std::numeric_limits<float>::max(), 
