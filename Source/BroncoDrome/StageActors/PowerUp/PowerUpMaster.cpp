@@ -95,7 +95,7 @@ void APowerUpMaster::HideActor()
 void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA(ARunner::StaticClass()))
+	if (IsValid(OtherActor) && OtherActor->IsA(ARunner::StaticClass()))
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("You collected a powerup."), *GetDebugName(this)));
 		timeTracker = 0.0f;

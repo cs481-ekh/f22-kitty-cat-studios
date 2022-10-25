@@ -51,6 +51,16 @@ ARunner::ARunner()
 	);
 	spongeTinkAudioCue = spongeTinkCue.Object;
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> runnerHitCue(
+		TEXT("'/Game/Assets/Sound/Hit_Hurt_Cue.Hit_Hurt_Cue'")
+	);
+	runnerHitAudioCue = runnerHitCue.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> runnerExplosionCue(
+		TEXT("'/Game/Assets/Sound/Runner_Explosion_Cue.Runner_Explosion_Cue'")
+	);
+	runnerExplosionAudioCue = runnerExplosionCue.Object;
+
 	static ConstructorHelpers::FObjectFinder<USoundCue> engineCue(
 		TEXT("'/Game/Assets/Sound/Engine/EngineCue.EngineCue'")
 	);
@@ -119,9 +129,7 @@ ARunner::ARunner()
 	killBallShots = 0;
 	//ShotAbsorb PowerUp
 	shotAbsorbOn = false;
-	shotAbsorbHits = 0;
-
-
+	shotAbsorbHits = 0;	
 }
 
 void ARunner::BeginPlay()
@@ -131,7 +139,7 @@ void ARunner::BeginPlay()
 	{
 		ChangeMIntensity(1);
 		Super::BeginPlay();
-		SetActorHiddenInGame(true);
+		Visible(false);
 		DisableInput(GetWorld()->GetFirstPlayerController());
 		HUD = Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 		HUD->HideHUD(true);
@@ -148,7 +156,7 @@ void ARunner::BeginPlay()
 	{
 		Super::BeginPlay();
 		HUD = Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-		SetActorHiddenInGame(false);
+		Visible(true);
 		EnableInput(GetWorld()->GetFirstPlayerController());
 		InitStateMachines();
 		// Begin looping engine audio
@@ -163,7 +171,7 @@ void ARunner::BeginPlay()
 
 void ARunner::ReinstateAll()
 {
-	SetActorHiddenInGame(false);
+	Visible(true);
 	EnableInput(GetWorld()->GetFirstPlayerController());
 	HUD->HideHUD(false);
 
@@ -522,18 +530,24 @@ void ARunner::LoseScreen() {
 
 void ARunner::AddToHealth(int newHealth) {
 	health += newHealth;
+	if (newHealth < 0 && !(health <= 0)) {
+		PlaySound(runnerHitAudioCue);
+		FlashRed();
+	}
 	if (health >= 100) {
 		health = 100;
 	}
 	/* This is when a runner has lost all of its health */
 	else if (health <= 0) {
         health = 0;
+		PlaySound(runnerExplosionAudioCue);
         if (this->isAI) {  // If an AI just died, destroy the actor and move on, otherwise update player accordingly
 			HUD->DecrementEnemiesLeft();
 			spawnController->DecrementActiveAI(this);
-            Destroy();
+			SpawnParticles();
+			Destroy();			
             return;
-        }
+        }       
         HUD->SetHealth(health);
 		//KillBall PowerUp
 		killBallOn = false;
@@ -550,9 +564,11 @@ void ARunner::AddToHealth(int newHealth) {
 		const FVector higher = { CurrentLocation.X, CurrentLocation.Y, CurrentLocation.Z + 100 };
 		const FRotator newOrientation = { 0, 0, 0 };
 		TeleportTo(higher, newOrientation);
-		SetActorHiddenInGame(true);
+		Visible(false);
 		SetActorEnableCollision(false);
 		SetActorTickEnabled(false);
+
+        SpawnParticles();
 
 		/* If the player just died, they shouldn't be able to move until they respawn */
         DisableInput(GetWorld()->GetFirstPlayerController());
@@ -606,7 +622,7 @@ void ARunner::Respawn() {
 	for (auto &sp : validSpawnPoints) {
 		if (currSpawnPoint == randSpawnPoint) {
 			TeleportTo(sp->GetActorLocation(), this->GetActorRotation());
-			SetActorHiddenInGame(false);
+			Visible(true);
 			SetActorEnableCollision(true);
 			SetActorTickEnabled(true);
 			health = 100;
@@ -716,6 +732,28 @@ void ARunner::FixRotation()
 	// Finally, apply combined input + fixed torque to the runner
 	RootMesh->AddTorqueInRadians(runnerTorque * GetWorld()->DeltaTimeSeconds, FName("b_Root"), true);
 }
+
+void ARunner::FlashRed() {
+    if (!isRed) {
+		originalMaterials = BodyMesh->GetMaterials();
+		for (int i = 0; i < BodyMesh->GetMaterials().Num(); i++) {
+		  BodyMesh->SetMaterial(i, HitMaterial);
+		}
+		isRed = true;
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle,
+			[&]() {
+			  for (int i = 0; i < originalMaterials.Num(); i++) {
+				BodyMesh->SetMaterial(i, originalMaterials[i]);
+			  }
+			  isRed = false;
+			},
+			0.2f, false);		
+    }    
+}
+
+void ARunner::SpawnParticles_Implementation() {} 
+void ARunner::Visible_Implementation(bool visible) {}
 
 // Audio -------------------------------------------------------------------------------------------------------
 
