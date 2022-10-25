@@ -120,6 +120,9 @@ public: // Attributes
 	int gameTime = 180; //Time per level, in seconds
 	int AIToKill = 3;
 	FTimerHandle GameTimeHandler; //For tick
+	FTimerHandle ShotTimerHandler;
+	bool canFire = true;
+	float shotTimerCooldown = 0.3f;
 
 	//KillBall
 	bool killBallOn;
@@ -201,6 +204,7 @@ public:
 	void DecrementAILeftToKill();
 	void CheckForGameOver();
 	void AddToScore(int newScore);  //Changes score
+	void SetCanFire();
 
 	//Power ups
 	void hitMe(int damage); //Holds the needed steps to deal damage based on current powerups
@@ -216,7 +220,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ARunner)
 	void Visible(bool visible);
 
-	void AimBlaster(const class ARunner* targetRunner, const float deltaTime);
+	void AimBlaster(const FVector targetLocation, const float deltaTime);
 
 //Displays for winning and losing
 private:

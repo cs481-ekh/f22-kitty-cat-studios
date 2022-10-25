@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Sound/SoundCue.h"
+#include "Math/Vector.h"
 
 //Orbs
 #include "../StageActors/OrbProjectile.h"
@@ -129,7 +130,9 @@ ARunner::ARunner()
 	killBallShots = 0;
 	//ShotAbsorb PowerUp
 	shotAbsorbOn = false;
-	shotAbsorbHits = 0;	
+	shotAbsorbHits = 0;
+
+
 }
 
 void ARunner::BeginPlay()
@@ -289,28 +292,47 @@ void ARunner::RotateInput(float in)
 // Rotate the camera left/right. Expects a value [-1, 1].
 void ARunner::CameraInput(float in)
 {
-	// Are we locked onto a Runner?
-	if (!m_CameraTargetRunner)
-	{
-		// Set spring arm to face forward
-		SpringArm->SetRelativeRotation(FRotator(0.f, in * 90.f, 0.f));
+	if (isAI) {
+		// Are we locked onto a Runner?
+		if (!m_CameraTargetRunner)
+		{
+			// Set spring arm to face forward
+			SpringArm->SetRelativeRotation(FRotator(0.f, in * 90.f, 0.f));
 
-		// Either soft-lock to a runner or aim forward (if GetClosestRunner() returns null)
-		const ARunner* softTargetRunner = ARunnerObserver::GetClosestRunner(*this, LOCK_ON_DISTANCE,
-			LOCK_ON_FIELD_OF_VIEW, true);
-		AimBlaster(softTargetRunner, GetWorld()->GetDeltaSeconds());
-	}
-	else
-	{
-		// Set spring arm + blaster to face towards the target runner
-		SpringArm->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(SpringArm->GetComponentLocation(), m_CameraTargetRunner->GetActorLocation()));
-		FRotator newRelativeRotation = SpringArm->GetRelativeRotation();
-		newRelativeRotation.Roll = 0;
-		SpringArm->SetRelativeRotation(newRelativeRotation);
+			// Either soft-lock to a runner or aim forward (if GetClosestRunner() returns null)
+			const ARunner* softTargetRunner = ARunnerObserver::GetClosestRunner(*this, LOCK_ON_DISTANCE,
+				LOCK_ON_FIELD_OF_VIEW, true);
+			AimBlaster(softTargetRunner->GetActorLocation(), GetWorld()->GetDeltaSeconds());
+		}
+		else
+		{
+			// Set spring arm + blaster to face towards the target runner
+			SpringArm->SetWorldRotation(UKismetMathLibrary::FindLookAtRotation(SpringArm->GetComponentLocation(), m_CameraTargetRunner->GetActorLocation()));
+			FRotator newRelativeRotation = SpringArm->GetRelativeRotation();
+			newRelativeRotation.Roll = 0;
+			SpringArm->SetRelativeRotation(newRelativeRotation);
 
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(SpringArm->GetTargetRotation().ToString())));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(SpringArm->GetTargetRotation().ToString())));
 
-		AimBlaster(m_CameraTargetRunner, GetWorld()->GetDeltaSeconds());
+			AimBlaster(m_CameraTargetRunner->GetActorLocation(), GetWorld()->GetDeltaSeconds());
+		}
+	} else {
+		/*
+		class APlayerController* Mouse;
+		Mouse = GetWorld()->GetFirstPlayerController();
+		FVector AimLocation;
+		FVector AimDirection;
+		if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
+			// Set spring arm to face forward
+			SpringArm->SetRelativeRotation(FRotator(0.f, in * 90.f, 0.f));
+
+			// Either soft-lock to a runner or aim forward (if GetClosestRunner() returns null)
+
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(AimLocation.ToString())));
+
+			AimBlaster(AimDirection, GetWorld()->GetDeltaSeconds());
+		}
+		*/
 	}
 }
 
@@ -355,22 +377,24 @@ void ARunner::Hop()
 void ARunner::LockOn()
 {
 	// Currently locked on?
-	if (!m_CameraTargetRunner)
-	{
-		// Target closest visible Runner (may return null)
-		m_CameraTargetRunner = ARunnerObserver::GetClosestRunner(*this, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST);
+	if (isAI) {
+		if (!m_CameraTargetRunner)
+		{
+			// Target closest visible Runner (may return null)
+			m_CameraTargetRunner = ARunnerObserver::GetClosestRunner(*this, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST);
 		
-		// If found target, start query tick
-		if (m_CameraTargetRunner)
-			GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &ARunner::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
-	}
-	else
-	{
-		// Clear currently locked-on Runner
-		m_CameraTargetRunner = nullptr;
+			// If found target, start query tick
+			if (m_CameraTargetRunner)
+				GetWorld()->GetTimerManager().SetTimer(m_LockOnQueryTimer, this, &ARunner::QueryLockOnEngage, LOCK_ON_QUERY_TIME, false);
+		}
+		else
+		{
+			// Clear currently locked-on Runner
+			m_CameraTargetRunner = nullptr;
 
-		// Stop any timers that may be running
-		m_LockOnQueryTimer.Invalidate();
+			// Stop any timers that may be running
+			m_LockOnQueryTimer.Invalidate();
+		}
 	}
 }
 
@@ -409,7 +433,22 @@ void ARunner::Fire()
 
 		if (projectile) {
 			//Projectile variables
-			projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
+			if (!isAI) {
+				class APlayerController* Mouse;
+				Mouse = GetWorld()->GetFirstPlayerController();
+				FVector AimLocation;
+				FVector AimDirection;
+				if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
+					//GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("got mouse pos %s"), *(AimDirection.ToString())));
+					projectile->FireOrbInDirection(AimDirection, this); //Damage is preset for KillBall
+				}
+				else {
+					projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
+				}
+			}
+			else {
+				projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
+			}
 			//Debug
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your KillBall weapon."), *GetDebugName(this)));
 			//Effects
@@ -426,7 +465,22 @@ void ARunner::Fire()
 		AOrbProjectile*  projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams); //Regular orb
 		if (projectile) {
 			//Projectile variables
-			projectile->FireOrbInDirection(rot.Vector(), this);
+			if (!isAI) {
+				class APlayerController* Mouse;
+				Mouse = GetWorld()->GetFirstPlayerController();
+				FVector AimLocation;
+				FVector AimDirection;
+				if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
+					//GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("got mouse pos %s"), *(AimDirection.ToString())));
+					projectile->FireOrbInDirection(AimDirection, this); //Damage is preset for KillBall
+				}
+				else {
+					projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
+				}
+			}
+			else {
+				projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
+			}
 			projectile->shotDamage = playerDamage; //Set damage of shot to the players damage
 			//Debug
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your regular weapon."), *GetDebugName(this)));
@@ -477,32 +531,23 @@ void ARunner::QueryLockOnDisengage()
 	}
 }
 
-void ARunner::AimBlaster(const ARunner* targetRunner, const float deltaTime)
+void ARunner::AimBlaster(FVector targetLocation, const float deltaTime)
 {
 	FRotator blasterSlerpedLookAt;
 
-	if (targetRunner)
-	{
-		//ChangeMIntensity(1);
-		// Aim blaster towards target runner
+	if (!isAI) {
 		const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
-			BlasterBase->GetComponentLocation(), targetRunner->GetActorLocation());
+			BlasterBase->GetComponentLocation(), this->GetActorLocation() + (targetLocation * 1000));
 		blasterSlerpedLookAt = UKismetMathLibrary::RLerp(BlasterBase->GetComponentRotation(),
 			blasterTargetLookAt, LOCK_ON_BLASTER_RPS * deltaTime, true);
-
-		// Render reticle over target
-		HUD->RenderLockOnReticle(targetRunner->GetActorLocation(), false);
 	}
-	else
-	{
-		//ChangeMIntensity(0);
-		// Aim blaster towards front of runner
+	else {
+		const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
+			BlasterBase->GetComponentLocation(), targetLocation);
 		blasterSlerpedLookAt = UKismetMathLibrary::RLerp(BlasterBase->GetComponentRotation(),
-			GetActorForwardVector().Rotation(), LOCK_ON_BLASTER_RPS * deltaTime, true);
-
-		// Hide reticle
-		HUD->RenderLockOnReticle(FVector(), true);
+			blasterTargetLookAt, LOCK_ON_BLASTER_RPS * deltaTime, true);
 	}
+
 
 	// Apply rotation
 	BlasterBase->SetWorldRotation(blasterSlerpedLookAt);
@@ -621,7 +666,8 @@ void ARunner::Respawn() {
 	int currSpawnPoint = 0;
 	for (auto &sp : validSpawnPoints) {
 		if (currSpawnPoint == randSpawnPoint) {
-			TeleportTo(sp->GetActorLocation(), this->GetActorRotation());
+			FVector spawnHeightModifier = FVector(0.0f, 0.0f, 500.0f);
+			TeleportTo(sp->GetActorLocation()+spawnHeightModifier, this->GetActorRotation());
 			Visible(true);
 			SetActorEnableCollision(true);
 			SetActorTickEnabled(true);
@@ -638,7 +684,7 @@ void ARunner::Respawn() {
 }
 
 void ARunner::AddToScore(int newScore) {
-	if (GetController() == GetWorld()->GetFirstPlayerController()) {
+	if (!isAI) {
 		score += newScore;
 		HUD->AddToScore(newScore);
 	} 

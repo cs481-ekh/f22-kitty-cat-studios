@@ -344,7 +344,7 @@ void AAIActor::drawTargetLine(FVector location) {
 
 		setTargetRunner = player_runner;
 
-		ARunner::AimBlaster(setTargetRunner, GetWorld()->GetDeltaSeconds());
+		ARunner::AimBlaster(setTargetRunner->GetActorLocation(), GetWorld()->GetDeltaSeconds());
 		LockOn();
 
 		if (shotCount < shot_rate) {  // shot timer (currently set to
@@ -361,7 +361,7 @@ void AAIActor::drawTargetLine(FVector location) {
 
 		setTargetRunner = aRunner;
 
-		ARunner::AimBlaster(setTargetRunner, GetWorld()->GetDeltaSeconds());
+		ARunner::AimBlaster(setTargetRunner->GetActorLocation(), GetWorld()->GetDeltaSeconds());
 		LockOn();
 
 		if (shotCount < shot_rate) {  // shot timer (currently set to
