@@ -12,6 +12,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Sound/SoundCue.h"
 #include "Math/Vector.h"
+#include "DrawDebugHelpers.h"
 
 //Orbs
 #include "../StageActors/OrbProjectile.h"
@@ -321,6 +322,19 @@ void ARunner::CameraInput(float in)
 		Mouse = GetWorld()->GetFirstPlayerController();
 		FVector AimLocation;
 		FVector AimDirection;
+		//FVector origLocation = GetActorLocation();
+		//SetActorLocation(BlasterBase->GetComponentLocation());
+		/*
+		FHitResult outHit;
+		const FCollisionQueryParams collisionParams(FName(TEXT("TestCast")), false, this);
+		// collisionParams.AddIgnoredActor(*this);
+
+		FVector start = GetActorLocation();
+		bool hit = GetWorld()->LineTraceSingleByChannel(outHit, GetActorLocation(), (AimDirection * 10000) + GetActorLocation(), ECC_WorldDynamic);*/
+
+
+
+
 		if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
 			// Set spring arm to face forward
 			SpringArm->SetRelativeRotation(FRotator(0.f, in * 90.f, 0.f));
@@ -329,9 +343,25 @@ void ARunner::CameraInput(float in)
 
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(AimLocation.ToString())));
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(AimDirection.ToString())));
+			FHitResult outHit;
+			FCollisionQueryParams collisionParams(FName(TEXT("TestCast")), true, NULL);
+			collisionParams.bReturnPhysicalMaterial = true;
+			// collisionParams.AddIgnoredActor(*this);
 
-			AimBlaster(AimDirection, GetWorld()->GetDeltaSeconds());
+			FVector start = AimLocation;
+			bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, start + (AimDirection * 5000), ECC_GameTraceChannel3, collisionParams);
+			if (hit) {
+				//DrawDebugLine(GetWorld(), start, start + (AimDirection * 4000), FColor::Green, false, 0.5f, ECC_WorldStatic, 1.f);
+				//DrawDebugBox(GetWorld(), outHit.ImpactPoint, FVector(2.f, 2.f, 2.f), FColor::Blue, false, 0.5f, ECC_WorldStatic, 1.f);
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("current location %s"), *(GetActorLocation().ToString())));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("raycast hit location %s"), *(outHit.ImpactPoint.ToString())));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Other direction  %s"), *(((AimDirection * 4000) + AimLocation)).ToString()));
+				AimBlaster(outHit.ImpactPoint, GetWorld()->GetDeltaSeconds());
+			} else {
+				AimBlaster((AimDirection * 5000) + AimLocation, GetWorld()->GetDeltaSeconds());
+			}
 		}
+		//SetActorLocation(origLocation);
 	}
 }
 
@@ -425,9 +455,9 @@ void ARunner::Fire()
 		FVector AimLocation;
 		FVector AimDirection;
 		if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Actor Loc %s"), *(GetActorLocation().ToString())));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Transformed blaster: %s"), *(loc.ToString())));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Blaster: %s"), *(BlasterBase->GetComponentLocation().ToString())));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Actor Loc %s"), *(GetActorLocation().ToString())));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Transformed blaster: %s"), *(loc.ToString())));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Blaster: %s"), *(BlasterBase->GetComponentLocation().ToString())));
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(AimLocation.ToString())));
 			
 		}
@@ -518,23 +548,10 @@ void ARunner::QueryLockOnDisengage()
 void ARunner::AimBlaster(FVector targetLocation, const float deltaTime)
 {
 	FRotator blasterSlerpedLookAt;
-
-	if (!isAI) {
-		//FVector correctedVector = ((GetActorLocation() + (targetLocation * 1000)) - (BlasterBase->GetComponentLocation() + 200.0 * (BlasterBase->GetComponentRotation().Vector()))).GetSafeNormal();
-		
-		//const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
-		//	(BlasterBase->GetComponentLocation() + 200.0 * (BlasterBase->GetComponentRotation().Vector())), (BlasterBase->GetComponentLocation() + 200.0 * (BlasterBase->GetComponentRotation().Vector())) + correctedVector);'
-		const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
-			BlasterBase->GetComponentLocation(), BlasterBase->GetComponentLocation() + targetLocation * 1000);
-		blasterSlerpedLookAt = UKismetMathLibrary::RLerp(BlasterBase->GetComponentRotation(),
-			blasterTargetLookAt, LOCK_ON_BLASTER_RPS * deltaTime, true);
-	}
-	else {
 		const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
 			BlasterBase->GetComponentLocation(), targetLocation);
 		blasterSlerpedLookAt = UKismetMathLibrary::RLerp(BlasterBase->GetComponentRotation(),
 			blasterTargetLookAt, LOCK_ON_BLASTER_RPS * deltaTime, true);
-	}
 
 
 	// Apply rotation
