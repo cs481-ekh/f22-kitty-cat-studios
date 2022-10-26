@@ -689,7 +689,7 @@ void ARunner::Respawn() {
 	int currSpawnPoint = 0;
 	for (auto &sp : validSpawnPoints) {
 		if (currSpawnPoint == randSpawnPoint) {
-			FVector spawnHeightModifier = FVector(0.0f, 0.0f, 500.0f);
+			FVector spawnHeightModifier = FVector(0.0f, 0.0f, 300.0f);
 			TeleportTo(sp->GetActorLocation()+spawnHeightModifier, this->GetActorRotation());
 			Visible(true);
 			SetActorEnableCollision(true);
