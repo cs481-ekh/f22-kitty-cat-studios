@@ -317,7 +317,6 @@ void ARunner::CameraInput(float in)
 			AimBlaster(m_CameraTargetRunner->GetActorLocation(), GetWorld()->GetDeltaSeconds());
 		}
 	} else {
-		/*
 		class APlayerController* Mouse;
 		Mouse = GetWorld()->GetFirstPlayerController();
 		FVector AimLocation;
@@ -329,10 +328,10 @@ void ARunner::CameraInput(float in)
 			// Either soft-lock to a runner or aim forward (if GetClosestRunner() returns null)
 
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(AimLocation.ToString())));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(AimDirection.ToString())));
 
 			AimBlaster(AimDirection, GetWorld()->GetDeltaSeconds());
 		}
-		*/
 	}
 }
 
@@ -420,6 +419,20 @@ void ARunner::Fire()
 	const auto rot = BlasterBase->GetComponentRotation();
 	const auto loc = BlasterBase->GetComponentLocation() + 200.0 * (rot.Vector());	//200 is to account for the length of the barrel
 
+	if (!isAI) {
+				class APlayerController* Mouse;
+		Mouse = GetWorld()->GetFirstPlayerController();
+		FVector AimLocation;
+		FVector AimDirection;
+		if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Actor Loc %s"), *(GetActorLocation().ToString())));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Transformed blaster: %s"), *(loc.ToString())));
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Blaster: %s"), *(BlasterBase->GetComponentLocation().ToString())));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(AimLocation.ToString())));
+			
+		}
+	}
+
 	//check for Kill Ball
 	if (killBallOn) {
 		ChangeMIntensity(2);
@@ -433,22 +446,8 @@ void ARunner::Fire()
 
 		if (projectile) {
 			//Projectile variables
-			if (!isAI) {
-				class APlayerController* Mouse;
-				Mouse = GetWorld()->GetFirstPlayerController();
-				FVector AimLocation;
-				FVector AimDirection;
-				if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
-					//GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("got mouse pos %s"), *(AimDirection.ToString())));
-					projectile->FireOrbInDirection(AimDirection, this); //Damage is preset for KillBall
-				}
-				else {
-					projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
-				}
-			}
-			else {
-				projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
-			}
+			projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
+			
 			//Debug
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your KillBall weapon."), *GetDebugName(this)));
 			//Effects
@@ -465,22 +464,7 @@ void ARunner::Fire()
 		AOrbProjectile*  projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams); //Regular orb
 		if (projectile) {
 			//Projectile variables
-			if (!isAI) {
-				class APlayerController* Mouse;
-				Mouse = GetWorld()->GetFirstPlayerController();
-				FVector AimLocation;
-				FVector AimDirection;
-				if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
-					//GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("got mouse pos %s"), *(AimDirection.ToString())));
-					projectile->FireOrbInDirection(AimDirection, this); //Damage is preset for KillBall
-				}
-				else {
-					projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
-				}
-			}
-			else {
-				projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
-			}
+			projectile->FireOrbInDirection(rot.Vector(), this); //Damage is preset for KillBall
 			projectile->shotDamage = playerDamage; //Set damage of shot to the players damage
 			//Debug
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("You fired your regular weapon."), *GetDebugName(this)));
@@ -536,8 +520,12 @@ void ARunner::AimBlaster(FVector targetLocation, const float deltaTime)
 	FRotator blasterSlerpedLookAt;
 
 	if (!isAI) {
+		//FVector correctedVector = ((GetActorLocation() + (targetLocation * 1000)) - (BlasterBase->GetComponentLocation() + 200.0 * (BlasterBase->GetComponentRotation().Vector()))).GetSafeNormal();
+		
+		//const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
+		//	(BlasterBase->GetComponentLocation() + 200.0 * (BlasterBase->GetComponentRotation().Vector())), (BlasterBase->GetComponentLocation() + 200.0 * (BlasterBase->GetComponentRotation().Vector())) + correctedVector);'
 		const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
-			BlasterBase->GetComponentLocation(), this->GetActorLocation() + (targetLocation * 1000));
+			BlasterBase->GetComponentLocation(), BlasterBase->GetComponentLocation() + targetLocation * 1000);
 		blasterSlerpedLookAt = UKismetMathLibrary::RLerp(BlasterBase->GetComponentRotation(),
 			blasterTargetLookAt, LOCK_ON_BLASTER_RPS * deltaTime, true);
 	}
