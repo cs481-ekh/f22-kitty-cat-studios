@@ -12,7 +12,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Sound/SoundCue.h"
 #include "Math/Vector.h"
-#include "DrawDebugHelpers.h"
 
 //Orbs
 #include "../StageActors/OrbProjectile.h"
@@ -139,7 +138,7 @@ ARunner::ARunner()
 void ARunner::BeginPlay()
 {
 	//For player characters
-	if (!this->isAI)
+	if (!isAI)
 	{
 		ChangeMIntensity(1);
 		Super::BeginPlay();
@@ -161,7 +160,6 @@ void ARunner::BeginPlay()
 		Super::BeginPlay();
 		HUD = Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 		Visible(true);
-		EnableInput(GetWorld()->GetFirstPlayerController());
 		InitStateMachines();
 		// Begin looping engine audio
 		engineAudioComponent->Play();
@@ -178,6 +176,7 @@ void ARunner::ReinstateAll()
 	Visible(true);
 	EnableInput(GetWorld()->GetFirstPlayerController());
 	HUD->HideHUD(false);
+	HUD->SetAutoTarget(autoTarget);
 
 	//Commence game timer
 	GetWorld()->GetTimerManager().SetTimer(
@@ -293,7 +292,7 @@ void ARunner::RotateInput(float in)
 // Rotate the camera left/right. Expects a value [-1, 1].
 void ARunner::CameraInput(float in)
 {
-	if (isAI) {
+	if (autoTarget) {
 		// Are we locked onto a Runner?
 		if (!m_CameraTargetRunner)
 		{
@@ -303,7 +302,11 @@ void ARunner::CameraInput(float in)
 			// Either soft-lock to a runner or aim forward (if GetClosestRunner() returns null)
 			const ARunner* softTargetRunner = ARunnerObserver::GetClosestRunner(*this, LOCK_ON_DISTANCE,
 				LOCK_ON_FIELD_OF_VIEW, true);
-			AimBlaster(softTargetRunner->GetActorLocation(), GetWorld()->GetDeltaSeconds());
+			if (IsValid(softTargetRunner)) {
+				AimBlaster(softTargetRunner->GetActorLocation(), GetWorld()->GetDeltaSeconds());
+			} else {
+				AimBlaster(FVector(0.0f,0.0f,0.0f), GetWorld()->GetDeltaSeconds());
+			}
 		}
 		else
 		{
@@ -314,55 +317,46 @@ void ARunner::CameraInput(float in)
 			SpringArm->SetRelativeRotation(newRelativeRotation);
 
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(SpringArm->GetTargetRotation().ToString())));
-
-			AimBlaster(m_CameraTargetRunner->GetActorLocation(), GetWorld()->GetDeltaSeconds());
-		}
-	} else {
-		class APlayerController* Mouse;
-		Mouse = GetWorld()->GetFirstPlayerController();
-		FVector AimLocation;
-		FVector AimDirection;
-		//FVector origLocation = GetActorLocation();
-		//SetActorLocation(BlasterBase->GetComponentLocation());
-		/*
-		FHitResult outHit;
-		const FCollisionQueryParams collisionParams(FName(TEXT("TestCast")), false, this);
-		// collisionParams.AddIgnoredActor(*this);
-
-		FVector start = GetActorLocation();
-		bool hit = GetWorld()->LineTraceSingleByChannel(outHit, GetActorLocation(), (AimDirection * 10000) + GetActorLocation(), ECC_WorldDynamic);*/
-
-
-
-
-		if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
-			// Set spring arm to face forward
-			SpringArm->SetRelativeRotation(FRotator(0.f, in * 90.f, 0.f));
-
-			// Either soft-lock to a runner or aim forward (if GetClosestRunner() returns null)
-
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(AimLocation.ToString())));
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(AimDirection.ToString())));
-			FHitResult outHit;
-			FCollisionQueryParams collisionParams(FName(TEXT("TestCast")), true, NULL);
-			collisionParams.bReturnPhysicalMaterial = true;
-			// collisionParams.AddIgnoredActor(*this);
-
-			FVector start = AimLocation;
-			bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, start + (AimDirection * 5000), ECC_GameTraceChannel3, collisionParams);
-			if (hit) {
-				//DrawDebugLine(GetWorld(), start, start + (AimDirection * 4000), FColor::Green, false, 0.5f, ECC_WorldStatic, 1.f);
-				//DrawDebugBox(GetWorld(), outHit.ImpactPoint, FVector(2.f, 2.f, 2.f), FColor::Blue, false, 0.5f, ECC_WorldStatic, 1.f);
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("current location %s"), *(GetActorLocation().ToString())));
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("raycast hit location %s"), *(outHit.ImpactPoint.ToString())));
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Other direction  %s"), *(((AimDirection * 4000) + AimLocation)).ToString()));
-				AimBlaster(outHit.ImpactPoint, GetWorld()->GetDeltaSeconds());
+			if (IsValid(m_CameraTargetRunner)) {
+				AimBlaster(m_CameraTargetRunner->GetActorLocation(), GetWorld()->GetDeltaSeconds());
 			} else {
-				AimBlaster((AimDirection * 5000) + AimLocation, GetWorld()->GetDeltaSeconds());
+				AimBlaster(FVector(0.0f,0.0f,0.0f), GetWorld()->GetDeltaSeconds());
 			}
 		}
-		//SetActorLocation(origLocation);
+	} else {
+		if (canAim) { 
+			canAim = false;
+			GetWorldTimerManager().SetTimer(AimTimerHandler, this, &ARunner::SetCanAim, aimTimerCooldown, false); 
+			class APlayerController* Mouse;
+			Mouse = GetWorld()->GetFirstPlayerController();
+			FVector AimLocation;
+			FVector AimDirection;
+
+			if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
+				// Set spring arm to face forward
+				SpringArm->SetRelativeRotation(FRotator(0.f, in * 90.f, 0.f));
+				FHitResult outHit;
+				FCollisionQueryParams collisionParams(FName(TEXT("TestCast")), true, NULL);
+				collisionParams.bReturnPhysicalMaterial = true;
+
+				FVector start = AimLocation;
+				bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, start + (AimDirection * 5000), ECC_GameTraceChannel3, collisionParams);
+				if (hit) {
+					lastAimHitPoint = outHit.ImpactPoint;
+				} else {
+					lastAimHitPoint = (AimDirection * 5000) + AimLocation;
+				}
+			}			
+		}
+
+
+		AimBlaster(lastAimHitPoint, GetWorld()->GetDeltaSeconds());
 	}
+}
+
+void ARunner::SetCanAim()
+{
+	canAim = true;
 }
 
 void ARunner::HandleLookBehindInput(float in)
@@ -406,7 +400,7 @@ void ARunner::Hop()
 void ARunner::LockOn()
 {
 	// Currently locked on?
-	if (isAI) {
+	if (autoTarget) {
 		if (!m_CameraTargetRunner)
 		{
 			// Target closest visible Runner (may return null)
@@ -427,6 +421,10 @@ void ARunner::LockOn()
 	}
 }
 
+void ARunner::SetCanFire() {
+	canFire = true;
+}
+
 void ARunner::Fire()
 {
 	//classes set in Unreal Class Defaults of Runners 
@@ -442,26 +440,19 @@ void ARunner::Fire()
 	auto World = GetWorld();
 	if (!World) return;
 
+	// Check if allowed to shoot. If yes, can't shoot again until shot timer cooldown passes.
+	if (!isAI) {
+		if (!canFire) return;
+		canFire = false;
+		GetWorldTimerManager().SetTimer(ShotTimerHandler, this, &ARunner::SetCanFire, shotTimerCooldown, false); 
+	}
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
 
 	const auto rot = BlasterBase->GetComponentRotation();
 	const auto loc = BlasterBase->GetComponentLocation() + 200.0 * (rot.Vector());	//200 is to account for the length of the barrel
-
-	if (!isAI) {
-				class APlayerController* Mouse;
-		Mouse = GetWorld()->GetFirstPlayerController();
-		FVector AimLocation;
-		FVector AimDirection;
-		if (Mouse->DeprojectMousePositionToWorld(AimLocation, AimDirection)) {
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Actor Loc %s"), *(GetActorLocation().ToString())));
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Transformed blaster: %s"), *(loc.ToString())));
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Blaster: %s"), *(BlasterBase->GetComponentLocation().ToString())));
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("%s"), *(AimLocation.ToString())));
-			
-		}
-	}
 
 	//check for Kill Ball
 	if (killBallOn) {
@@ -548,10 +539,37 @@ void ARunner::QueryLockOnDisengage()
 void ARunner::AimBlaster(FVector targetLocation, const float deltaTime)
 {
 	FRotator blasterSlerpedLookAt;
+	if (autoTarget) {
+		if (!targetLocation.IsZero())
+		{
+			//ChangeMIntensity(1);
+			// Aim blaster towards target runner
+			const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
+				BlasterBase->GetComponentLocation(), targetLocation);
+			blasterSlerpedLookAt = UKismetMathLibrary::RLerp(BlasterBase->GetComponentRotation(),
+				blasterTargetLookAt, LOCK_ON_BLASTER_RPS * deltaTime, true);
+
+			// Render reticle over target
+			HUD->RenderLockOnReticle(targetLocation, false);
+		}
+		else
+		{
+			//ChangeMIntensity(0);
+			// Aim blaster towards front of runner
+			blasterSlerpedLookAt = UKismetMathLibrary::RLerp(BlasterBase->GetComponentRotation(),
+				GetActorForwardVector().Rotation(), LOCK_ON_BLASTER_RPS * deltaTime, true);
+
+			// Hide reticle
+			HUD->RenderLockOnReticle(FVector(), true);
+		}
+	} else {
 		const FRotator blasterTargetLookAt = UKismetMathLibrary::FindLookAtRotation(
 			BlasterBase->GetComponentLocation(), targetLocation);
 		blasterSlerpedLookAt = UKismetMathLibrary::RLerp(BlasterBase->GetComponentRotation(),
 			blasterTargetLookAt, LOCK_ON_BLASTER_RPS * deltaTime, true);
+	}
+	
+
 
 
 	// Apply rotation

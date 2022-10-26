@@ -121,8 +121,13 @@ public: // Attributes
 	int AIToKill = 3;
 	FTimerHandle GameTimeHandler; //For tick
 	FTimerHandle ShotTimerHandler;
+	FTimerHandle AimTimerHandler;
 	bool canFire = true;
 	float shotTimerCooldown = 0.3f;
+	bool canAim = true;
+	float aimTimerCooldown = 0.05f;
+	FVector lastAimHitPoint;
+	bool autoTarget = false; // if the runner will automatically target instead of manual targeting
 
 	//KillBall
 	bool killBallOn;
@@ -205,6 +210,7 @@ public:
 	void CheckForGameOver();
 	void AddToScore(int newScore);  //Changes score
 	void SetCanFire();
+	void SetCanAim();
 
 	//Power ups
 	void hitMe(int damage); //Holds the needed steps to deal damage based on current powerups
