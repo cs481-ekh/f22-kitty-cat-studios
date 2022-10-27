@@ -46,9 +46,11 @@ APoolableObject* AParticleSpawner::SpawnParticle(ParticleType particle, const FV
 	switch (particle)
 	{
 	case ParticleType::Poof:
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("POOF particle spawned at location: %s with velocity: %s and lifespan: %f"), *(worldLocation.ToString()), *(worldVelocity.ToString()), lifespan));
 		pool = SingletonInstance->PoofPool;
 		break;
 	case ParticleType::BigPoof:
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("BIG POOF spawned at location: %s with velocity: %s and lifespan: %f"), *(worldLocation.ToString()), *(worldVelocity.ToString()), lifespan));
 		pool = SingletonInstance->BigPoofPool;
 		break;
 	default:

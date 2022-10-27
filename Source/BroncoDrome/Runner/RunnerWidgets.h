@@ -73,10 +73,16 @@ public:		// Interface
 	void SetEnemiesLeft(int newAmount);
 	void DecrementEnemiesLeft(void);
 
+	bool autoTarget = true;
+
 	int getAnemoniesLeft();
+	void setAutoTarget(bool val);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnRenderLockOnReticle(FVector worldSpace, bool hide);
+
+	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)
+	bool getAutoTargetToggled();
 
 	//Function to return the current player score
 	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)

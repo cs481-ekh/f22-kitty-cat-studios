@@ -57,3 +57,11 @@ int URunnerWidgets::getScore() {
 	playerScore += (gameTimeRemaining*10) + (livesLeft*100); // Factor in the time and lives remaining
 	return playerScore;
 }
+
+bool URunnerWidgets::getAutoTargetToggled() {
+	return autoTarget;
+}
+
+void URunnerWidgets::setAutoTarget(bool val) {
+	autoTarget = val;
+}
