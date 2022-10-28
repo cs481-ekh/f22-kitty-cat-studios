@@ -1,5 +1,6 @@
 # BroncoDrome  
 ![BroncoDrome](https://github.com/cs481-ekh/f22-kitty-cat-studios/actions/workflows/main.yml/badge.svg)
+[Get the Game](http://ubuntu-broncodrome.quinnshultz.com:8080/job/BroncoDrome/)
 
 BroncoDrome is a 3rd person vehicular combat game being developed using Unreal Engine 4. This project was created to
 satisfy the requirements of CS 481 - Senior Design, but it will likely be the start of a multi-semester project that new
