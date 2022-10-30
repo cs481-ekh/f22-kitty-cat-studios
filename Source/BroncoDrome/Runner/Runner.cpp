@@ -842,9 +842,7 @@ void ARunner::PlaySound(USoundCue* cue) {
 
 void ARunner::AerialGroundedState::OnEnter()
 {
-	GetRunner()->PlaySound(GetRunner()->thudAudioCue); 
-
-	AParticleSpawner::SpawnParticle(ParticleType::Poof, GetRunner()->GetActorLocation(), FVector(), 0.3f);
+	//GetRunner()->PlaySound(GetRunner()->thudAudioCue); 
 }
 
 void ARunner::AerialGroundedState::OnExit()
