@@ -200,6 +200,8 @@ private:
 	void QueryLockOnDisengage();
 	void Pause();
 	void FlashRed();
+	UFUNCTION(BlueprintCallable)
+	void SkipCutscene();
 	AAISpawnerController* spawnController;
 
 public:

@@ -171,6 +171,12 @@ void ARunner::BeginPlay()
 	spawnController = ((AAISpawnerController*)UGameplayStatics::GetActorOfClass(GetWorld(), AAISpawnerController::StaticClass()));
 }
 
+// Called externally via a level's blueprint when a cutscene is skipped
+void ARunner::SkipCutscene() {
+	GetWorldTimerManager().ClearTimer(RunnerStatusHandler);
+	ReinstateAll();
+}
+
 void ARunner::ReinstateAll()
 {
 	Visible(true);
