@@ -173,12 +173,16 @@ void ARunner::BeginPlay()
 
 // Called externally via a level's blueprint when a cutscene is skipped
 void ARunner::SkipCutscene() {
+	if (initialized) return;
 	GetWorldTimerManager().ClearTimer(RunnerStatusHandler);
 	ReinstateAll();
+	spawnController->SkipCutscene();
 }
 
 void ARunner::ReinstateAll()
 {
+	if (initialized) return;
+	initialized = true;
 	Visible(true);
 	EnableInput(GetWorld()->GetFirstPlayerController());
 	HUD->HideHUD(false);
