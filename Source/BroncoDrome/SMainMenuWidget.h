@@ -32,6 +32,7 @@ public:
 	FReply OnPlayRainClicked() const;
 	FReply OnQuitClicked() const;
     FReply OnDifficultyClicked() const;
+	FReply onRunnerSelectionClicked() const(); //
 	FReply OnHScoreClicked() const;
 	void OnHScoreDebug(const FText& InText, ETextCommit::Type);
 	FReply OnReturnToMainClicked() const;
@@ -45,7 +46,7 @@ public:
 	TWeakObjectPtr<class UTexture2D> broncyImage;
 	TWeakObjectPtr<class UTexture2D> sdpLogo;
 
-	FText score0, score1, score2, score3, score4, score5, score6, score7, score8, score9, easy, easyDescript, medium, mediumDescript, hard, hardDescript;
+	FText score0, score1, score2, score3, score4, score5, score6, score7, score8, score9, easy, easyDescript, medium, mediumDescript, hard, hardDescript, balanced, balancedDescript, speed, speedDescript, traction, tractionDescript;
 
 	virtual bool SupportsKeyboardFocus() const override { return true; };
 

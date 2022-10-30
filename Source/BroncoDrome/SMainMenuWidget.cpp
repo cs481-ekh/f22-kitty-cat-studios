@@ -223,6 +223,13 @@ FReply SMainMenuWidget::OnDifficultyClicked() const {
   return FReply::Handled();
 }
 
+FReply SMainMenuWidget::onRunnerSelectionClicked() const { 
+    if (OwningHUd.isValid()) {
+      OwningHUD->RemoveMenu();
+      OwningHUD->ShowMenu(6);
+    }
+}
+
 // This is the handler for the high score button on the main menu
 FReply SMainMenuWidget::OnHScoreClicked() const {
   if (OwningHUD.IsValid()) {
@@ -282,6 +289,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
   const FText PlayNightText = LOCTEXT("PlayGameNight", "Play at Night");
   const FText PlayRainText = LOCTEXT("PlayGameRain", "Play in the Rain :)");
   const FText SelectDifficultyText = LOCTEXT("SelectDifficulty", "Select Difficulty");
+  const FText SelectRunnerText = LOCTEXT("SelectRunner", "Select Runner");
   const FText HighScoreText = LOCTEXT("HighScores", "High Scores");
   const FText QuitText = LOCTEXT("QuitGame", "Quit Game");
   const FText ReturnMain = LOCTEXT("Return", "Return to Main Menu");
