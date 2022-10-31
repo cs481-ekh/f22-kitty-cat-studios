@@ -21,7 +21,8 @@ public:
 		int mapsBeaten;
 	UPROPERTY(VisibleAnywhere, Category = Basic)
 		FString SaveName;
-
+	UPROPERTY(VisibleAnywhere, Category = Basic)
+		FName difficultySetting;  
 
 	UBroncoSaveGame();
 };
