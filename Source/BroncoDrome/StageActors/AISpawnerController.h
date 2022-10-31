@@ -20,6 +20,7 @@ public:
     AActor* GetClosestRunnerToPoint(FVector);
     TArray<AActor*> GetValidSpawnPoints();
     int GetNumValidSpawnPoints();
+    void SkipCutscene();
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,6 +32,7 @@ private:
     void SpawnCheck();
     void UpdateRunners();
     void AttemptSpawn(AActor* spawnPoint);
+    bool initialized = false;
     // Total number of spawn points on this map
     int numSpawnPoints = 0;
     // Number of AI currently in the game

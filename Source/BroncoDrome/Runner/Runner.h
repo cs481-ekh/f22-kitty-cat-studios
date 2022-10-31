@@ -128,6 +128,7 @@ public: // Attributes
 	float aimTimerCooldown = 0.05f;
 	FVector lastAimHitPoint;
 	bool autoTarget = false; // if the runner will automatically target instead of manual targeting
+	bool initialized = false; // if player is initialized
 
 	//KillBall
 	bool killBallOn;
@@ -200,6 +201,8 @@ private:
 	void QueryLockOnDisengage();
 	void Pause();
 	void FlashRed();
+	UFUNCTION(BlueprintCallable)
+	void SkipCutscene();
 	AAISpawnerController* spawnController;
 
 public:

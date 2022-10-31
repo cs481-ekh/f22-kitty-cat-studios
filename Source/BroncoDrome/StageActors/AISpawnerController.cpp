@@ -27,14 +27,30 @@ void AAISpawnerController::BeginPlay() {
 }
 
 void AAISpawnerController::Init() {
+	if (initialized) return;
+	initialized = true;
 	// Spawn initial set of runners
-    AAISpawnerController::SpawnCheck();
+	if (waveSpawning) {
+		AAISpawnerController::SpawnCheck();
+	} else {
+		for (auto &sp: spawnPoints) {
+			if (activeAI < maxAI && totalSpawned < maxRespawns) {
+				AAISpawnerController::AttemptSpawn(sp);
+			}
+		}
+	}
 
 	// Initializes set of runners as well as gets the player runner and sets the player runner pointer
     AAISpawnerController::UpdateRunners();
 
 	// Set spawnCheck interval. Will check if AI need to be respawned based on respawnCheckInSecs
 	GetWorldTimerManager().SetTimer(SpawnTimerHandler, this, &AAISpawnerController::SpawnCheck, respawnCheckInSecs, true);	
+}
+
+void AAISpawnerController::SkipCutscene() {
+	if (initialized) return;
+	GetWorldTimerManager().ClearTimer(handler);
+	AAISpawnerController::Init();
 }
 
 // Is called based on respawnCheckInSecs
