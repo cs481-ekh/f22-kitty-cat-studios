@@ -42,7 +42,16 @@ void AAIActor::BeginPlay()
 	NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
   
     DifficultyParams = FDifficultyParameters();
+	UpdateDifficulty(FName(TEXT("Medium"))); // Set default difficulty to medium and update if necessary
     reactionTime = 6;
+
+
+
+}
+
+// Updates relevant difficulty settings for this runner
+void AAIActor::UpdateDifficulty(FName difficulty) {
+	DifficultyParams.setParams(difficulty);
 
 	// sets accuracyRange based on difficulty
 	// uses accuracyRange in Fire()
@@ -62,7 +71,6 @@ void AAIActor::BeginPlay()
 
 	  accuracyRange = FMath::FRandRange(0.000, 0.008);
     }
-
 }
 
 // Called every frame

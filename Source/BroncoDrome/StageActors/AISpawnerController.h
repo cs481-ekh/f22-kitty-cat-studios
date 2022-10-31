@@ -30,6 +30,7 @@ private:
     void Init();
     void SpawnCheck();
     void UpdateRunners();
+    void InitializeDifficulty();
     void AttemptSpawn(AActor* spawnPoint);
     // Total number of spawn points on this map
     int numSpawnPoints = 0;

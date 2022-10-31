@@ -136,6 +136,7 @@ public:
 	void MoveAwayFromPlayer(FVector player_location, FRotator player_direction);
 	void MoveTowardsPlayer(FVector player_location, FRotator player_direction);
 	void ShotDecision(FVector location); //called in Tick to make a shot decision every 30 frames
+	void UpdateDifficulty(FName difficulty);
 private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
         bool hasReduced = false;
