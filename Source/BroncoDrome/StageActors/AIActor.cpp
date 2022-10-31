@@ -28,7 +28,6 @@ AAIActor::AAIActor() : ARunner()
 void AAIActor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
 
 	PlayerInputComponent->ClearActionBindings();
 	PlayerInputComponent->ClearBindingValues();
@@ -42,35 +41,31 @@ void AAIActor::BeginPlay()
 	NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
   
     DifficultyParams = FDifficultyParameters();
-	UpdateDifficulty(FName(TEXT("Medium"))); // Set default difficulty to medium and update if necessary
+	UpdateDifficulty(FName(TEXT("Medium"))); // Set default difficulty
     reactionTime = 6;
-
-
-
 }
 
 // Updates relevant difficulty settings for this runner
 void AAIActor::UpdateDifficulty(FName difficulty) {
 	DifficultyParams.setParams(difficulty);
 
-	// sets accuracyRange based on difficulty
-	// uses accuracyRange in Fire()
-	if(DifficultyParams.difficulty == TEXT("Easy")) {
+	accuracyRange = DifficultyParams.getDifficultyAccuracyRange();
+	playerDamage = 20 * DifficultyParams.getDifficultyDamageModifier();
+	health = 100 * DifficultyParams.getDifficultyHealthModifier();
+	shot_rate = 90 * DifficultyParams.getDifficultyFireRateModifier();
+}
 
-	  accuracyRange = FMath::FRandRange(0.000, 0.015);
+// Returns a vector to modify the shot angle based on difficulty
+FVector AAIActor::GetAccuracyVector() {
+	float accuracyRangeX, accuracyRangeY, accuracyRangeZ;
 
-    } else if(DifficultyParams.difficulty == TEXT("Medium")) {
+	accuracyRangeX = FMath::FRandRange(-accuracyRange, accuracyRange);
+	accuracyRangeY = FMath::FRandRange(-accuracyRange, accuracyRange);
+	accuracyRangeZ = FMath::FRandRange(-accuracyRange, accuracyRange);
+	
+	FVector accVec = FVector(accuracyRangeX, accuracyRangeY, accuracyRangeZ);
 
-	  accuracyRange = FMath::FRandRange(0.000, 0.008);
-
-    } else if(DifficultyParams.difficulty == TEXT("Hard")) {
-
-	  accuracyRange = FMath::FRandRange(0.000, 0.002);
-
-    } else { 
-
-	  accuracyRange = FMath::FRandRange(0.000, 0.008);
-    }
+	return accVec;
 }
 
 // Called every frame
@@ -406,7 +401,8 @@ void AAIActor::Fire() {
 		AOrbProjectile* Projectile = World->SpawnActor<AOrbProjectile>(AIProjectileClass, loc, rot, SpawnParams);
 		if (Projectile) {
 			PlaySound(laserAudioCue);
-			Projectile->FireOrbInDirection(rot.Vector()+accuracyRange, this);
+			Projectile->FireOrbInDirection(rot.Vector()+GetAccuracyVector(), this);
+			Projectile->shotDamage = playerDamage; //Set damage of shot to the runners damage
 		}
 		else {
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Projectile init error"), *GetDebugName(this)));
