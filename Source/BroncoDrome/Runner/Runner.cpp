@@ -627,6 +627,8 @@ void ARunner::AddToHealth(int newHealth) {
             return;
         }       
         HUD->SetHealth(health);
+		lives--;
+    	HUD->DecrementLivesLeft();
 		//KillBall PowerUp
 		killBallOn = false;
 		killBallShots = 0;
@@ -712,8 +714,8 @@ void ARunner::Respawn() {
 			currSpawnPoint++;
 		}
 	}
-    lives--;
-    HUD->DecrementLivesLeft();
+    //lives--;
+    //HUD->DecrementLivesLeft();
 }
 
 void ARunner::AddToScore(int newScore) {
