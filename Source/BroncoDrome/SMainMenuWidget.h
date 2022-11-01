@@ -27,9 +27,7 @@ public:
 
 	void InitBroncoSave(int level) const; //helper method to initialize the save
 	FReply OnPlayClicked() const;
-	FReply OnPlayDayClicked() const;
-	FReply OnPlayNightClicked() const;
-	FReply OnPlayRainClicked() const;
+	FReply OnFreePlayClicked() const;
 	FReply OnQuitClicked() const;
     FReply OnDifficultyClicked() const;
 	FReply OnHScoreClicked() const;

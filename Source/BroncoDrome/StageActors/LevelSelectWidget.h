@@ -27,4 +27,7 @@ public:  // Constructors
   UFUNCTION(BlueprintCallable, Category = ULevelSelectWidget)
   void SetSelectedLevel(int levelIndex);
 
+  UFUNCTION(BlueprintCallable, Category = ULevelSelectWidget)
+  void ReturnToMainMenu();
+
 };
