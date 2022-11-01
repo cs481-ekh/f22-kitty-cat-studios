@@ -19,8 +19,6 @@ AActor* AAISpawner::Spawn(FName difficultySetting)
   FVector loc = GetActorLocation();
   FRotator roc = FRotator(0, 0, 0);
   AAIActor *ai = GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, roc);
-  // Uncomment the following line at a future date when difficulty settings are implemented
-  // ai->DifficultyParams.setParams(difficultySetting);
   amountSpawned++;
   return ai;
 }

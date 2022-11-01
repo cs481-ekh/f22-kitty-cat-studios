@@ -59,7 +59,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs) {
   BuildMenu(OwningHUD->mainOrHScore);
 }
 
-void SMainMenuWidget::InitBroncoSave(int level) const {
+void SMainMenuWidget::InitBroncoSave(int level, FName difficulty) const {
   // Create and save the initial values. Nothing else is needed here "save" will
   // have the name "curr" for it's save slot.
   if (UBroncoSaveGame *save =
@@ -67,13 +67,14 @@ void SMainMenuWidget::InitBroncoSave(int level) const {
               UBroncoSaveGame::StaticClass()))) {
     save->score = 0;
     save->mapsBeaten = level;
+    save->difficultySetting = difficulty;
     UGameplayStatics::SaveGameToSlot(save, save->SaveName, 0);
   }
 }
 
-FReply SMainMenuWidget::OnPlayClicked() const {
+FReply SMainMenuWidget::OnPlayClicked(FName difficulty) const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(-1);  // 0 will make it so that 3 levels will be played
+    InitBroncoSave(-1, difficulty);  // 0 will make it so that 3 levels will be played
     OwningHUD->RemoveMenu();
   }
 
@@ -84,7 +85,7 @@ FReply SMainMenuWidget::OnPlayClicked() const {
 
 FReply SMainMenuWidget::OnPlayDayClicked() const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(3);  // 3 will make it so that only 1 level will be played
+    InitBroncoSave(3, "Medium");  // 3 will make it so that only 1 level will be played
     OwningHUD->RemoveMenu();
   }
 
@@ -95,7 +96,7 @@ FReply SMainMenuWidget::OnPlayDayClicked() const {
 
 FReply SMainMenuWidget::OnPlayNightClicked() const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(3);  // 3 will make it so that only 1 level will be played
+    InitBroncoSave(3, "Medium");  // 3 will make it so that only 1 level will be played
     OwningHUD->RemoveMenu();
   }
 
@@ -106,7 +107,7 @@ FReply SMainMenuWidget::OnPlayNightClicked() const {
 
 FReply SMainMenuWidget::OnPlayRainClicked() const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(3);  // 3 will make it so that only 1 level will be played
+    InitBroncoSave(3, "Medium");  // 3 will make it so that only 1 level will be played
     OwningHUD->RemoveMenu();
   }
 
@@ -585,7 +586,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                  [SNew(SHorizontalBox)
                      + SHorizontalBox::Slot().Padding(ButtonPadding)
                      [SNew(SButton)
-                        .OnClicked(this, &SMainMenuWidget::OnReturnToMainClicked)
+                        .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Easy")))
                         .ButtonColorAndOpacity(FColor::Blue)
                          [SNew(SVerticalBox)
                           + SVerticalBox::Slot()
@@ -607,7 +608,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                     + SHorizontalBox::Slot().Padding(ButtonPadding)
                     //Medium Button
                     [SNew(SButton)
-                          .OnClicked(this, &SMainMenuWidget::OnReturnToMainClicked)
+                          .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Medium")))
                           .ButtonColorAndOpacity(FColor::Blue)
                               [SNew(SVerticalBox) +
                                SVerticalBox::Slot()
@@ -629,7 +630,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                     +  SHorizontalBox::Slot().Padding(ButtonPadding)
                     //Hard Button
                     [SNew(SButton)
-                          .OnClicked(this, &SMainMenuWidget::OnReturnToMainClicked)
+                          .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Hard")))
                           .ButtonColorAndOpacity(FColor::Blue)
                               [SNew(SVerticalBox) +
                                SVerticalBox::Slot()
@@ -717,7 +718,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                  // Play main game
                  + SVerticalBox::Slot().Padding(ButtonPadding)
                        [SNew(SButton)
-                            .OnClicked(this, &SMainMenuWidget::OnPlayClicked)
+                            .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Medium")))
                             .ButtonColorAndOpacity(FColor::Blue)
                                 [SNew(STextBlock)
                                      .Font(ButtonTextStyle)
