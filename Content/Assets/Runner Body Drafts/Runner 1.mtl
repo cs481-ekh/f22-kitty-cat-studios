@@ -1,0 +1,65 @@
+# Blender 3.3.0 MTL File: 'Runner 1.blend'
+# www.blender.org
+
+newmtl Hood
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl MI_DirtyTire
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.215861 0.215861 0.215861
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump -bm 1.000000 E:/Users/Unreal Engine/Desktop/Vehicles/GoKart_OffroadTire/Painter/OffRoadTire_B/TextureSet/DirtyTire/OFT_Normal_C.tga
+
+newmtl MI_F_Black
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.215861 0.215861 0.215861
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump -bm 1.000000 E:/Users/Unreal Engine/Desktop/Vehicles/GoKartFrame_01/Painter/BlackFrrame/GK_Frame_B_Normal.tga
+
+newmtl MI_GK_Wheel_White
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.215861 0.215861 0.215861
+Ks 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 3
+map_Bump -bm 1.000000 E:/Users/Unreal Engine/Desktop/Vehicles/GoKart_OffroadTire/NewPainter/RedWheel/GK_D_Wheel_R_Normal.tga
+
+newmtl Undercairrage
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.173101 0.173101 0.173101
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Window
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
