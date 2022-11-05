@@ -59,7 +59,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs) {
   BuildMenu(OwningHUD->mainOrHScore);
 }
 
-void SMainMenuWidget::InitBroncoSave(int level, FName difficulty) const {
+void SMainMenuWidget::InitBroncoSave(int level, FName difficulty, bool practiceMode) const {
   // Create and save the initial values. Nothing else is needed here "save" will
   // have the name "curr" for it's save slot.
   if (UBroncoSaveGame *save =
@@ -67,6 +67,7 @@ void SMainMenuWidget::InitBroncoSave(int level, FName difficulty) const {
               UBroncoSaveGame::StaticClass()))) {
     save->score = 0;
     save->mapsBeaten = level;
+    save->practiceMode = practiceMode;
     save->difficultySetting = difficulty;
     UGameplayStatics::SaveGameToSlot(save, save->SaveName, 0);
   }
@@ -74,7 +75,7 @@ void SMainMenuWidget::InitBroncoSave(int level, FName difficulty) const {
 
 FReply SMainMenuWidget::OnPlayClicked(FName difficulty) const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(-1, difficulty);  // 0 will make it so that 3 levels will be played
+    InitBroncoSave(-1, difficulty, false);  // 0 will make it so that 3 levels will be played
     OwningHUD->RemoveMenu();
   }
 
@@ -83,35 +84,13 @@ FReply SMainMenuWidget::OnPlayClicked(FName difficulty) const {
   return FReply::Handled();
 }
 
-FReply SMainMenuWidget::OnPlayDayClicked() const {
+FReply SMainMenuWidget::OnFreePlayClicked(FName difficulty) const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(3, "Medium");  // 3 will make it so that only 1 level will be played
+    InitBroncoSave(3, difficulty, true);  // 3 will make it so that only 1 level will be played
     OwningHUD->RemoveMenu();
   }
 
-  UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Day");
-
-  return FReply::Handled();
-}
-
-FReply SMainMenuWidget::OnPlayNightClicked() const {
-  if (OwningHUD.IsValid()) {
-    InitBroncoSave(3, "Medium");  // 3 will make it so that only 1 level will be played
-    OwningHUD->RemoveMenu();
-  }
-
-  UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Night");
-
-  return FReply::Handled();
-}
-
-FReply SMainMenuWidget::OnPlayRainClicked() const {
-  if (OwningHUD.IsValid()) {
-    InitBroncoSave(3, "Medium");  // 3 will make it so that only 1 level will be played
-    OwningHUD->RemoveMenu();
-  }
-
-  UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Rain");
+  UGameplayStatics::OpenLevel(GWorld, "LevelSelectLevel");
 
   return FReply::Handled();
 }
@@ -279,9 +258,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
       FMargin(10.f);  // This is the space between buttons
 
   const FText PlayText = LOCTEXT("PlayGame", "Play");
-  const FText PlayDayText = LOCTEXT("PlayGameDay", "Play During the Day");
-  const FText PlayNightText = LOCTEXT("PlayGameNight", "Play at Night");
-  const FText PlayRainText = LOCTEXT("PlayGameRain", "Play in the Rain :)");
+  const FText FreePlayText = LOCTEXT("FreePlayGame", "Free Play");
   const FText SelectDifficultyText = LOCTEXT("SelectDifficulty", "Select Difficulty");
   const FText HighScoreText = LOCTEXT("HighScores", "High Scores");
   const FText QuitText = LOCTEXT("QuitGame", "Quit Game");
@@ -728,37 +705,13 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                  // Play during day text
                  + SVerticalBox::Slot().Padding(ButtonPadding)
                        [SNew(SButton)
-                            .OnClicked(this, &SMainMenuWidget::OnPlayDayClicked)
+                            .OnClicked(this, &SMainMenuWidget::OnFreePlayClicked, FName(TEXT("Medium")))
                             .ButtonColorAndOpacity(FColor::Blue)
                                 [SNew(STextBlock)
                                      .Font(ButtonTextStyle)
-                                     .Text(PlayDayText)
+                                     .Text(FreePlayText)
                                      .Justification(ETextJustify::Center)
                                      .ColorAndOpacity(FColor::Orange)]]
-
-                 // Play during night
-                 +
-                 SVerticalBox::Slot().Padding(ButtonPadding)
-                     [SNew(SButton)
-                          .OnClicked(this, &SMainMenuWidget::OnPlayNightClicked)
-                          .ButtonColorAndOpacity(FColor::Blue)
-                              [SNew(STextBlock)
-                                   .Font(ButtonTextStyle)
-                                   .Text(PlayNightText)
-                                   .Justification(ETextJustify::Center)
-                                   .ColorAndOpacity(FColor::Orange)]]
-
-                 // Play rainy map
-                 +
-                 SVerticalBox::Slot().Padding(ButtonPadding)
-                     [SNew(SButton)
-                          .OnClicked(this, &SMainMenuWidget::OnPlayRainClicked)
-                          .ButtonColorAndOpacity(FColor::Blue)
-                              [SNew(STextBlock)
-                                   .Font(ButtonTextStyle)
-                                   .Text(PlayRainText)
-                                   .Justification(ETextJustify::Center)
-                                   .ColorAndOpacity(FColor::Orange)]]
                  // Difficulty Selection
                  + SVerticalBox::Slot().Padding(ButtonPadding)
                        [SNew(SButton)
