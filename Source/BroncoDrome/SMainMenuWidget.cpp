@@ -59,7 +59,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs) {
   BuildMenu(OwningHUD->mainOrHScore);
 }
 
-void SMainMenuWidget::InitBroncoSave(int level) const {
+void SMainMenuWidget::InitBroncoSave(int level, FName runnerSelected) const {
   // Create and save the initial values. Nothing else is needed here "save" will
   // have the name "curr" for it's save slot.
   if (UBroncoSaveGame *save =
@@ -67,13 +67,14 @@ void SMainMenuWidget::InitBroncoSave(int level) const {
               UBroncoSaveGame::StaticClass()))) {
     save->score = 0;
     save->mapsBeaten = level;
+    save->runnerSelection = runnerSelected;
     UGameplayStatics::SaveGameToSlot(save, save->SaveName, 0);
   }
 }
 
-FReply SMainMenuWidget::OnPlayClicked() const {
+FReply SMainMenuWidget::OnPlayClicked(FName runnerSelected) const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(-1);  // 0 will make it so that 3 levels will be played
+    InitBroncoSave(-1, runnerSelected);  // 0 will make it so that 3 levels will be played
     OwningHUD->RemoveMenu();
   }
 
@@ -84,7 +85,7 @@ FReply SMainMenuWidget::OnPlayClicked() const {
 
 FReply SMainMenuWidget::OnPlayDayClicked() const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(3);  // 3 will make it so that only 1 level will be played
+    InitBroncoSave(3, "balanced");  // 3 will make it so that only 1 level will be played
     OwningHUD->RemoveMenu();
   }
 
@@ -95,7 +96,7 @@ FReply SMainMenuWidget::OnPlayDayClicked() const {
 
 FReply SMainMenuWidget::OnPlayNightClicked() const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(3);  // 3 will make it so that only 1 level will be played
+    InitBroncoSave(3, "balanced");  // 3 will make it so that only 1 level will be played
     OwningHUD->RemoveMenu();
   }
 
@@ -106,7 +107,7 @@ FReply SMainMenuWidget::OnPlayNightClicked() const {
 
 FReply SMainMenuWidget::OnPlayRainClicked() const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(3);  // 3 will make it so that only 1 level will be played
+    InitBroncoSave(3, "balanced");  // 3 will make it so that only 1 level will be played
     OwningHUD->RemoveMenu();
   }
 
@@ -281,6 +282,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
   const FMargin TutPadding = FMargin(100.f, 75.f);
   const FMargin HScoreContentPadding = FMargin();
   const FMargin DifficultyPadding = FMargin(550.f, 100.f);
+  const FMargin SelectionPadding = FMargine(550.f, 150.f);
   const FMargin ButtonPadding =
       FMargin(10.f);  // This is the space between buttons
 
@@ -328,6 +330,15 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
   mediumDescript = FText::FromString("What normal people choose i.e. Business Major");
   hard = FText::FromString("Hard");
   hardDescript = FText::FromString("Your parents have very high standards i.e. EE or Bio-chem");
+
+  speed = FText::FromString("Speed");
+  speedDescript =
+      FText::FromString("faster runner with questionable handeling");
+  balanced = FText::FromString("Balanced");
+  balancedDescript = FText::FromString("a runner with no particular abilities");
+  traction = FText::FromString("Traction");
+  tractionDescript =
+      FText::FromString("a slower runner with excellent handling");
   /*
           hOrM will tell us what screen to build
                   defaults to main menu
@@ -335,6 +346,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                   2 = first tutorial screen
                   3 = second tutorial screen
                   5 = difficulty selection screen
+                  6 = runner selection
   */
   switch (hOrM) {
   case 1:  // Build the high score screen
@@ -688,6 +700,108 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                                 ]
                     ]
         ];
+    break;
+  case 6:  // runner selection screen
+    ChildSlot
+
+        [SNew(SOverlay) +
+         SOverlay::Slot()
+             .HAlign(HAlign_Fill)
+             .VAlign(VAlign_Fill)[SNew(SImage).Image(BroncyImage)] +
+         // speed
+         SOverlay::Slot()
+             .HAlign(HAlign_Center)
+             .VAlign(VAlign_Center)
+             .Padding(SelectionPadding)
+                 [SNew(SHorizontalBox) +
+                  SHorizontalBox::Slot().Padding(ButtonPadding)
+                      [SNew(SButton)
+                           .OnClicked(this,
+                                      &SMainMenuWidget::OnPlayClicked, FName(TEXT("speed")))
+                           .ButtonColorAndOpacity(FColor::Blue)
+                               [SNew(SVerticalBox) +
+                                SVerticalBox::Slot()
+                                    [SNew(STextBlock)
+                                         .Font(ButtonTextStyle)
+                                         .Text(speed)
+                                         .Justification(ETextJustify::Center)
+                                         .ColorAndOpacity(FColor::Orange)] +
+                                SVerticalBox::Slot().Padding(0.f, 50.f)
+                                    [SNew(STextBlock)
+                                         .Font(ButtonTextStyle)
+                                         .Text(speedDescript)
+                                         .Justification(ETextJustify::Center)
+                                         .ColorAndOpacity(FColor::Orange)
+                                         .AutoWrapText(true)
+                                         .MinDesiredWidth(600.f)]]] +
+                  SHorizontalBox::Slot().Padding(ButtonPadding)
+                      // balanced
+                      [SNew(SButton)
+                           .OnClicked(this, 
+                               &SMainMenuWidget::OnPlayClicked, FName(TEXT("balanced")))
+                           .ButtonColorAndOpacity(FColor::Blue)
+                               [SNew(SVerticalBox) +
+                                SVerticalBox::Slot()
+                                    [SNew(STextBlock)
+                                         .Font(ButtonTextStyle)
+                                         .Text(balanced)
+                                         .Justification(ETextJustify::Center)
+                                         .ColorAndOpacity(FColor::Orange)] +
+                                SVerticalBox::Slot()
+                                    [SNew(STextBlock)
+                                         .Font(ButtonTextStyle)
+                                         .Text(balancedDescript)
+                                         .Justification(ETextJustify::Center)
+                                         .ColorAndOpacity(FColor::Orange)
+                                         .AutoWrapText(true)
+                                         .MinDesiredWidth(600.f)]]
+                      ] +
+                  SHorizontalBox::Slot().Padding(ButtonPadding)
+                      // traction
+                      [SNew(SButton)
+                           .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("traction")))
+                           .ButtonColorAndOpacity(FColor::Blue)
+                               [SNew(SVerticalBox) +
+                                SVerticalBox::Slot()
+                                    [SNew(STextBlock)
+                                         .Font(ButtonTextStyle)
+                                         .Text(traction)
+                                         .Justification(ETextJustify::Center)
+                                         .ColorAndOpacity(FColor::Orange)] +
+                                SVerticalBox::Slot()
+                                    [SNew(STextBlock)
+                                         .Font(ButtonTextStyle)
+                                         .Text(tractionDescript)
+                                         .Justification(ETextJustify::Center)
+                                         .ColorAndOpacity(FColor::Orange)
+                                         .AutoWrapText(true)
+                                         .MinDesiredWidth(600.f)]]]] +
+         SOverlay::Slot()
+             .HAlign(HAlign_Right)
+             .VAlign(VAlign_Bottom)
+             .Padding(HScoreContentPadding)[
+                 // Title Text
+                 SNew(SVerticalBox)
+                 // Main Menu Button
+                 + SVerticalBox::Slot().Padding(ButtonPadding)
+                       [SNew(SButton)
+                            .OnClicked(this, &SMainMenuWidget:: ::OnPlayClicked, FName(TEXT("balanced")))
+                            .ButtonColorAndOpacity(FColor::Blue)
+                                [SNew(STextBlock)
+                                     .Font(ButtonTextStyle)
+                                     .Text(ReturnMain)
+                                     .Justification(ETextJustify::Center)
+                                     .ColorAndOpacity(FColor::Orange)]] +
+                 // Quit Game Button
+                 SVerticalBox::Slot().Padding(ButtonPadding)
+                     [SNew(SButton)
+                          .OnClicked(this, &SMainMenuWidget::OnQuitClicked)
+                          .ButtonColorAndOpacity(FColor::Blue)
+                              [SNew(STextBlock)
+                                   .Font(ButtonTextStyle)
+                                   .Text(QuitText)
+                                   .Justification(ETextJustify::Center)
+                                   .ColorAndOpacity(FColor::Orange)]]]];
     break;
   default:  // Build the main menu
     ChildSlot

@@ -19,8 +19,8 @@ public:		// Constructors
 	URunnerWheel();
 
 	//UPROPERTY(BlueprintReadWrite)
-	int runnerSelected;
+	string runnerSelected;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = URunnerWheel)
-        void SelectRunner(int i);
+	//UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = URunnerWheel)
+      //  void SelectRunner(int i);
 };

@@ -2,6 +2,10 @@
 
 
 #include "RunnerWheel.h"
+#include "BroncoDrome/BroncoSaveGame.h"
+#include "GameFramework/GameUserSettings.h"
+#include "Kismet/GameplayStatics.h"
+ 
 
 URunnerWheel::URunnerWheel()
 {
@@ -12,8 +16,11 @@ URunnerWheel::URunnerWheel()
 	bTractionControlEnabled = true;
 
 	//enum RunnerStats{Speed, Traction, Balanced};
-    
-	runnerSelected = 2;
+        if (UBroncoSaveGame *load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) 
+		{
+           runnerSelected = load->runnerSelection;
+		}
+	//runnerSelected = load->runnerSelection;
 
 	// Other attributes
 	//WheelRadius = 15.f;
@@ -30,7 +37,7 @@ URunnerWheel::URunnerWheel()
 
 	switch(runnerSelected)
 	{
-		case(0): //speed
+		case("speed"): //speed
 			WheelRadius = 10.f;
 			WheelWidth = 30.f;
 			LateralFrictionForceMultiplier = 4.f;
@@ -43,7 +50,7 @@ URunnerWheel::URunnerWheel()
 			SuspensionMaxRaise = 10.f;
 			SuspensionMaxDrop = 10.f;
 			break;
-		case(1)://Traction
+		case("traction")://Traction
 			WheelRadius = 20.f;
 			WheelWidth = 35.f;
 			LateralFrictionForceMultiplier = 10.f;
@@ -56,7 +63,7 @@ URunnerWheel::URunnerWheel()
 			SuspensionMaxRaise = 20.f;
 			SuspensionMaxDrop = 20.f;
 			break;
-		case(2)://Balanced
+		case("balanced")://Balanced
 			// Other attributes
 			WheelRadius = 15.f;
 			WheelWidth = 30.f;
