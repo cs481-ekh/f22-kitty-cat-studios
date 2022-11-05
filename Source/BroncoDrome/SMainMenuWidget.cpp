@@ -91,9 +91,6 @@ FReply SMainMenuWidget::OnFreePlayClicked(FName difficulty) const {
   }
 
   UGameplayStatics::OpenLevel(GWorld, "LevelSelectLevel");
-  }
-
-  UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Day");
 
   return FReply::Handled();
 }
@@ -708,7 +705,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                  // Play during day text
                  + SVerticalBox::Slot().Padding(ButtonPadding)
                        [SNew(SButton)
-                            .OnClicked(this, &SMainMenuWidget::OnFreePlayClicked)
+                            .OnClicked(this, &SMainMenuWidget::OnFreePlayClicked, FName(TEXT("Medium")))
                             .ButtonColorAndOpacity(FColor::Blue)
                                 [SNew(STextBlock)
                                      .Font(ButtonTextStyle)
