@@ -215,6 +215,7 @@ void ARunnerHUD::YouLose()
 	Mouse->bEnableClickEvents = true;
 	Mouse->bEnableMouseOverEvents = true;
 	m_LoseWidget->AddToViewport(); //Displays the lose screen
+	m_LoseWidget->PlayFadeInAnimation();
 	HideHUD(true);
 	UGameplayStatics::SetGamePaused(world, true); //Pauses Game
 }
