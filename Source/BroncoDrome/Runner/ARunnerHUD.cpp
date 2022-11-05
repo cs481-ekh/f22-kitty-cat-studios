@@ -131,6 +131,7 @@ void ARunnerHUD::Pause() {
 		Mouse->bEnableMouseOverEvents = true;
 		//Adds pause menu to screen
 		UGameplayStatics::PlaySound2D(GetWorld(), pauseAudioCue);
+		HideHUD(true);
 		m_PauseWidgets->AddToViewport();
 	}
 	else {
@@ -143,6 +144,7 @@ void ARunnerHUD::Pause() {
 		Mouse->bEnableMouseOverEvents = false;
 		//Removes the pause menu
 		UGameplayStatics::PlaySound2D(GetWorld(), unPauseAudioCue);
+		HideHUD(false);
 		m_PauseWidgets->RemoveFromViewport();
 	}
 	
