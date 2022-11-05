@@ -3,6 +3,7 @@
 
 #include "ARunnerHUD.h"
 #include "BroncoDrome/BroncoSaveGame.h"
+#include "Sound/SoundCue.h"
 
 #include "GameFramework/GameUserSettings.h"
 
@@ -10,7 +11,15 @@ int anemoniesLeft = 0;
 
 ARunnerHUD::ARunnerHUD()
 {
+	static ConstructorHelpers::FObjectFinder<USoundCue> pauseCue(
+		TEXT("'/Game/Assets/Sound/Pause_Cue.Pause_Cue'")
+	);
+	pauseAudioCue = pauseCue.Object;
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> unPauseCue(
+		TEXT("'/Game/Assets/Sound/UnPause_Cue.UnPause_Cue'")
+	);
+	unPauseAudioCue = unPauseCue.Object;
 }
 
 void ARunnerHUD::BeginPlay()
@@ -121,6 +130,7 @@ void ARunnerHUD::Pause() {
 		Mouse->bEnableClickEvents = true;
 		Mouse->bEnableMouseOverEvents = true;
 		//Adds pause menu to screen
+		UGameplayStatics::PlaySound2D(GetWorld(), pauseAudioCue);
 		m_PauseWidgets->AddToViewport();
 	}
 	else {
@@ -132,6 +142,7 @@ void ARunnerHUD::Pause() {
 		Mouse->bEnableClickEvents = false;
 		Mouse->bEnableMouseOverEvents = false;
 		//Removes the pause menu
+		UGameplayStatics::PlaySound2D(GetWorld(), unPauseAudioCue);
 		m_PauseWidgets->RemoveFromViewport();
 	}
 	
