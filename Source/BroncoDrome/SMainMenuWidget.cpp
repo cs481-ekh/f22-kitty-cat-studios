@@ -59,7 +59,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs) {
   BuildMenu(OwningHUD->mainOrHScore);
 }
 
-void SMainMenuWidget::InitBroncoSave(int level) const {
+void SMainMenuWidget::InitBroncoSave(int level, bool practiceMode) const {
   // Create and save the initial values. Nothing else is needed here "save" will
   // have the name "curr" for it's save slot.
   if (UBroncoSaveGame *save =
@@ -67,13 +67,14 @@ void SMainMenuWidget::InitBroncoSave(int level) const {
               UBroncoSaveGame::StaticClass()))) {
     save->score = 0;
     save->mapsBeaten = level;
+    save->practiceMode = practiceMode;
     UGameplayStatics::SaveGameToSlot(save, save->SaveName, 0);
   }
 }
 
 FReply SMainMenuWidget::OnPlayClicked() const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(-1);  // 0 will make it so that 3 levels will be played
+    InitBroncoSave(-1, false);  // 0 will make it so that 3 levels will be played
     OwningHUD->RemoveMenu();
   }
 
@@ -84,7 +85,7 @@ FReply SMainMenuWidget::OnPlayClicked() const {
 
 FReply SMainMenuWidget::OnFreePlayClicked() const {
   if (OwningHUD.IsValid()) {
-    InitBroncoSave(3);  // 3 will make it so that only 1 level will be played
+    InitBroncoSave(3, true);  // 3 will make it so that only 1 level will be played
     OwningHUD->RemoveMenu();
   }
 

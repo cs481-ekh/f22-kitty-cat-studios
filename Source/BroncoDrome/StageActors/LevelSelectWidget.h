@@ -28,6 +28,13 @@ public:  // Constructors
   void SetSelectedLevel(int levelIndex);
 
   UFUNCTION(BlueprintCallable, Category = ULevelSelectWidget)
+  void PlayLevel();
+
+  UFUNCTION(BlueprintCallable, Category = ULevelSelectWidget)
   void ReturnToMainMenu();
+
+  UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ULevelSelectWidget)
+  void PlayFadeInAnimation();
+  
 
 };
