@@ -189,7 +189,9 @@ void ARunnerHUD::YouWin(){
 			Mouse->bEnableMouseOverEvents = true;
 			m_WinWidget->setScore(load->score); //Sets score for adding to the high scores tab
 			m_WinWidget->AddToViewport(); //Displays the win screen
+			m_WinWidget->PlayFadeInAnimation();
 			//Pauses Game
+			HideHUD(true);
 			UGameplayStatics::SetGamePaused(world, true);
 		}
 	}
@@ -213,6 +215,7 @@ void ARunnerHUD::YouLose()
 	Mouse->bEnableClickEvents = true;
 	Mouse->bEnableMouseOverEvents = true;
 	m_LoseWidget->AddToViewport(); //Displays the lose screen
+	HideHUD(true);
 	UGameplayStatics::SetGamePaused(world, true); //Pauses Game
 }
 

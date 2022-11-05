@@ -63,6 +63,9 @@ public:		// Interface
 	UFUNCTION(BlueprintCallable, Category = UWinWidget)
 		void showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText, UTextBlock* totalScore);
 
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = UWinWidget)
+		void PlayFadeInAnimation();
+
 	void decrementEnemiesLeft();
 
 	int getEnemiesLeft();
