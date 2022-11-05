@@ -2,8 +2,11 @@
 
 
 #include "AISpawner.h"
+#include "AIActor.h"
 #include "../Runner/Runner.h"
 #include "Math/Vector.h"
+#include "BroncoDrome/BroncoSaveGame.h"
+#include "GameFramework/GameUserSettings.h"
 
 // Sets default values
 AAISpawnerController::AAISpawnerController() : AActor() {
@@ -16,6 +19,8 @@ AAISpawnerController::AAISpawnerController() : AActor() {
 void AAISpawnerController::BeginPlay() {
 	Super::BeginPlay();
 
+	InitializeDifficulty(); 
+
 	// Finds all spawn points on the map and adds them to an array
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAISpawner::StaticClass(), spawnPoints);
     for (auto &Spwner : spawnPoints) {
@@ -26,15 +31,39 @@ void AAISpawnerController::BeginPlay() {
 	GetWorldTimerManager().SetTimer(handler, this, &AAISpawnerController::Init, 12.0f, false);  // Begin spawning AI after cutscene ends
 }
 
+// Overwrites the spawner controller difficulty with the saved difficulty selection from the menu
+// If for whatever reason there is no saved difficulty, difficulty will remain as set through the UProperties
+void AAISpawnerController::InitializeDifficulty(){
+	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		difficultySetting = load->difficultySetting;
+	}
+}
+
 void AAISpawnerController::Init() {
+	if (initialized) return;
+	initialized = true;
 	// Spawn initial set of runners
-    AAISpawnerController::SpawnCheck();
+	if (waveSpawning) {
+		AAISpawnerController::SpawnCheck();
+	} else {
+		for (auto &sp: spawnPoints) {
+			if (activeAI < maxAI && totalSpawned < maxRespawns) {
+				AAISpawnerController::AttemptSpawn(sp);
+			}
+		}
+	}
 
 	// Initializes set of runners as well as gets the player runner and sets the player runner pointer
     AAISpawnerController::UpdateRunners();
 
 	// Set spawnCheck interval. Will check if AI need to be respawned based on respawnCheckInSecs
 	GetWorldTimerManager().SetTimer(SpawnTimerHandler, this, &AAISpawnerController::SpawnCheck, respawnCheckInSecs, true);	
+}
+
+void AAISpawnerController::SkipCutscene() {
+	if (initialized) return;
+	GetWorldTimerManager().ClearTimer(handler);
+	AAISpawnerController::Init();
 }
 
 // Is called based on respawnCheckInSecs
@@ -143,32 +172,31 @@ int AAISpawnerController::GetNumValidSpawnPoints() {
 
 // Spawns an AI at the provided spawnPoint when called
 void AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
-	AActor *newAI;
-    if (difficultySetting == "Random") {
-		int randDifficulty = FMath::RandRange(0, 2);
-		FName randDifficultyStr;
-		switch (randDifficulty) {
-			case 0:
-				randDifficultyStr = FName(TEXT("Easy"));
-				break;
-			case 1:
-                randDifficultyStr = FName(TEXT("Medium"));
-				break;
-			case 2:
-                randDifficultyStr = FName(TEXT("Hard"));
-				break;
-			default:
-				randDifficultyStr = FName(TEXT("Medium"));
-				break;
-		}
-		newAI = ((AAISpawner *)spawnPoint)->Spawn(randDifficultyStr);
-    } else {
-		newAI = ((AAISpawner *)spawnPoint)->Spawn(difficultySetting);
-	}
-    
+	AActor *newAI = ((AAISpawner *)spawnPoint)->Spawn(difficultySetting);    
 
 	if (IsValid(newAI)) {
 		runners.Add(newAI);
+		if (difficultySetting == "Random") {
+			int randDifficulty = FMath::RandRange(0, 2);
+			FName randDifficultyStr;
+			switch (randDifficulty) {
+				case 0:
+					randDifficultyStr = FName(TEXT("Easy"));
+					break;
+				case 1:
+					randDifficultyStr = FName(TEXT("Medium"));
+					break;
+				case 2:
+					randDifficultyStr = FName(TEXT("Hard"));
+					break;
+				default:
+					randDifficultyStr = FName(TEXT("Medium"));
+					break;
+			}
+			((AAIActor*)newAI)->UpdateDifficulty(randDifficultyStr);
+		} else {
+			((AAIActor*)newAI)->UpdateDifficulty(difficultySetting);
+		}
         activeAI++;
         totalSpawned++;
     } else {

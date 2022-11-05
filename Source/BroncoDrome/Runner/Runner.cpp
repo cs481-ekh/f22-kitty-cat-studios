@@ -171,8 +171,18 @@ void ARunner::BeginPlay()
 	spawnController = ((AAISpawnerController*)UGameplayStatics::GetActorOfClass(GetWorld(), AAISpawnerController::StaticClass()));
 }
 
+// Called externally via a level's blueprint when a cutscene is skipped
+void ARunner::SkipCutscene() {
+	if (initialized) return;
+	GetWorldTimerManager().ClearTimer(RunnerStatusHandler);
+	ReinstateAll();
+	spawnController->SkipCutscene();
+}
+
 void ARunner::ReinstateAll()
 {
+	if (initialized) return;
+	initialized = true;
 	Visible(true);
 	EnableInput(GetWorld()->GetFirstPlayerController());
 	HUD->HideHUD(false);
@@ -617,6 +627,8 @@ void ARunner::AddToHealth(int newHealth) {
             return;
         }       
         HUD->SetHealth(health);
+		lives--;
+    	HUD->DecrementLivesLeft();
 		//KillBall PowerUp
 		killBallOn = false;
 		killBallShots = 0;
@@ -702,8 +714,8 @@ void ARunner::Respawn() {
 			currSpawnPoint++;
 		}
 	}
-    lives--;
-    HUD->DecrementLivesLeft();
+    //lives--;
+    //HUD->DecrementLivesLeft();
 }
 
 void ARunner::AddToScore(int newScore) {

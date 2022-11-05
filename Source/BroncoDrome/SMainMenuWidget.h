@@ -25,9 +25,9 @@ public:
 
 	void Construct(const FArguments& InArgs);
 
-	void InitBroncoSave(int level, bool practiceMode) const; //helper method to initialize the save
-	FReply OnPlayClicked() const;
-	FReply OnFreePlayClicked() const;
+	void InitBroncoSave(int level, FName difficulty, bool practiceMode) const; //helper method to initialize the save
+	FReply OnPlayClicked(FName difficulty) const;
+	FReply OnFreePlayClicked(FName difficulty) const;
 	FReply OnQuitClicked() const;
     FReply OnDifficultyClicked() const;
 	FReply OnHScoreClicked() const;
