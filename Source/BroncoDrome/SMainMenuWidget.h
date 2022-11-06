@@ -32,10 +32,10 @@ public:
 	FReply OnPlayRainClicked() const;
 	FReply OnQuitClicked() const;
     FReply OnDifficultyClicked() const;
-	FReply onRunnerSelectionClicked() const(); //
+	FReply onRunnerSelectionClicked() const; //
 	FReply OnHScoreClicked() const;
 	void OnHScoreDebug(const FText& InText, ETextCommit::Type);
-	FReply OnReturnToMainClicked() const;
+    FReply OnReturnToMainClicked() const;
 	void BuildMenu(int hOrM);
 	FReply OnTutClicked() const;
 	FReply OnNextTutClicked() const;

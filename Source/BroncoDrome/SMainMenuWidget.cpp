@@ -225,10 +225,11 @@ FReply SMainMenuWidget::OnDifficultyClicked() const {
 }
 
 FReply SMainMenuWidget::onRunnerSelectionClicked() const { 
-    if (OwningHUd.isValid()) {
+    if (OwningHUD.IsValid()) {
       OwningHUD->RemoveMenu();
       OwningHUD->ShowMenu(6);
     }
+    return FReply::Handled();
 }
 
 // This is the handler for the high score button on the main menu
@@ -282,7 +283,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
   const FMargin TutPadding = FMargin(100.f, 75.f);
   const FMargin HScoreContentPadding = FMargin();
   const FMargin DifficultyPadding = FMargin(550.f, 100.f);
-  const FMargin SelectionPadding = FMargine(550.f, 150.f);
+  const FMargin SelectionPadding = FMargin(550.f, 150.f);
   const FMargin ButtonPadding =
       FMargin(10.f);  // This is the space between buttons
 
@@ -716,8 +717,8 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                  [SNew(SHorizontalBox) +
                   SHorizontalBox::Slot().Padding(ButtonPadding)
                       [SNew(SButton)
-                           .OnClicked(this,
-                                      &SMainMenuWidget::OnPlayClicked, FName(TEXT("speed")))
+                           .OnClicked(this, &SMainMenuWidget::OnPlayClicked,
+                                      FName(TEXT("speed")))
                            .ButtonColorAndOpacity(FColor::Blue)
                                [SNew(SVerticalBox) +
                                 SVerticalBox::Slot()
@@ -738,7 +739,8 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                       // balanced
                       [SNew(SButton)
                            .OnClicked(this, 
-                               &SMainMenuWidget::OnPlayClicked, FName(TEXT("balanced")))
+                               &SMainMenuWidget::OnPlayClicked,
+                                      FName(TEXT("balanced")))
                            .ButtonColorAndOpacity(FColor::Blue)
                                [SNew(SVerticalBox) +
                                 SVerticalBox::Slot()
@@ -759,7 +761,8 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                   SHorizontalBox::Slot().Padding(ButtonPadding)
                       // traction
                       [SNew(SButton)
-                           .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("traction")))
+                           .OnClicked(this, &SMainMenuWidget::OnPlayClicked,
+                                      FName(TEXT("traction")))
                            .ButtonColorAndOpacity(FColor::Blue)
                                [SNew(SVerticalBox) +
                                 SVerticalBox::Slot()
@@ -785,7 +788,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                  // Main Menu Button
                  + SVerticalBox::Slot().Padding(ButtonPadding)
                        [SNew(SButton)
-                            .OnClicked(this, &SMainMenuWidget:: ::OnPlayClicked, FName(TEXT("balanced")))
+                            .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("balanced")))
                             .ButtonColorAndOpacity(FColor::Blue)
                                 [SNew(STextBlock)
                                      .Font(ButtonTextStyle)
@@ -839,7 +842,8 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                  // Play main game
                  + SVerticalBox::Slot().Padding(ButtonPadding)
                        [SNew(SButton)
-                            .OnClicked(this, &SMainMenuWidget::OnPlayClicked)
+                            .OnClicked(this, &SMainMenuWidget::OnPlayClicked,
+                                       FName(TEXT("balanced")))
                             .ButtonColorAndOpacity(FColor::Blue)
                                 [SNew(STextBlock)
                                      .Font(ButtonTextStyle)
@@ -888,6 +892,16 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                                 [SNew(STextBlock)
                                      .Font(ButtonTextStyle)
                                      .Text(SelectDifficultyText)
+                                     .Justification(ETextJustify::Center)
+                                     .ColorAndOpacity(FColor::Orange)]]
+                 // reunner Selection
+                 + SVerticalBox::Slot().Padding(ButtonPadding)
+                       [SNew(SButton)
+                            .OnClicked(this, &SMainMenuWidget::onRunnerSelectionClicked)
+                            .ButtonColorAndOpacity(FColor::Blue)
+                                [SNew(STextBlock)
+                                     .Font(ButtonTextStyle)
+                                     .Text(SelectRunnerText)
                                      .Justification(ETextJustify::Center)
                                      .ColorAndOpacity(FColor::Orange)]]
                  // High Score Button
