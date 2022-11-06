@@ -702,7 +702,8 @@ void ARunner::Respawn() {
 	for (auto &sp : validSpawnPoints) {
 		if (currSpawnPoint == randSpawnPoint) {
 			FVector spawnHeightModifier = FVector(0.0f, 0.0f, 300.0f);
-			TeleportTo(sp->GetActorLocation()+spawnHeightModifier, this->GetActorRotation());
+			FRotator rotator = UKismetMathLibrary::FindLookAtRotation(sp->GetActorLocation(),FVector(0.0f,0.0f,0.0f));
+			TeleportTo(sp->GetActorLocation()+spawnHeightModifier, rotator);
 			Visible(true);
 			SetActorEnableCollision(true);
 			SetActorTickEnabled(true);
