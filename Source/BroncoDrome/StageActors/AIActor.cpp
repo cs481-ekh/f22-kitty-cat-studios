@@ -338,9 +338,9 @@ void AAIActor::LockOn() {
 	}
 }
 void AAIActor::drawTargetLine(FVector location) {
-	//ARunner *player_runner = ARunnerObserver::GetPlayer(*this, 32000.f, 100.f, true);
-	player_runner = ARunnerObserver::GetPlayer(*this, 32000.f, 100.f, true);
-	ARunner* aRunner = ARunnerObserver::GetClosestRunner(*this, 32000.f, 100.f, LOCK_ON_RAYCAST_TEST);
+	
+	player_runner = ARunnerObserver::GetPlayer(*this, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, true);
+	ARunner* aRunner = ARunnerObserver::GetClosestRunner(*this, LOCK_ON_DISTANCE, LOCK_ON_FIELD_OF_VIEW, LOCK_ON_RAYCAST_TEST);
 	ARunner* setTargetRunner;
 
 	if (player_runner) {
