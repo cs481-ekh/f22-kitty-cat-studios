@@ -606,7 +606,7 @@ void ARunner::LoseScreen() {
 	HUD->YouLose();
 }
 
-void ARunner::AddToHealth(int newHealth) {
+void ARunner::AddToHealth(int newHealth, bool damageOriginatedFromPlayer) {
 	health += newHealth;
 	if (newHealth < 0 && !(health <= 0)) {
 		PlaySound(runnerHitAudioCue);
@@ -614,21 +614,17 @@ void ARunner::AddToHealth(int newHealth) {
 	}
 	if (health >= 100) {
 		health = 100;
-	}
-	/* This is when a runner has lost all of its health */
-	else if (health <= 0) {
+	} else if (health <= 0) {
         health = 0;
 		PlaySound(runnerExplosionAudioCue);
         if (this->isAI) {  // If an AI just died, destroy the actor and move on, otherwise update player accordingly
-			HUD->DecrementEnemiesLeft();
+			if (damageOriginatedFromPlayer) { HUD->DecrementEnemiesLeft(); } // Only decrement enemies left if the kill is attributed to the player 
 			spawnController->DecrementActiveAI(this);
 			SpawnParticles();
 			Destroy();			
             return;
         }       
-        HUD->SetHealth(health);
-		lives--;
-    	HUD->DecrementLivesLeft();
+		HUD->SetHealth(health);
 		//KillBall PowerUp
 		killBallOn = false;
 		killBallShots = 0;
@@ -710,13 +706,13 @@ void ARunner::Respawn() {
 			health = 100;
 			HUD->SetHealth(health);
 			HUD->SetDead(false);
+    		HUD->DecrementLivesLeft();
+			lives--;
 			return;
 		} else {
 			currSpawnPoint++;
 		}
 	}
-    //lives--;
-    //HUD->DecrementLivesLeft();
 }
 
 void ARunner::AddToScore(int newScore) {
@@ -751,7 +747,7 @@ void ARunner::obstainKillBallPower(int hits) {
 
 //Orbs call this function when they hit the runner
 //Holds the needed steps to deal damage based on current powerups
-void ARunner::hitMe(int damage) {
+void ARunner::hitMe(int damage, AActor* shotOrigin) {
 	
 	//Powerups may change or negate the damage done to the runner
 
@@ -766,7 +762,14 @@ void ARunner::hitMe(int damage) {
 		}
 		PlaySound(spongeTinkAudioCue);
 	} else { //No power ups prevent the Shot from hitting runner
-		AddToHealth(damage); //Damage should be negative when passed into function
+		if (IsValid(shotOrigin) && !((ARunner*)shotOrigin)->isAI) {
+			//GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Cyan, FString::Printf(TEXT("player projectile colliding with AI")));
+			AddToHealth(damage, true); //Damage should be negative when passed into function
+		}
+		else {
+			AddToHealth(damage, false); //Damage should be negative when passed into function
+		}
+		
 	}
 
 } 
