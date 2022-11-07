@@ -762,7 +762,7 @@ void ARunner::hitMe(int damage, AActor* shotOrigin) {
 		}
 		PlaySound(spongeTinkAudioCue);
 	} else { //No power ups prevent the Shot from hitting runner
-		if (!((ARunner*)shotOrigin)->isAI) {
+		if (IsValid(shotOrigin) && !((ARunner*)shotOrigin)->isAI) {
 			//GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Cyan, FString::Printf(TEXT("player projectile colliding with AI")));
 			AddToHealth(damage, true); //Damage should be negative when passed into function
 		}
