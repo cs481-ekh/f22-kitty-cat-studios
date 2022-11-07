@@ -27,30 +27,49 @@ struct FDifficultyParameters {
   UPROPERTY(EditAnywhere, BlueprintReadWrite)
   FName difficulty;
 
-  double damageMod;
-  double healthMod;
-  double fireRateMod;
+  float damageMod;
+  float healthMod;
+  float fireRateMod;
+  float accuracyRange;
 
   // constructor
   FDifficultyParameters() {
     difficulty = FName(TEXT("Medium"));
   }
   void decrementDifficulty() {
-    damageMod = healthMod = fireRateMod -= 0.1;
+	  damageMod -= 0.1;
+	  healthMod -= 0.1;
+	  fireRateMod += 0.1;
+	  accuracyRange += 0.01;
   }
   void setParams(FName diff) {
     difficulty = diff;
+	// default HP is 100
+	// default damage is 20
+	// default firerate is once every 90 ticks
+	// default accuracy is hard to describe, but makes most shots at close range and half or less shots at longer range
     if(diff == TEXT("Easy")) {
-      damageMod = healthMod = fireRateMod = 0.8;
+		healthMod = 0.8; // this will cause AI to die in 4 shots (80 hp)
+		damageMod = 0.5; // this will cause AI to deal half damage (10)
+        fireRateMod = 1.5; // this will cause AI to shoot 50% slower
+		accuracyRange = 0.05; // relatively bad accuracy
     }
     else if(diff == TEXT("Medium")) {
-      damageMod = healthMod = fireRateMod = 0.8;
+		healthMod = 1.0; // this will cause AI to die in 5 shots (default)
+		damageMod = 1.0; // this will cause AI to deal normal damage (20) (default)
+        fireRateMod = 1.0; // this will cause AI to shoot at normal shot speed
+		accuracyRange = 0.02; // decent accuracy
     }
     else if(diff == TEXT("Hard")) {
-      damageMod = healthMod = fireRateMod = 0.8;
+		healthMod = 1.2; // this will cause AI to die in 6 shots (120hp)
+		damageMod = 1.25; // this will cause AI to deal extra damage (25)
+        fireRateMod = 1.0; // this will cause AI to shoot at normal shot speed
+		accuracyRange = 0.005; // good accuracy
     }
     else { // this really shouldnt happen, but we'll just go with medium
-      damageMod = healthMod = fireRateMod = 0.8;
+		healthMod = 1.0;
+		damageMod = 1.0;
+        fireRateMod = 1.0;
     }
   }
   
@@ -58,18 +77,22 @@ struct FDifficultyParameters {
   /*
    *get the difficulty modifier for ai damage 
    */
-  double getDifficultyDamageModifier() {return damageMod;}
+  float getDifficultyDamageModifier() {return damageMod;}
 
   /*
  *get the difficulty modifier for ai health 
  */
-  double getDifficultyHealthModifier() {return healthMod;}
+  float getDifficultyHealthModifier() {return healthMod;}
 
   /*
   *get the difficulty modifier for ai fire rate 
   */
-  double getDifficultyFireRateModifier() {return fireRateMod;}
+  float getDifficultyFireRateModifier() {return fireRateMod;}
   
+  /*
+  *get the accuracy range for ai 
+  */
+  float getDifficultyAccuracyRange() {return accuracyRange;}
 };
 
 
@@ -136,6 +159,7 @@ public:
 	void MoveAwayFromPlayer(FVector player_location, FRotator player_direction);
 	void MoveTowardsPlayer(FVector player_location, FRotator player_direction);
 	void ShotDecision(FVector location); //called in Tick to make a shot decision every 30 frames
+	void UpdateDifficulty(FName difficulty);
 private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
         bool hasReduced = false;
@@ -144,6 +168,7 @@ private:
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
 	void LockOn();
+	FVector GetAccuracyVector();
         
 };
 

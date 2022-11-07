@@ -9,8 +9,10 @@
 #include "PauseWidgets.h"
 #include "WinWidget.h"
 #include "LoseWidget.h"
+#include "../StageActors/LevelSelectWidget.h"
 #include "../StageActors/PowerUp/PowerupWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "../BroncoSaveGame.h"
 #include "ARunnerHUD.generated.h"
 
 /**
@@ -40,6 +42,9 @@ public:	// Constructors
 
 	UPROPERTY(EditDefaultsOnly, Category = "PowerupWidget")
 		TSubclassOf<UUserWidget> PowerupWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "LevelSelectWidget")
+		TSubclassOf<UUserWidget> LevelSelectWidgetClass;
 	UPROPERTY()
 		UWorld* world;
 
@@ -69,6 +74,12 @@ private:	// Members
 	UPROPERTY()
 		UPowerupWidget* m_PowerupWidget;
 
+	UPROPERTY()
+		ULevelSelectWidget* m_LevelSelectWidget;
+
+	UPROPERTY()
+		UBroncoSaveGame *save;
+
 		
 
 public:		// Interface
@@ -93,6 +104,7 @@ public:
 	void YouWin();
 	//For Loss Condition
 	void YouLose();
+    void Practice();
 	void SetAnemonies(int anemonies);
 	void DecrementAnemonies();
 	int getLives();

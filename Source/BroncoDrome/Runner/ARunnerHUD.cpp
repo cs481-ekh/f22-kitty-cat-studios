@@ -74,13 +74,25 @@ void ARunnerHUD::BeginPlay()
        m_PowerupWidget = CreateWidget<UPowerupWidget>(GetWorld(), PowerupWidgetClass);
        m_PowerupWidget->AddToViewport();
        m_PowerupWidget->SetVisibility(ESlateVisibility::Hidden);
-	   if(m_LoseWidget == NULL)
+	   if(m_PowerupWidget == NULL)
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Powerup Widget not verified"));
 	} 
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
 	}
+	//Level Select Widget Enabling
+	if (LevelSelectWidgetClass) {
+	   m_LevelSelectWidget = CreateWidget<ULevelSelectWidget>(GetWorld(), LevelSelectWidgetClass);
+	   m_LevelSelectWidget->AddToViewport();
+       m_LevelSelectWidget->SetVisibility(ESlateVisibility::Hidden);
+	   if(m_LevelSelectWidget == NULL)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Level Select Widget not verified"));
+	}
+	else 
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
+    }
 }
 
 void ARunnerHUD::DrawHUD()
@@ -146,6 +158,10 @@ void ARunnerHUD::YouWin(){
 	//Need to see how many maps have been beaten
 	int mapsBeat = 0;
 	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		if (load->practiceMode) {
+            Practice();
+			return;
+		}
 		mapsBeat = load->mapsBeaten;
 		load->score += m_Widgets->getScore();  //Update the score for the playthrough
 		load->mapsBeaten++;
@@ -169,6 +185,10 @@ void ARunnerHUD::YouWin(){
 void ARunnerHUD::YouLose() 
 {
 	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		if (load->practiceMode) {
+            Practice();
+			return;
+		}
 		load->score += m_Widgets->getScore();  //Update the score for the playthrough
 		m_LoseWidget->setScore(load->score); //Sets score to display on the lose screen
 	}
@@ -181,6 +201,19 @@ void ARunnerHUD::YouLose()
 	Mouse->bEnableMouseOverEvents = true;
 	m_LoseWidget->AddToViewport(); //Displays the lose screen
 	UGameplayStatics::SetGamePaused(world, true); //Pauses Game
+}
+
+void ARunnerHUD::Practice() 
+{
+	class APlayerController *Mouse;
+	Mouse = world->GetFirstPlayerController();
+	paused = true;
+	Mouse->bShowMouseCursor = true;
+	Mouse->bEnableClickEvents = true;
+	Mouse->bEnableMouseOverEvents = true;
+	m_LevelSelectWidget->SetVisibility(ESlateVisibility::Visible);
+	m_LevelSelectWidget->PlayFadeInAnimation();
+    UGameplayStatics::SetGamePaused(world, true);  // Pauses Game
 }
 
 void ARunnerHUD::ShowPowerupWidget(FString powerupText) 

@@ -20,10 +20,13 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Basic)
 		int mapsBeaten;
 	UPROPERTY(VisibleAnywhere, Category = Basic)
+		bool practiceMode;
+	UPROPERTY(VisibleAnywhere, Category = Basic)
 		FString SaveName;
 	UPROPERTY(VisibleAnywhere, Category = Basic)
 		FName  runnerSelection;
-
+  UPROPERTY(VisibleAnywhere, Category = Basic)
+		FName difficultySetting;  
 
 	UBroncoSaveGame();
 };
