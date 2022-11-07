@@ -19,7 +19,8 @@ AOrbProjectile::AOrbProjectile()
 void AOrbProjectile::FireOrbInDirection(const FVector& Direction, AActor* Runner)
 {
 	UE_LOG(LogTemp, Display, TEXT("fire orb in direction: %s"), *(Direction.ToString()));
-	ProjectileMovementComponent->Velocity = Direction * ProjectileMovementComponent->InitialSpeed;
+	FVector heightMod = FVector(0.0f, 0.0f, 0.012f);
+	ProjectileMovementComponent->Velocity = (Direction + heightMod) * ProjectileMovementComponent->InitialSpeed;
 	RunnerParent = Runner; 
 }
 // Called when the game starts or when spawned
