@@ -24,8 +24,8 @@ jobs:
           access-token: ${{ secrets.DOCKERGITHUBKEY }}
     - name: Build ue4-chaos Container 
       run: |
-        cd /home/runner/work/UnrealEngine/ && ./Setup.sh
-        cd /home/runner/work/UnrealEngine/Engine/Extras/Containers/Dockerfiles/linux/ && ./build.sh 4.26-chaos
+        cd UnrealEngine/ && ./Setup.sh
+        cd Engine/Extras/Containers/Dockerfiles/linux/ && ./build.sh 4.26-chaos
     - name: Build BroncoDrome
       run: |
         cd /home/runner/work/f22-kitty-cat-studios/
