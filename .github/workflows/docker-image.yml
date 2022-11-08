@@ -24,10 +24,10 @@ jobs:
           access-token: ${{ secrets.DOCKERGITHUBKEY }}
     - name: Build ue4-chaos Container 
       run: |
-        cd /home/runner/work/f22-kitty-cat-studios/UnrealEngine/ && ./Setup.sh
-        cd /home/runner/work/f22-kitty-cat-studios/UnrealEngine/Engine/Extras/Containers/Dockerfiles/linux/ && ./build.sh 4.26-chaos
+        cd /home/runner/work/UnrealEngine/ && ./Setup.sh
+        cd /home/runner/work/UnrealEngine/Engine/Extras/Containers/Dockerfiles/linux/ && ./build.sh 4.26-chaos
     - name: Build BroncoDrome
       run: |
-        cd /home/runner/work/f22-kitty-cat-studios/f22-kitty-cat-studios/f22-kitty-cat-studios/
+        cd /home/runner/work/f22-kitty-cat-studios/
         docker run --rm -ti -v "." ghcr.io/epicgames/unreal-engine:dev-slim-4.26-chaos
         ls
