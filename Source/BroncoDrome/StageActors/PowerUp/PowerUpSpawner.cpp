@@ -26,7 +26,6 @@ void APowerUpSpawner::BeginPlay()
 	
 	spawnPowerUp();
 
-
 }
 
 // Called every frame
@@ -58,6 +57,15 @@ void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRota
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Power Up Spawned"), *GetDebugName(this)));
 	powerUp = World->SpawnActor<APowerUpMaster>(powerUpClass, loc, rot, SpawnParams);
     powerUp->SetSpawner(this);
+
+	// Using random int generator, spawns power up if
+	// less than or equal to value. 
+	// Feel free to change values for balancing purposes.
+	int random = FMath::RandRange(1, 10);
+	if (random <= 3) {
+
+		powerUp->Destroy();
+	}
 
 }
 
