@@ -586,7 +586,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                  [SNew(SHorizontalBox)
                      + SHorizontalBox::Slot().Padding(ButtonPadding)
                      [SNew(SButton)
-                        .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Easy")))
+                        .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Easy")), FName(TEXT("balanced")))
                         .ButtonColorAndOpacity(FColor::Blue)
                          [SNew(SVerticalBox)
                           + SVerticalBox::Slot()
@@ -608,7 +608,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                     + SHorizontalBox::Slot().Padding(ButtonPadding)
                     //Medium Button
                     [SNew(SButton)
-                          .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Medium")))
+                          .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Medium")), FName(TEXT("balanced")))
                           .ButtonColorAndOpacity(FColor::Blue)
                               [SNew(SVerticalBox) +
                                SVerticalBox::Slot()
@@ -630,7 +630,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                     +  SHorizontalBox::Slot().Padding(ButtonPadding)
                     //Hard Button
                     [SNew(SButton)
-                          .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Hard")))
+                          .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Hard")), FName(TEXT("balanced")))
                           .ButtonColorAndOpacity(FColor::Blue)
                               [SNew(SVerticalBox) +
                                SVerticalBox::Slot()
@@ -697,8 +697,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                  [SNew(SHorizontalBox) +
                   SHorizontalBox::Slot().Padding(ButtonPadding)
                       [SNew(SButton)
-                           .OnClicked(this, &SMainMenuWidget::OnPlayClicked,
-                                      FName(TEXT("speed")))
+                           .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Medium")), FName(TEXT("speed")))
                            .ButtonColorAndOpacity(FColor::Blue)
                                [SNew(SVerticalBox) +
                                 SVerticalBox::Slot()
@@ -719,8 +718,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                       // balanced
                       [SNew(SButton)
                            .OnClicked(this, 
-                               &SMainMenuWidget::OnPlayClicked,
-                                      FName(TEXT("balanced")))
+                               &SMainMenuWidget::OnPlayClicked, FName(TEXT("Medium")), FName(TEXT("balanced")))
                            .ButtonColorAndOpacity(FColor::Blue)
                                [SNew(SVerticalBox) +
                                 SVerticalBox::Slot()
@@ -741,8 +739,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                   SHorizontalBox::Slot().Padding(ButtonPadding)
                       // traction
                       [SNew(SButton)
-                           .OnClicked(this, &SMainMenuWidget::OnPlayClicked,
-                                      FName(TEXT("traction")))
+                           .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Medium")), FName(TEXT("traction")))
                            .ButtonColorAndOpacity(FColor::Blue)
                                [SNew(SVerticalBox) +
                                 SVerticalBox::Slot()
@@ -768,7 +765,7 @@ void SMainMenuWidget::BuildMenu(int hOrM) {
                  // Main Menu Button
                  + SVerticalBox::Slot().Padding(ButtonPadding)
                        [SNew(SButton)
-                            .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("balanced")))
+                            .OnClicked(this, &SMainMenuWidget::OnPlayClicked, FName(TEXT("Medium")), FName(TEXT("balanced")))
                             .ButtonColorAndOpacity(FColor::Blue)
                                 [SNew(STextBlock)
                                      .Font(ButtonTextStyle)
