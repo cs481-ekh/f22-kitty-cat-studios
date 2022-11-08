@@ -5,6 +5,8 @@ on:
     branches: [ "deployment" ]
   pull_request:
     branches: [ "deployment" ]
+    
+  workflow_dispatch:
 
 jobs:
 
