@@ -1,33 +1,37 @@
 name: BroncoDrome Builder
 
+# this workflow will run a build of broncodrome [and push an executable file to the github]
+
+# whenever a push or pull request is made to deployment, run this workflow
 on:
   push:
     branches: [ "deployment" ]
   pull_request:
     branches: [ "deployment" ]
     
+  # this line allows for manually running workflow  
   workflow_dispatch:
 
 jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # could be easily extended to support mac and windows
     steps:
     - name: Clone BroncoDrome
-      uses: actions/checkout@v3
+      uses: actions/checkout@v3 # clone broncoDrome to have file available
     - name: Clone Unreal 
-      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      uses: GuillaumeFalourd/clone-github-repo-action@v2 # clone unreal engine so that we can build the game
       with:
           owner: 'EpicGames'
           repository: 'UnrealEngine'
-          access-token: ${{ secrets.DOCKERGITHUBKEY }}
+          access-token: ${{ secrets.DOCKERGITHUBKEY }} # secret key in github secrets
     - name: Build ue4-chaos Container 
       run: |
-        cd UnrealEngine/ && ./Setup.sh
+        cd UnrealEngine/ && ./Setup.sh # use Unreal's built in docker build tools
         cd Engine/Extras/Containers/Dockerfiles/linux/ && ./build.sh 4.26-chaos
     - name: Build BroncoDrome
       run: |
-        cd /home/runner/work/f22-kitty-cat-studios/
+        cd /home/runner/work/f22-kitty-cat-studios/ # use our newly build docker image to build and run broncodrome
         docker run --rm -ti -v "." ghcr.io/epicgames/unreal-engine:dev-slim-4.26-chaos
         ls
