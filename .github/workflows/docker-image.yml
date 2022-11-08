@@ -29,4 +29,5 @@ jobs:
     - name: Build BroncoDrome
       run: |
         cd /home/runner/work/f22-kitty-cat-studios/f22-kitty-cat-studios/f22-kitty-cat-studios/
-        docker run --rm -ti -v "." ghcr.io/epicgames/unreal-engine:dev-4.26-chaos
+        docker run --rm -ti -v "." ghcr.io/epicgames/unreal-engine:dev-slim-4.26-chaos
+        ls
