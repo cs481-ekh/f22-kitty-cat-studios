@@ -43,4 +43,6 @@ private:
 		UTexture2D* credits;
     UPROPERTY()
         UTexture2D *difficultyImage;
+    UPROPERTY()
+    UTexture2D *selectionImage;
 };
