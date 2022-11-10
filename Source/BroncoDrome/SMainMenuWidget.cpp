@@ -42,8 +42,7 @@ void SMainMenuWidget::Construct(const FArguments &InArgs) {
   }
 
   if (FileManager.FileExists(*file)) {
-    if (FFileHelper::LoadFileToStringArray(Result, *file,
-                                           FFileHelper::EHashOptions::None)) {
+    if (FFileHelper::LoadFileToStringArray(Result, *file)) {
       UE_LOG(LogTemp, Warning, TEXT("Score Array Loaded"));
     } else {
       UE_LOG(LogTemp, Warning, TEXT("FileManipulation: Did not Load Scores"));

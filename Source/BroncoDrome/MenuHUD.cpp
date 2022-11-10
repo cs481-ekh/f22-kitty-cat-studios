@@ -8,6 +8,7 @@
 #include "Sound/SoundCue.h"
 #include "GameFramework/PlayerController.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 AMenuHUD::AMenuHUD() {
 	

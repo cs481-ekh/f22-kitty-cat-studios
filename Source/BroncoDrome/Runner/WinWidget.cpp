@@ -109,7 +109,7 @@ void UWinWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText, UTex
 	file.Append(TEXT("highScores.txt"));
 	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 	if (FileManager.FileExists(*file)) {
-		if (FFileHelper::LoadFileToStringArray(Result, *file, FFileHelper::EHashOptions::None)) {
+		if (FFileHelper::LoadFileToStringArray(Result, *file)) {
 			//UE_LOG(LogTemp, Warning, TEXT("Score Array Loaded"));
 		}
 		else {
