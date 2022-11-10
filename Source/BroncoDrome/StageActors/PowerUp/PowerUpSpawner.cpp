@@ -60,12 +60,16 @@ void APowerUpSpawner::spawnPowerUp(/*APowerUpMaster* powerUp, FVector loc, FRota
 	powerUp = World->SpawnActor<APowerUpMaster>(powerUpClass, loc, rot, SpawnParams);
     powerUp->SetSpawner(this);
 
-	UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0)); // used to get difficulty string
+	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+
+		difficultySetting = load->difficultySetting;
+	}
+
 	// Using random int generator, spawns power up if
 	// less than or equal to value. 
 	// Feel free to change values for balancing purposes.
 	int random = FMath::RandRange(1, 10);
-	if (random <= 3 && load->difficultySetting == (TEXT("Hard"))) {
+	if (random <= 3 && difficultySetting == (TEXT("Hard"))) {
 
 		powerUp->Destroy();
 	}
