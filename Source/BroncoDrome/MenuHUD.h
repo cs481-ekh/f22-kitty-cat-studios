@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Engine/World.h"
 #include "MenuHUD.generated.h"
 
 /**
@@ -26,6 +27,10 @@ public:
 	void ShowMenu(int i);
 	void RemoveMenu();
 	AMenuHUD();
+
+public:
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* buttonAudioCue;
 
 
 private:

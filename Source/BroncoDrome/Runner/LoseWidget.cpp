@@ -127,3 +127,5 @@ void ULoseWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText, UTe
 		scoreBox->SetIsEnabled(true);
 	}
 }
+
+void ULoseWidget::PlayFadeInAnimation_Implementation() {}

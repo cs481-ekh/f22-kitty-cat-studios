@@ -48,6 +48,13 @@ public:	// Constructors
 	UPROPERTY()
 		UWorld* world;
 
+public:
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* pauseAudioCue;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* unPauseAudioCue;
+
 protected:	// Overloads
 
 	virtual void BeginPlay() override;

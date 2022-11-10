@@ -137,3 +137,5 @@ void UWinWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText, UTex
 		scoreBox->SetIsEnabled(true);
 	}
 }
+
+void UWinWidget::PlayFadeInAnimation_Implementation() {}
