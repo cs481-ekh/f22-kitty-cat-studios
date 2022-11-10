@@ -40,6 +40,7 @@ public:
 	void SpawnParticles();
 
 private:
+		FName difficultySetting;
 	
 };
 
