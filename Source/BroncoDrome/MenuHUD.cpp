@@ -5,6 +5,7 @@
 #include "SMainMenuWidget.h"
 #include "Widgets/SWeakWidget.h"
 #include "Engine/Engine.h"
+#include "Sound/SoundCue.h"
 #include "GameFramework/PlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 
@@ -24,6 +25,11 @@ AMenuHUD::AMenuHUD() {
 	credits = CreditsPath.Object; //Image for the Credits page
 	static ConstructorHelpers::FObjectFinder<UTexture2D> DifficultyImagePath(TEXT("Texture2D'/Game/Assets/Screenshots/difficultyImage.difficultyImage'"));
     difficultyImage = DifficultyImagePath.Object;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> buttonCue(
+		TEXT("'/Game/Assets/Sound/Button_Select_Cue.Button_Select_Cue'")
+	);
+	buttonAudioCue = buttonCue.Object;
 
 }
 
@@ -83,6 +89,7 @@ void AMenuHUD::RemoveMenu()
 {
 	if (GEngine && GEngine->GameViewport && MenuWidgetContainer.IsValid())
 	{
+		UGameplayStatics::PlaySound2D(GetWorld(), buttonAudioCue);
 		GEngine->GameViewport->RemoveViewportWidgetContent(MenuWidgetContainer.ToSharedRef());
 
 		if (PlayerOwner)
