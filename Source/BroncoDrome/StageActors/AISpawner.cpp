@@ -4,6 +4,7 @@
 #include "AISpawner.h"
 #include "AIActor.h"
 #include "Math/Vector.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AAISpawner::AAISpawner():AActor()
@@ -17,8 +18,8 @@ AActor* AAISpawner::Spawn(FName difficultySetting)
 {
   if ((onlySpawnOnce && amountSpawned > 0) || !spawnEnabled) return NULL;
   FVector loc = GetActorLocation();
-  FRotator roc = FRotator(0, 0, 0);
-  AAIActor *ai = GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, roc);
+  FRotator rotator = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(),FVector(0.0f,0.0f,0.0f));
+  AAIActor *ai = GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, rotator);
   amountSpawned++;
   return ai;
 }

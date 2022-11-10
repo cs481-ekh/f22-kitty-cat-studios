@@ -14,6 +14,7 @@ UBroncoSaveGame::UBroncoSaveGame()
 	score = 0; //Represents the overall score
 	mapsBeaten = 0; //Represents how many maps have been beaten
 	SaveName = TEXT("curr"); //We set the save name here because there will only be 1 save game to keep track of the current playthrough
+	runnerSelection = FName(TEXT("balanced"));
 	practiceMode = false;
 	difficultySetting = FName(TEXT("Medium")); // Represents the game difficulty
 }

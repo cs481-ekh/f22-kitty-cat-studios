@@ -92,7 +92,7 @@ bool bFromSweep, const FHitResult& SweepResult)
 		switch (powerTypeIndex)
 		{
 			case 0:
-				dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20); //Health
+				dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20, false); //Health
 				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
 			break;
 			case 1:

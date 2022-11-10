@@ -25,12 +25,13 @@ AMenuHUD::AMenuHUD() {
 	credits = CreditsPath.Object; //Image for the Credits page
 	static ConstructorHelpers::FObjectFinder<UTexture2D> DifficultyImagePath(TEXT("Texture2D'/Game/Assets/Screenshots/difficultyImage.difficultyImage'"));
     difficultyImage = DifficultyImagePath.Object;
-
 	static ConstructorHelpers::FObjectFinder<USoundCue> buttonCue(
 		TEXT("'/Game/Assets/Sound/Button_Select_Cue.Button_Select_Cue'")
 	);
 	buttonAudioCue = buttonCue.Object;
-
+  
+  static ConstructorHelpers::FObjectFinder<UTexture2D> selectionImagePath(TEXT("Texture2D'/Game/Assets/Screenshots/selectionImage.selectionImage'"));
+  selectionImage = selectionImagePath.Object;
 }
 
 void AMenuHUD::BeginPlay()
@@ -64,6 +65,9 @@ void AMenuHUD::ShowMenu(int i)
 			case 5:
 				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(difficultyImage); //This will load SMainMenuWidget with the difficulty selection page
 				break;
+			case 6:
+				MenuWidget = SNew(SMainMenuWidget) .OwningHUD(this).broncyImage(selectionImage);  
+                 break;
 			default:
 				MenuWidget = SNew(SMainMenuWidget).OwningHUD(this).broncyImage(BroncyImage).sdpLogo(sdpLogo); //This will load SMainMenuWidget with the main menu image
 				break;

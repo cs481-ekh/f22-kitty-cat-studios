@@ -112,7 +112,7 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 		//Add various calls to car methods in this switch statement to accomplish power up stuff.
 		switch (powerTypeIndex) {
 			case 0:
-				dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20); //Health
+				dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20, false); //Health
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(healthAudioCue);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
 				selectedPowerUp = FString("HEALTH");
