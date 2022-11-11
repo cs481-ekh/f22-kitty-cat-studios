@@ -1,0 +1,32 @@
+name: BroncoDrome Builder
+
+on:
+  push:
+    branches: [ "deployment" ]
+  pull_request:
+    branches: [ "deployment" ]
+    
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone BroncoDrome
+      uses: actions/checkout@v3
+    - name: Clone Unreal 
+      uses: GuillaumeFalourd/clone-github-repo-action@v2
+      with:
+          owner: 'EpicGames'
+          repository: 'UnrealEngine'
+          access-token: ${{ secrets.DOCKERGITHUBKEY }}
+    - name: Build ue4-chaos Container 
+      run: |
+        cd /home/runner/work/f22-kitty-cat-studios/UnrealEngine/ && ./Setup.sh
+        cd /home/runner/work/f22-kitty-cat-studios/UnrealEngine/Engine/Extras/Containers/Dockerfiles/linux/ && ./build.sh 4.26-chaos
+    - name: Build BroncoDrome
+      run: |
+        cd /home/runner/work/f22-kitty-cat-studios/f22-kitty-cat-studios/f22-kitty-cat-studios/
+        docker run --rm -ti -v "." ghcr.io/epicgames/unreal-engine:dev-4.26-chaos

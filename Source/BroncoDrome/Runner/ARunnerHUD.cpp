@@ -3,6 +3,7 @@
 
 #include "ARunnerHUD.h"
 #include "BroncoDrome/BroncoSaveGame.h"
+#include "Sound/SoundCue.h"
 
 #include "GameFramework/GameUserSettings.h"
 
@@ -10,7 +11,15 @@ int anemoniesLeft = 0;
 
 ARunnerHUD::ARunnerHUD()
 {
+	static ConstructorHelpers::FObjectFinder<USoundCue> pauseCue(
+		TEXT("'/Game/Assets/Sound/Pause_Cue.Pause_Cue'")
+	);
+	pauseAudioCue = pauseCue.Object;
 
+	static ConstructorHelpers::FObjectFinder<USoundCue> unPauseCue(
+		TEXT("'/Game/Assets/Sound/UnPause_Cue.UnPause_Cue'")
+	);
+	unPauseAudioCue = unPauseCue.Object;
 }
 
 void ARunnerHUD::BeginPlay()
@@ -74,13 +83,25 @@ void ARunnerHUD::BeginPlay()
        m_PowerupWidget = CreateWidget<UPowerupWidget>(GetWorld(), PowerupWidgetClass);
        m_PowerupWidget->AddToViewport();
        m_PowerupWidget->SetVisibility(ESlateVisibility::Hidden);
-	   if(m_LoseWidget == NULL)
+	   if(m_PowerupWidget == NULL)
 			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Powerup Widget not verified"));
 	} 
 	else
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
 	}
+	//Level Select Widget Enabling
+	if (LevelSelectWidgetClass) {
+	   m_LevelSelectWidget = CreateWidget<ULevelSelectWidget>(GetWorld(), LevelSelectWidgetClass);
+	   m_LevelSelectWidget->AddToViewport();
+       m_LevelSelectWidget->SetVisibility(ESlateVisibility::Hidden);
+	   if(m_LevelSelectWidget == NULL)
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Level Select Widget not verified"));
+	}
+	else 
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
+    }
 }
 
 void ARunnerHUD::DrawHUD()
@@ -109,6 +130,8 @@ void ARunnerHUD::Pause() {
 		Mouse->bEnableClickEvents = true;
 		Mouse->bEnableMouseOverEvents = true;
 		//Adds pause menu to screen
+		UGameplayStatics::PlaySound2D(GetWorld(), pauseAudioCue);
+		HideHUD(true);
 		m_PauseWidgets->AddToViewport();
 	}
 	else {
@@ -120,6 +143,8 @@ void ARunnerHUD::Pause() {
 		Mouse->bEnableClickEvents = false;
 		Mouse->bEnableMouseOverEvents = false;
 		//Removes the pause menu
+		UGameplayStatics::PlaySound2D(GetWorld(), unPauseAudioCue);
+		HideHUD(false);
 		m_PauseWidgets->RemoveFromViewport();
 	}
 	
@@ -146,6 +171,10 @@ void ARunnerHUD::YouWin(){
 	//Need to see how many maps have been beaten
 	int mapsBeat = 0;
 	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		if (load->practiceMode) {
+            Practice();
+			return;
+		}
 		mapsBeat = load->mapsBeaten;
 		load->score += m_Widgets->getScore();  //Update the score for the playthrough
 		load->mapsBeaten++;
@@ -160,7 +189,9 @@ void ARunnerHUD::YouWin(){
 			Mouse->bEnableMouseOverEvents = true;
 			m_WinWidget->setScore(load->score); //Sets score for adding to the high scores tab
 			m_WinWidget->AddToViewport(); //Displays the win screen
+			m_WinWidget->PlayFadeInAnimation();
 			//Pauses Game
+			HideHUD(true);
 			UGameplayStatics::SetGamePaused(world, true);
 		}
 	}
@@ -169,6 +200,10 @@ void ARunnerHUD::YouWin(){
 void ARunnerHUD::YouLose() 
 {
 	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		if (load->practiceMode) {
+            Practice();
+			return;
+		}
 		load->score += m_Widgets->getScore();  //Update the score for the playthrough
 		m_LoseWidget->setScore(load->score); //Sets score to display on the lose screen
 	}
@@ -180,7 +215,22 @@ void ARunnerHUD::YouLose()
 	Mouse->bEnableClickEvents = true;
 	Mouse->bEnableMouseOverEvents = true;
 	m_LoseWidget->AddToViewport(); //Displays the lose screen
+	m_LoseWidget->PlayFadeInAnimation();
+	HideHUD(true);
 	UGameplayStatics::SetGamePaused(world, true); //Pauses Game
+}
+
+void ARunnerHUD::Practice() 
+{
+	class APlayerController *Mouse;
+	Mouse = world->GetFirstPlayerController();
+	paused = true;
+	Mouse->bShowMouseCursor = true;
+	Mouse->bEnableClickEvents = true;
+	Mouse->bEnableMouseOverEvents = true;
+	m_LevelSelectWidget->SetVisibility(ESlateVisibility::Visible);
+	m_LevelSelectWidget->PlayFadeInAnimation();
+    UGameplayStatics::SetGamePaused(world, true);  // Pauses Game
 }
 
 void ARunnerHUD::ShowPowerupWidget(FString powerupText) 

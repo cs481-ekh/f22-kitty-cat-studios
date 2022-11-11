@@ -25,16 +25,15 @@ public:
 
 	void Construct(const FArguments& InArgs);
 
-	void InitBroncoSave(int level, FName difficulty) const; //helper method to initialize the save
-	FReply OnPlayClicked(FName difficulty) const;
-	FReply OnPlayDayClicked() const;
-	FReply OnPlayNightClicked() const;
-	FReply OnPlayRainClicked() const;
+	void InitBroncoSave(int level, FName difficulty, bool practiceMode, FName runnerSelected) const; //helper method to initialize the save
+	FReply OnPlayClicked(FName difficulty, FName runnerSelected) const;
+	FReply OnFreePlayClicked(FName difficulty, FName runnerSelected) const;
 	FReply OnQuitClicked() const;
     FReply OnDifficultyClicked() const;
+	FReply onRunnerSelectionClicked() const; //
 	FReply OnHScoreClicked() const;
 	void OnHScoreDebug(const FText& InText, ETextCommit::Type);
-	FReply OnReturnToMainClicked() const;
+    FReply OnReturnToMainClicked() const;
 	void BuildMenu(int hOrM);
 	FReply OnTutClicked() const;
 	FReply OnNextTutClicked() const;
@@ -45,7 +44,7 @@ public:
 	TWeakObjectPtr<class UTexture2D> broncyImage;
 	TWeakObjectPtr<class UTexture2D> sdpLogo;
 
-	FText score0, score1, score2, score3, score4, score5, score6, score7, score8, score9, easy, easyDescript, medium, mediumDescript, hard, hardDescript;
+	FText score0, score1, score2, score3, score4, score5, score6, score7, score8, score9, easy, easyDescript, medium, mediumDescript, hard, hardDescript, balanced, balancedDescript, speed, speedDescript, traction, tractionDescript;
 
 	virtual bool SupportsKeyboardFocus() const override { return true; };
 
