@@ -18,7 +18,9 @@ AOrbProjectile::AOrbProjectile()
 }
 void AOrbProjectile::FireOrbInDirection(const FVector& Direction, AActor* Runner)
 {
-	ProjectileMovementComponent->Velocity = (Direction+0.012) * ProjectileMovementComponent->InitialSpeed;
+	UE_LOG(LogTemp, Display, TEXT("fire orb in direction: %s"), *(Direction.ToString()));
+	FVector heightMod = FVector(0.0f, 0.0f, 0.012f);
+	ProjectileMovementComponent->Velocity = (Direction + heightMod) * ProjectileMovementComponent->InitialSpeed;
 	RunnerParent = Runner; 
 }
 // Called when the game starts or when spawned
@@ -41,7 +43,7 @@ void AOrbProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor
 {
     if (OtherActor != this && OtherComponent->IsSimulatingPhysics()){
 		if (ARunner* runner = Cast<ARunner, AActor>(OtherActor)) {
-			runner->hitMe(shotDamage * (-1));//(Make it negative) //hitMe function lets runner deal with the powerups
+			runner->hitMe(shotDamage * (-1), RunnerParent);//(Make it negative) //hitMe function lets runner deal with the powerups
 			//runner->AddToHealth(shotDamage * (- 1)); //(Make it negative) Left here incase something breaks
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Hit a runner."), *GetDebugName(this)));
 			Cast<ARunner, AActor>(RunnerParent)->AddToScore(10);
