@@ -5,13 +5,13 @@
 #include "Blueprint/UserWidget.h"
 #include "CoreMinimal.h"
 #include "Engine/Texture2D.h"
-#include "GamemodeSelectWidget.generated.h"
+#include "GamemodeSelectWidgetParent.generated.h"
 
 /**
  *
  */
 UCLASS()
-class BRONCODROME_API UGamemodeSelectWidget : public UUserWidget {
+class BRONCODROME_API UGamemodeSelectWidgetParent : public UUserWidget {
   GENERATED_BODY()
 
 protected:  // Overrides
@@ -24,16 +24,22 @@ public:  // Constructors
   UPROPERTY(BlueprintReadOnly)
   int levelSelected;
 
-  UFUNCTION(BlueprintCallable, Category = UGamemodeSelectWidget)
+  UPROPERTY(BlueprintReadOnly)
+  int runnerSelected;
+
+  UPROPERTY(BlueprintReadOnly)
+  int difficultySelected;
+
+  UFUNCTION(BlueprintCallable, Category = UGamemodeSelectWidgetParent)
   void SetSelectedLevel(int levelIndex);
 
-  UFUNCTION(BlueprintCallable, Category = UGamemodeSelectWidget)
+  UFUNCTION(BlueprintCallable, Category = UGamemodeSelectWidgetParent)
   void PlayLevel();
 
-  UFUNCTION(BlueprintCallable, Category = UGamemodeSelectWidget)
+  UFUNCTION(BlueprintCallable, Category = UGamemodeSelectWidgetParent)
   void ReturnToMainMenu();
 
-  UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = UGamemodeSelectWidget)
+  UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = UGamemodeSelectWidgetParent)
   void PlayFadeInAnimation();
   
 

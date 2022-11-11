@@ -1,20 +1,20 @@
 // // Copyright (C) Team Kitty Cat 2022. All Rights Reserved.
 
-#include "GamemodeSelectWidget.h"
+#include "GamemodeSelectWidgetParent.h"
 #include "Kismet/GameplayStatics.h"
 
-void UGamemodeSelectWidget::NativePreConstruct() { Super::NativePreConstruct(); }
+void UGamemodeSelectWidgetParent::NativePreConstruct() { Super::NativePreConstruct(); }
 
-void UGamemodeSelectWidget::NativeConstruct() {
+void UGamemodeSelectWidgetParent::NativeConstruct() {
   Super::NativeConstruct();
   levelSelected = 0;
 }
 
-void UGamemodeSelectWidget::SetSelectedLevel(int levelIndex) {
+void UGamemodeSelectWidgetParent::SetSelectedLevel(int levelIndex) {
   levelSelected = levelIndex;
 }
 
-void UGamemodeSelectWidget::PlayLevel() {
+void UGamemodeSelectWidgetParent::PlayLevel() {
 	//If more levels are added, add their paths here
 	switch (levelSelected) {
 		case 1:
@@ -32,8 +32,8 @@ void UGamemodeSelectWidget::PlayLevel() {
   }
 }
 
-void UGamemodeSelectWidget::ReturnToMainMenu() {
+void UGamemodeSelectWidgetParent::ReturnToMainMenu() {
   UGameplayStatics::OpenLevel(GWorld, "MenuLevel");
 }
 
-void UGamemodeSelectWidget::PlayFadeInAnimation_Implementation() {}
+void UGamemodeSelectWidgetParent::PlayFadeInAnimation_Implementation() {}
