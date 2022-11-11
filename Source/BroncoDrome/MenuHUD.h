@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Engine/World.h"
 #include "MenuHUD.generated.h"
 
 /**
@@ -27,6 +28,10 @@ public:
 	void RemoveMenu();
 	AMenuHUD();
 
+public:
+	UPROPERTY(BlueprintReadOnly, Category = "Audio")
+	class USoundCue* buttonAudioCue;
+
 
 private:
 	UPROPERTY()
@@ -43,4 +48,6 @@ private:
 		UTexture2D* credits;
     UPROPERTY()
         UTexture2D *difficultyImage;
+    UPROPERTY()
+    UTexture2D *selectionImage;
 };

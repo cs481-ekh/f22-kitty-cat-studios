@@ -1,6 +1,6 @@
 // Copyright (C) KITTY CAT STUDIOS 2022. All Rights Reserved.
 
-
+#include "AISpawnerController.h"
 #include "AISpawner.h"
 #include "AIActor.h"
 #include "../Runner/Runner.h"
