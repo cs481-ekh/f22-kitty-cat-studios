@@ -122,6 +122,7 @@ public: // Attributes
 	FTimerHandle GameTimeHandler; //For tick
 	FTimerHandle ShotTimerHandler;
 	FTimerHandle AimTimerHandler;
+	FTimerHandle RespawnTimerHandler;
 	bool canFire = true;
 	float shotTimerCooldown = 0.3f;
 	bool canAim = true;
