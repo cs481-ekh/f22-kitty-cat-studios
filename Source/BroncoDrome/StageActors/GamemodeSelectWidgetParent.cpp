@@ -30,7 +30,7 @@ void UGamemodeSelectWidgetParent::SetSelectedDifficulty(int difficultyIndex)
 
 void UGamemodeSelectWidgetParent::SetSelectedGamemode(int gamemodeIndex)
 {
-	difficultySelected = gamemodeIndex;
+	gamemodeSelected = gamemodeIndex;
 }
 
 FName UGamemodeSelectWidgetParent::GetGamemodeFName() {
@@ -155,7 +155,7 @@ void UGamemodeSelectWidgetParent::InitSave() {
   // have the name "curr" for it's save slot.
   if (UBroncoSaveGame *save = Cast<UBroncoSaveGame>(UGameplayStatics::CreateSaveGameObject(UBroncoSaveGame::StaticClass()))) {
     save->score = 0;
-	if (gamemodeSelected) { // survival or freeplay (only play one game) TODO: refactor mapsBeaten and change the way maps are progressed
+	if (gamemodeSelected != 1) { // survival or freeplay (only play one game) TODO: refactor mapsBeaten and change the way maps are progressed
 		save->mapsBeaten = 3;
 	} else {
 		save->mapsBeaten = -1; // standard game (progress through each level)
