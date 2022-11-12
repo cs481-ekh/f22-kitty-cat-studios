@@ -26,11 +26,8 @@ public:
 	void Construct(const FArguments& InArgs);
 
 	void InitBroncoSave(int level, FName difficulty, bool practiceMode, FName runnerSelected) const; //helper method to initialize the save
-	FReply OnPlayClicked(FName difficulty, FName runnerSelected) const;
-	FReply OnFreePlayClicked(FName difficulty, FName runnerSelected) const;
+	FReply OnPlayClicked() const;
 	FReply OnQuitClicked() const;
-    FReply OnDifficultyClicked() const;
-	FReply onRunnerSelectionClicked() const; //
 	FReply OnHScoreClicked() const;
 	void OnHScoreDebug(const FText& InText, ETextCommit::Type);
     FReply OnReturnToMainClicked() const;
