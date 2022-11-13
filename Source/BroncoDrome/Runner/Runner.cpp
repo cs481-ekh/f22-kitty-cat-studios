@@ -660,15 +660,15 @@ void ARunner::AddToHealth(int newHealth, bool damageOriginatedFromPlayer) {
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Respawning in 3 seconds..."), *GetDebugName(this)));
 		if (HUD->getLives()> 0) {
 			HUD->SetTimeLeft(3);
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+			GetWorld()->GetTimerManager().SetTimer(RespawnTimerHandler, [&]()
 				{
 					//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("2 seconds left to respawn..."), *GetDebugName(this)));
 					HUD->SetTimeLeft(2);
-					GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+					GetWorld()->GetTimerManager().SetTimer(RespawnTimerHandler, [&]()
 						{
 							//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("1 second left to respawn..."), *GetDebugName(this)));
 							HUD->SetTimeLeft(1);
-							GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+							GetWorld()->GetTimerManager().SetTimer(RespawnTimerHandler, [&]()
 								{
 									Respawn();	// After three seconds, the runner respawns at one of the four corners
 									EnableInput(GetWorld()->GetFirstPlayerController());
@@ -819,7 +819,7 @@ void ARunner::FixRotation()
 }
 
 void ARunner::FlashRed() {
-    if (!isRed) {
+    if (IsValid(this) && !isRed) {
 		originalMaterials = BodyMesh->GetMaterials();
 		for (int i = 0; i < BodyMesh->GetMaterials().Num(); i++) {
 		  BodyMesh->SetMaterial(i, HitMaterial);
@@ -828,10 +828,12 @@ void ARunner::FlashRed() {
 		GetWorld()->GetTimerManager().SetTimer(
 			TimerHandle,
 			[&]() {
-			  for (int i = 0; i < originalMaterials.Num(); i++) {
-				BodyMesh->SetMaterial(i, originalMaterials[i]);
-			  }
-			  isRed = false;
+				if (IsValid(this)) {
+					for (int i = 0; i < originalMaterials.Num(); i++) {
+						BodyMesh->SetMaterial(i, originalMaterials[i]);
+					}
+					isRed = false;
+				}
 			},
 			0.2f, false);		
     }    
