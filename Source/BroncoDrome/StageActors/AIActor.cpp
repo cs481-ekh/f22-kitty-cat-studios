@@ -235,31 +235,33 @@ void AAIActor::MoveDecision(FVector location) {
   reverse = dir.Equals(FVector::ForwardVector);
 
   //this vector may be coming from the center of objects, which is why runners used to continuously run into objects
-  if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
-    if (dir.Equals(FVector::ForwardVector)) {
-      GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("forward reverse"), *GetDebugName(this)));
-      Mover->SetSteeringInput(-1.0f);
-      ThrottleInput(-1.0f);
-    }
-    else if (dir.Equals(FVector::LeftVector)) {
-      GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward"), *GetDebugName(this)));
-      Mover->SetSteeringInput(1.0f);
-      ThrottleInput(1.0f);
-    }
-    else if (dir.Equals(FVector::RightVector)) {
-      GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward"), *GetDebugName(this)));
-      Mover->SetSteeringInput(-1.0f);
-      ThrottleInput(1.0f);
-    }
-    else if (dir.Equals((FVector::LeftVector + FVector::ForwardVector))) {
-      GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward reverse"), *GetDebugName(this)));
-      Mover->SetSteeringInput(1.0f);
-      ThrottleInput(-1.0f);
-    }
-    else if (dir.Equals((FVector::RightVector + FVector::ForwardVector))) {
-      GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward reverse"), *GetDebugName(this)));
-      Mover->SetSteeringInput(-1.0f);
-      ThrottleInput(-1.0f);
+  if(!frameCounter % 10000 == 0) { 
+    if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
+      if (dir.Equals(FVector::ForwardVector)) {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("forward reverse"), *GetDebugName(this)));
+        Mover->SetSteeringInput(-0.3f);
+        ThrottleInput(-1.0f);
+      }
+      else if (dir.Equals(FVector::LeftVector)) {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward"), *GetDebugName(this)));
+        Mover->SetSteeringInput(0.3f);
+        ThrottleInput(1.0f);
+      }
+      else if (dir.Equals(FVector::RightVector)) {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward"), *GetDebugName(this)));
+        Mover->SetSteeringInput(-0.3f);
+        ThrottleInput(1.0f);
+      }
+      else if (dir.Equals((FVector::LeftVector + FVector::ForwardVector))) {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward reverse"), *GetDebugName(this)));
+        Mover->SetSteeringInput(0.3f);
+        ThrottleInput(-1.0f);
+      }
+      else if (dir.Equals((FVector::RightVector + FVector::ForwardVector))) {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward reverse"), *GetDebugName(this)));
+        Mover->SetSteeringInput(-0.3f);
+        ThrottleInput(-1.0f);
+      }
     }
   }
 
@@ -267,7 +269,7 @@ void AAIActor::MoveDecision(FVector location) {
           if (frameCounter >= reactionTime && player_runner != NULL) {
             
             // there are no nearby runners, should try to move towards 
-            if (ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 1000) {
+            if (ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 100) {
               //TODO another nested if to check if there is a nearby power up, which is still a pain to do
               GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("no nearby runners"), *GetDebugName(this)));
               lastDecision = 1;
@@ -287,7 +289,7 @@ void AAIActor::MoveDecision(FVector location) {
             }
             else {
               if(frameCounter >= reactionTime || lastDecision == 0) {
-                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("move towards"), *GetDebugName(this)));
+                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("move towards player"), *GetDebugName(this)));
                 MoveTowardsPlayer(player_location, player_direction);
                 ThrottleInput(1.0f);
                 lastDecision = 0;
