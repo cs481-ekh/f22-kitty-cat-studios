@@ -235,7 +235,6 @@ void AAIActor::MoveDecision(FVector location) {
   reverse = dir.Equals(FVector::ForwardVector);
 
   //this vector may be coming from the center of objects, which is why runners used to continuously run into objects
-  if(!frameCounter % 10000 == 0) { 
     if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
       if (dir.Equals(FVector::ForwardVector)) {
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("forward reverse"), *GetDebugName(this)));
@@ -263,7 +262,7 @@ void AAIActor::MoveDecision(FVector location) {
         ThrottleInput(-1.0f);
       }
     }
-  }
+  
 
           
           if (frameCounter >= reactionTime && player_runner != NULL) {
