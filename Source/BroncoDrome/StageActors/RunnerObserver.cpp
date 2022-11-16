@@ -171,9 +171,10 @@ bool ARunnerObserver::IsRunnerVisible(const ARunner& fromRunner, const ARunner& 
 		return false;
 
 	// Is the angle valid?
-	const float angle = GetAngleBetweenRunners(fromRunner, toRunner);
+	// Disabling this allows runners to shoot in any direction
+	/*const float angle = GetAngleBetweenRunners(fromRunner, toRunner);
 	if (angle > angularThreshold)
-		return false;
+		return false;*/
 
 	// Is anything obstructing the view?
 	const bool raycastSuccessful = RunnerRaycastTest(fromRunner, toRunner);
