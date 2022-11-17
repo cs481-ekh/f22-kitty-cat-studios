@@ -263,10 +263,14 @@ void ARunner::ThrottleInput(float in)
 {
 	// Determine target gear
 	int32 targetGear = 0;
-	if (in > 0.f)
+	if (in > 0.f) {
 		targetGear = 1;
-	else if (in < 0.f)
+		if (!speedBoost) in = defaultSpeed; // standard speed when not under effect of speed boost powerup
+	}
+	else if (in < 0.f) {
 		targetGear = -1;
+		if (!speedBoost) in = -defaultSpeed; 
+	}
 	Mover->SetTargetGear(targetGear, true);
 
 	// If current speed sign is opposite of target gear, apply brakes
@@ -277,8 +281,26 @@ void ARunner::ThrottleInput(float in)
 	// Set engine audio param to Mover's
 	engineAudioComponent->SetFloatParameter(FName("EnginePower"), Mover->GetEngineRotationSpeed() / Mover->GetEngineMaxRotationSpeed());
 
+	if (!isAI) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Input: %1.1f"), in));
 	// Finally, set throttle input
-	Mover->SetThrottleInput(in);
+	Mover->SetThrottleInput(in); // throttle input is limited in range -1.0 to 1.0, any value above or below is clipped to the maximum
+}
+
+// Enables a speed boost (uncaps throttle) this happens when a speed powerup is picked up and lasts for duration
+void ARunner::EnableSpeedBoost(float duration) {
+	if (!isAI) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("SPEED BOOST!")));
+	speedBoost = true;
+
+	if (GetWorld()->GetTimerManager().IsTimerActive(SpeedBoostTimerHandler))
+		GetWorld()->GetTimerManager().ClearTimer(SpeedBoostTimerHandler); // Disable any pre-existing timers (in the event a second speed power up is collected before this one expires)
+
+	GetWorld()->GetTimerManager().SetTimer(SpeedBoostTimerHandler, this, &ARunner::DisableSpeedBoost, duration, false);
+}
+
+// Disables any active speed boost
+void ARunner::DisableSpeedBoost() {
+	if (!isAI) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("DISABLE SPEED BOOST!")));
+	speedBoost = false;
 }
 
 void ARunner::SteeringInput(float in)
