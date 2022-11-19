@@ -24,7 +24,7 @@ void ULevelSelectWidget::PlayLevel() {
 		  UGameplayStatics::OpenLevel(GWorld, "Broncodrome_Night");
 		  break;
 		case 3:
-		  //UGameplayStatics::OpenLevel(GWorld, "SUB_Map_Day");
+		  UGameplayStatics::OpenLevel(GWorld, "SUB_Map_Day");
 		  break;
 		case 4:
 		  //UGameplayStatics::OpenLevel(GWorld, "SUB_Map_Night");
