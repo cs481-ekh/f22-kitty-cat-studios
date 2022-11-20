@@ -63,6 +63,10 @@ public:		// Public Static API
 
 	static float GetAngleBetweenRunners(const class ARunner& fromRunner, const class ARunner& toRunner, bool fromCamera = true);
 	static bool RunnerRaycastTest(const class ARunner& fromRunner, const class ARunner& toRunner);
+        static float GetAngleBetweenPowerups(const class ARunner& fromRunner, const class APowerUp& toPowerup, bool fromCamera = true);
+        static bool PowerupRaycastTest(const class ARunner& fromRunner, const class APowerUp& toPowerup);
 	static bool IsRunnerVisible(const class ARunner& fromRunner, const class ARunner& toRunner,
 		float maxDistance = std::numeric_limits<float>::max(), float angularThreshold = 180.f, bool raycastTest = false);
+        static bool IsPowerupVisible(const class ARunner& fromRunner, const class APowerUp& toRunner,
+              float maxDistance = std::numeric_limits<float>::max(), float angularThreshold = 180.f, bool raycastTest = false);
 };
