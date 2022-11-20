@@ -208,6 +208,7 @@ FVector AAIActor::GetDirection() {
 	return result;
 }
 
+
 void AAIActor::MoveDecision(FVector location) {
   if (count != update_rate) {
     count++;
@@ -237,40 +238,40 @@ void AAIActor::MoveDecision(FVector location) {
   //this vector may be coming from the center of objects, which is why runners used to continuously run into objects
     if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
       if (dir.Equals(FVector::ForwardVector)) {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("forward reverse"), *GetDebugName(this)));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("forward reverse"), *GetDebugName(this)));
         Mover->SetSteeringInput(-0.3f);
         ThrottleInput(-1.0f);
       }
       else if (dir.Equals(FVector::LeftVector)) {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward"), *GetDebugName(this)));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward"), *GetDebugName(this)));
         Mover->SetSteeringInput(0.3f);
         ThrottleInput(1.0f);
       }
       else if (dir.Equals(FVector::RightVector)) {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward"), *GetDebugName(this)));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward"), *GetDebugName(this)));
         Mover->SetSteeringInput(-0.3f);
         ThrottleInput(1.0f);
       }
       else if (dir.Equals((FVector::LeftVector + FVector::ForwardVector))) {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward reverse"), *GetDebugName(this)));
+        //Engine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward reverse"), *GetDebugName(this)));
         Mover->SetSteeringInput(0.3f);
         ThrottleInput(-1.0f);
       }
       else if (dir.Equals((FVector::RightVector + FVector::ForwardVector))) {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward reverse"), *GetDebugName(this)));
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward reverse"), *GetDebugName(this)));
         Mover->SetSteeringInput(-0.3f);
         ThrottleInput(-1.0f);
       }
     }
   
-
-          
-          if (frameCounter >= reactionTime && player_runner != NULL) {
+   if (frameCounter >= reactionTime && player_runner != NULL) {
             
             // there are no nearby runners, should try to move towards 
-            if (ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 100) {
+            if (ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 5000) {
               //TODO another nested if to check if there is a nearby power up, which is still a pain to do
-              GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("no nearby runners"), *GetDebugName(this)));
+              // get closest power up
+              
+              GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("no nearby runners,"), *GetDebugName(this)));
               lastDecision = 1;
               reactionTime = FMath::RandRange(4,12);
             }
@@ -477,6 +478,27 @@ void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direct
 	else {
 		Mover->SetSteeringInput(min_angle);
 	}
+}
+
+void AAIActor::MoveTowardsPowerUp(FVector powerup_location)
+{
+  auto curr_location = GetActorLocation();
+  auto curr_direction = GetActorRotation();
+
+
+  auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(powerup_location, curr_location);
+  auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
+
+        
+  if (turn_angle_manhattan < max_angle && turn_angle_manhattan > min_angle) {
+    Mover->SetSteeringInput(turn_angle_manhattan);
+  }
+  else if (turn_angle_manhattan > max_angle) {
+    Mover->SetSteeringInput(max_angle);
+  }
+  else {
+    Mover->SetSteeringInput(min_angle);
+  }
 }
 
 void AAIActor::UpdateLocation(FVector point)

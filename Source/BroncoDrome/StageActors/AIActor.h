@@ -158,6 +158,7 @@ public:
 	void MoveDecision(FVector location); //called in Tick to make move decision every 3 frames
 	void MoveAwayFromPlayer(FVector player_location, FRotator player_direction);
 	void MoveTowardsPlayer(FVector player_location, FRotator player_direction);
+        void MoveTowardsPowerUp(FVector player_location);
 	void ShotDecision(FVector location); //called in Tick to make a shot decision every 30 frames
 	void UpdateDifficulty(FName difficulty);
 private:

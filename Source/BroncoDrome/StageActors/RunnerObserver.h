@@ -30,15 +30,21 @@ private:	// Member
 
 	// Set of all managed Runners
 	std::set<class ARunner*> m_RunnerRegister;
+        std::set<class APowerUp*> m_PowerupRegister;
 
 public:		// Public Static API
 
 	// Singleton instance
 	static ARunnerObserver* SingletonInstance;
 
+
 	// Pretty much the DMV
 	static void RegisterRunner(class ARunner& runner);
 	static void DeregisterRunner(class ARunner& runner);
+
+        // Not the DMV
+        static void RegisterPowerup(class APowerUp& runner);
+        static void DeregisterPowerup(class APowerUp& runner);
 
         // get all actors of class
          template<typename T>
@@ -48,9 +54,13 @@ public:		// Public Static API
 	// Runner visibility tests
 	static class ARunner* GetClosestRunner(const class ARunner& fromRunner, float maxDistance = std::numeric_limits<float>::max(), 
 		float angularThreshold = 180.f, bool raycastTest = false);
+  static class APowerUp* GetClosestPowerup(const class ARunner& fromRunner, float maxDistance = std::numeric_limits<float>::max(), 
+        float angularThreshold = 180.f, bool raycastTest = false);
 	static class ARunner* GetPlayer(const class ARunner& fromRunner, float maxDistance = std::numeric_limits<float>::max(),
 		float angularThreshold = 180.f, bool raycastTest = false);
 	static float GetRunnerDistance(const class ARunner& fromRunner, const class ARunner& toRunner);
+        static float GetPowerupDistance(const class ARunner& fromRunner, const class APowerUp& toPowerup);
+
 	static float GetAngleBetweenRunners(const class ARunner& fromRunner, const class ARunner& toRunner, bool fromCamera = true);
 	static bool RunnerRaycastTest(const class ARunner& fromRunner, const class ARunner& toRunner);
 	static bool IsRunnerVisible(const class ARunner& fromRunner, const class ARunner& toRunner,

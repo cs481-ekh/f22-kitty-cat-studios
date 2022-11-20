@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "EngineUtils.h"
+#include "PowerUp.h"
 
 
 ARunnerObserver* ARunnerObserver::SingletonInstance = nullptr;
@@ -70,9 +71,57 @@ void ARunnerObserver::DeregisterRunner(ARunner& runner)
 	}
 }
 
-ARunner* ARunnerObserver::GetClosestRunner(const ARunner& fromRunner, float maxDistance, 
-	float angularThreshold, bool raycastTest)
+void ARunnerObserver::RegisterPowerup(APowerUp& powerup)
 {
+  std::set<APowerUp*>& reg = SingletonInstance->m_PowerupRegister;
+
+  if (reg.find(&powerup) == reg.end())
+  {
+    reg.insert(&powerup);
+  }
+  else
+  {
+    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARNING: RunnerObserver could not register "
+    //	"Runner %p because it is already being managed"), &runner));
+  }
+}
+
+void ARunnerObserver::DeregisterPowerup(APowerUp& powerup)
+{
+  std::set<APowerUp*>& reg = SingletonInstance->m_PowerupRegister;
+
+  if (reg.find(&powerup) != reg.end())
+  {
+    reg.erase(&powerup);
+  }
+  else
+  {
+    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARNING: RunnerObserver could not deregister "
+    //	"Runner %p because it is not being managed."), &runner));
+  }
+}
+APowerUp* ARunnerObserver::GetClosestPowerup(const ARunner& fromRunner, float maxDistance, float angularThreshold, bool raycastTest) {
+  const std::set<APowerUp*>& reg = SingletonInstance->m_PowerupRegister;
+
+  // Cache for closet runner + statistics
+  APowerUp* closestRunner = nullptr;
+  float bestDistance = maxDistance;
+
+  // Iterate through observer register
+  for (APowerUp* toPowerup : reg)
+  {
+    // Mark as best if distance is best and visibility check passes
+    const float distance = GetPowerupDistance(fromRunner, *toPowerup);
+
+    if (distance <= bestDistance && IsRunnerVisible(fromRunner, *toRunner, maxDistance, angularThreshold, raycastTest)){
+      closestRunner = toRunner;
+      bestDistance = distance;
+    }
+
+  }
+}
+
+ARunner* ARunnerObserver::GetClosestRunner(const ARunner& fromRunner, float maxDistance, float angularThreshold, bool raycastTest){
 	const std::set<ARunner*>& reg = SingletonInstance->m_RunnerRegister;
 
 	// Cache for closet runner + statistics
@@ -123,6 +172,13 @@ float ARunnerObserver::GetRunnerDistance(const ARunner& fromRunner, const ARunne
 	const FVector& toRunnerLocation = toRunner.GetActorLocation();
 
 	return FVector::Dist(fromRunnerLocation, toRunnerLocation);
+}
+
+float ARunnerObserver::GetPowerupDistance(const ARunner& fromRunner, const APowerUp& toPowerup)
+{
+  const FVector& fromRunnerLocation = fromRunner.GetActorLocation();
+  const FVector& toRunnerLocation = toPowerup.GetActorLocation();
+  return FVector::Dist(fromRunnerLocation, toRunnerLocation);
 }
 
 float ARunnerObserver::GetAngleBetweenRunners(const ARunner& fromRunner, const ARunner& toRunner, bool fromCamera)
