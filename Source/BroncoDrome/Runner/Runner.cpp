@@ -272,16 +272,20 @@ void ARunner::ThrottleInput(float in)
 		if (!speedBoost) in = -defaultSpeed; 
 	}
 	Mover->SetTargetGear(targetGear, true);
+	Mover->SetBrakeInput(0.f);
 
 	// If current speed sign is opposite of target gear, apply brakes
-	const float speed = Mover->GetForwardSpeed();
-	if ((targetGear == 1 && speed < 0.f) || (targetGear == -1 && speed > 0.f))
-		Mover->SetBrakeInput(in);
+	const float speed = Mover->GetForwardSpeedMPH();
+	if (UKismetMathLibrary::Abs(speed) > 0.5f) {
+		if ((targetGear == 1 && speed < -0.1f) || (targetGear == -1 && speed > 0.1f)) {
+			Mover->SetBrakeInput(in);
+		}
+	}
 
 	// Set engine audio param to Mover's
 	engineAudioComponent->SetFloatParameter(FName("EnginePower"), Mover->GetEngineRotationSpeed() / Mover->GetEngineMaxRotationSpeed());
 
-	if (!isAI) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Input: %1.1f"), in));
+	//if (!isAI) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Input: %1.1f"), in));
 	// Finally, set throttle input
 	Mover->SetThrottleInput(in); // throttle input is limited in range -1.0 to 1.0, any value above or below is clipped to the maximum
 }
