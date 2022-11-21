@@ -218,12 +218,14 @@ void AAIActor::MoveDecision(FVector location) {
 
   // auto player_location = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
   auto closest_runner = ARunnerObserver::GetClosestRunner(*this);
+  auto closest_powerup = ARunnerObserver::GetClosestPowerup(*this);
   if (!closest_runner->isAI) {
     player_runner = closest_runner;
   }
   
   // auto closest_runner = ARunnerObserver::GetPlayer(*this);
   auto player_location = closest_runner->GetActorLocation();
+  auto powerup_location = closest_powerup->GetActorLocation();
   auto player_direction = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation();
 
   auto curr_location = GetActorLocation();
