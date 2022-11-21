@@ -16,7 +16,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "AIActor.generated.h"
-
 /**
  * Struct to store and access difficulty parameters for AI actors
  */
