@@ -43,8 +43,8 @@ public:		// Public Static API
 	static void DeregisterRunner(class ARunner& runner);
 
         // Not the DMV
-        static void RegisterPowerup(class APowerUp& runner);
-        static void DeregisterPowerup(class APowerUp& runner);
+        static void RegisterPowerup(class APowerUp& powerup);
+        static void DeregisterPowerup(class APowerUp& powerup);
 
         // get all actors of class
          template<typename T>
