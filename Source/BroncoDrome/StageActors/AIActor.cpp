@@ -9,6 +9,8 @@
 #include "DrawDebugHelpers.h"
 #include "AISpawner.h"
 #include "GameFramework/Character.h"
+#include "PowerUp.h"
+
 #include "Math/RandomStream.h"
 
 
@@ -270,10 +272,7 @@ void AAIActor::MoveDecision(FVector location) {
             
             // there are no nearby runners, should try to move towards 
             if (ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 5000) {
-              //TODO another nested if to check if there is a nearby power up, which is still a pain to do
-              // get closest power up
-              
-              GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("no nearby runners,"), *GetDebugName(this)));
+              MoveTowardsPowerUp(powerup_location);
               lastDecision = 1;
               reactionTime = FMath::RandRange(4,12);
             }
