@@ -92,7 +92,23 @@ ARunner::ARunner()
 	Camera->AspectRatio = CAMERA_ASPECT_RATIO;
 
 	// Init main skeletal mesh
-	RootMesh = GetMesh();
+    if (UBroncoSaveGame *load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) 
+	{
+		runnerSelected = load->runnerSelection;
+    }
+    if (runnerSelected == "speed") 
+	{
+      RootMesh = GetMesh();
+	}
+	else if (runnerSelected == "traction)
+	{
+    RootMesh = GetMesh();
+	}
+	else
+	{
+		RootMesh = GetMesh();
+	}
+	
 	RootMesh->SetSimulatePhysics(true);
 
 	// Init body mesh
