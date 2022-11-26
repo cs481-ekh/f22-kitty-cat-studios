@@ -227,7 +227,9 @@ public:
 	void DisableSpeedBoost();
 	bool speedBoost = false;
 	FTimerHandle SpeedBoostTimerHandler;
-	float defaultSpeed = 0.2f; // This is the default throttle input (60%) when not under effect of speed boost powerup (max speed is 1.0 or 100% of throttle input) this must be less than 1.0 so that the speed power up will work
+	float defaultThrottle = 0.3f; // This is the default throttle input (30%) when not under effect of speed boost powerup (max throttle is 1.0 or 100% of throttle input)
+	float maxSpeed = 30.f; // speed in mph
+	float maxSpeedWithBoost = 45.f; // speed in mph with speed boost active
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ARunner)
 	void SpawnParticles();

@@ -102,7 +102,7 @@ ARunner::ARunner()
 	// Init vehicle mover
 	Mover = (UChaosWheeledVehicleMovementComponent*)GetMovementComponent();
 	Mover->SetThrottleInput(1.0f);
-	Mover->bReverseAsBrake = true;
+	//Mover->bReverseAsBrake = true;
 
 	// Init blaster
 	BlasterBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blaster Base"));
@@ -265,34 +265,32 @@ void ARunner::ThrottleInput(float in)
 	int32 targetGear = 0;
 	if (in > 0.f) {
 		targetGear = 1;
-		if (!speedBoost) in = defaultSpeed; // standard speed when not under effect of speed boost powerup
+		if (!speedBoost) in = defaultThrottle; // standard acceleration when not under effect of speed boost powerup
 	}
 	else if (in < 0.f) {
 		targetGear = -1;
-		if (!speedBoost) in = -defaultSpeed; 
+		if (!speedBoost) in = defaultThrottle; // standard acceleration when not under effect of speed boost powerup
 	}
 	Mover->SetTargetGear(targetGear, true);
 	Mover->SetBrakeInput(0.f);
+	Mover->SetThrottleInput(in); // throttle input is limited in range -1.0 to 1.0, any value above or below is clipped to the maximum
 
-	// If current speed sign is opposite of target gear, apply brakes
 	const float speed = Mover->GetForwardSpeedMPH();
-	if (UKismetMathLibrary::Abs(speed) > 0.5f) {
-		if ((targetGear == 1 && speed < -0.1f) || (targetGear == -1 && speed > 0.1f)) {
-			Mover->SetBrakeInput(in);
-		}
+	if (speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeedWithBoost) {
+		Mover->SetThrottleInput(0.f);
+	} else if (!speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeed) {
+		Mover->SetThrottleInput(0.f);
 	}
 
 	// Set engine audio param to Mover's
 	engineAudioComponent->SetFloatParameter(FName("EnginePower"), Mover->GetEngineRotationSpeed() / Mover->GetEngineMaxRotationSpeed());
 
 	//if (!isAI) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Input: %1.1f"), in));
-	// Finally, set throttle input
-	Mover->SetThrottleInput(in); // throttle input is limited in range -1.0 to 1.0, any value above or below is clipped to the maximum
 }
 
 // Enables a speed boost (uncaps throttle) this happens when a speed powerup is picked up and lasts for duration
 void ARunner::EnableSpeedBoost(float duration) {
-	if (!isAI) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("SPEED BOOST!")));
+	if (!isAI) ChangeMIntensity(2);
 	speedBoost = true;
 
 	if (GetWorld()->GetTimerManager().IsTimerActive(SpeedBoostTimerHandler))
@@ -303,7 +301,7 @@ void ARunner::EnableSpeedBoost(float duration) {
 
 // Disables any active speed boost
 void ARunner::DisableSpeedBoost() {
-	if (!isAI) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("DISABLE SPEED BOOST!")));
+	if (!isAI) ChangeMIntensity(1);
 	speedBoost = false;
 }
 
@@ -492,7 +490,6 @@ void ARunner::Fire()
 
 	//check for Kill Ball
 	if (killBallOn) {
-		ChangeMIntensity(2);
 		AKillBallProjectile* projectile = World->SpawnActor<AKillBallProjectile>(KillBallProjectileClass, loc, rot, SpawnParams); // Spawn KillBal
 		
 		//Fires shot and turn off if we run out of shots
@@ -517,7 +514,6 @@ void ARunner::Fire()
 		}
 	}
 	else { //Fire a regular orb ball
-		ChangeMIntensity(1);
 		AOrbProjectile*  projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams); //Regular orb
 		if (projectile) {
 			//Projectile variables
@@ -657,6 +653,7 @@ void ARunner::AddToHealth(int newHealth, bool damageOriginatedFromPlayer) {
 		//ShotAbsorb PowerUp
 		shotAbsorbOn = false;
 		shotAbsorbHits = 0;
+		ChangeMIntensity(2);
 
 		/* This code will make it seem to disappear. Source: https://forums.unrealengine.com/t/disable-an-actor/4738/22 */
 
@@ -733,6 +730,7 @@ void ARunner::Respawn() {
 			HUD->SetHealth(health);
 			HUD->SetDead(false);
     		HUD->DecrementLivesLeft();
+			ChangeMIntensity(1);
 			lives--;
 			return;
 		} else {
