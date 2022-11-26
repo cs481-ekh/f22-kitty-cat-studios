@@ -201,6 +201,7 @@ private:
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
 	void Pause();
+	bool paused = false;
 	void FlashRed();
 	UFUNCTION(BlueprintCallable)
 	void SkipCutscene();
