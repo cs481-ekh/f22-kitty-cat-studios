@@ -118,7 +118,7 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 				selectedPowerUp = FString("HEALTH");
 				break;
 			case 1:
-				dynamic_cast<ARunner*>(OtherActor)->ThrottleInput(5.0f); //Speed Which doesn't work and I don't know how to fix it
+				dynamic_cast<ARunner*>(OtherActor)->EnableSpeedBoost(10.0f); // Enable speed boost for 10 seconds
                 dynamic_cast<ARunner*>(OtherActor)->PlaySound(speedAudioCue);
 				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
 				selectedPowerUp = FString("SPEED");
