@@ -20,7 +20,13 @@ public:		// Constructors
 	// UUserWidget does not have a constructor :(
 	// Instead, NativePreConstruct() and NativeConstruct() overrides to init variables
 	UPROPERTY(BlueprintReadOnly)
-	int playerScore = 0; 
+	int playerScore = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+	int currentWave = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool survivalMode = false;
 
 	UPROPERTY(BlueprintReadOnly)
 	float healthFloat = 1.0; 
@@ -72,6 +78,8 @@ public:		// Interface
 
 	void SetEnemiesLeft(int newAmount);
 	void DecrementEnemiesLeft(void);
+
+	void IncrementCurrentWave(void); 
 
 	bool autoTarget = true;
 
