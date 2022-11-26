@@ -110,7 +110,10 @@ ARunner::ARunner()
 	}
 	
 	RootMesh->SetSimulatePhysics(true);
-
+	
+	//find which mesh to use
+	  if (UBroncoSaveGame *load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) { runnerSelected = load->runnerSelection;}
+													     
 	// Init body mesh
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootMesh);
