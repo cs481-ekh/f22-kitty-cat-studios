@@ -13,6 +13,7 @@
 #include "../StageActors/PowerUp/PowerupWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "../BroncoSaveGame.h"
+#include "../StageActors/AISpawnerController.h"
 #include "ARunnerHUD.generated.h"
 
 /**
@@ -87,6 +88,8 @@ private:	// Members
 	UPROPERTY()
 		UBroncoSaveGame *save;
 
+	bool validSave = false;
+	AAISpawnerController* spawnController;
 		
 
 public:		// Interface

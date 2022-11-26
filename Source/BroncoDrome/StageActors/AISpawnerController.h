@@ -21,6 +21,9 @@ public:
     TArray<AActor*> GetValidSpawnPoints();
     int GetNumValidSpawnPoints();
     void SkipCutscene();
+    void EnableWaveSpawning();
+    int GetActiveAI();
+    int GetWaveSize();
 
 protected:
 	// Called when the game starts or when spawned

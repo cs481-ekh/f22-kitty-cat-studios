@@ -66,6 +66,18 @@ void AAISpawnerController::SkipCutscene() {
 	AAISpawnerController::Init();
 }
 
+void AAISpawnerController::EnableWaveSpawning() {
+	waveSpawning = true;
+}
+
+int AAISpawnerController::GetActiveAI() {
+	return activeAI;
+}
+
+int AAISpawnerController::GetWaveSize() {
+	return waveSize;
+}
+
 // Is called based on respawnCheckInSecs
 // TODO: Account for waveSpawning
 void AAISpawnerController::SpawnCheck() {

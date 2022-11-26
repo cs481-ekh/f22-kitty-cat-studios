@@ -2,7 +2,6 @@
 
 
 #include "ARunnerHUD.h"
-#include "BroncoDrome/BroncoSaveGame.h"
 #include "Sound/SoundCue.h"
 
 #include "GameFramework/GameUserSettings.h"
@@ -102,6 +101,27 @@ void ARunnerHUD::BeginPlay()
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
     }
+
+
+	if (save = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) { // Check if a gamemode save is initialized
+		validSave = true;
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Gamemode save not initialized"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Gamemode save not initialized"));
+	}
+
+	// Connect the spawner controller to keep track of runner deaths
+	spawnController = ((AAISpawnerController*)UGameplayStatics::GetActorOfClass(GetWorld(), AAISpawnerController::StaticClass()));
+	if (spawnController) {
+		if (validSave && save->gamemodeSelection == TEXT("Survival")) {
+			spawnController->EnableWaveSpawning();
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Could not connect to AI Spawner Controller"));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not connect to AI Spawner Controller"));
+	}
 }
 
 void ARunnerHUD::DrawHUD()
@@ -156,7 +176,12 @@ void ARunnerHUD::SetAnemonies(int anemonies) {
 
 void ARunnerHUD::DecrementAnemonies() {
 	anemoniesLeft--;
-	if (anemoniesLeft == 0) YouWin();
+	if (anemoniesLeft == 0 && save->gamemodeSelection != TEXT("Survival")) {
+		YouWin();
+	}
+	else {
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Spawn new wave"));
+	}
 }
 
 int ARunnerHUD::getLives() {
@@ -170,43 +195,39 @@ int ARunnerHUD::getEnemiesLeft() {
 void ARunnerHUD::YouWin(){
 	//Need to see how many maps have been beaten
 	int mapsBeat = 0;
-	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
-		if (load->gamemodeSelection == TEXT("Freeplay")) {
-            Practice();
-			return;
-		}
-		mapsBeat = load->mapsBeaten;
-		load->score += m_Widgets->getScore();  //Update the score for the playthrough
-		load->mapsBeaten++;
-		if (UGameplayStatics::SaveGameToSlot(load, load->SaveName, 0)) { //this saves the load object
-			//SHOULD display win widget, is causing an error
-			class APlayerController* Mouse;
-			Mouse = world->GetFirstPlayerController();
-			paused = true;
-			//Reveals mouse and enables clicking
-			Mouse->bShowMouseCursor = true;
-			Mouse->bEnableClickEvents = true;
-			Mouse->bEnableMouseOverEvents = true;
-			m_WinWidget->setScore(load->score); //Sets score for adding to the high scores tab
-			m_WinWidget->AddToViewport(); //Displays the win screen
-			m_WinWidget->PlayFadeInAnimation();
-			//Pauses Game
-			HideHUD(true);
-			UGameplayStatics::SetGamePaused(world, true);
-		}
+	if (save->gamemodeSelection == TEXT("Freeplay")) {
+        Practice();
+		return;
+	}
+	mapsBeat = save->mapsBeaten;
+	save->score += m_Widgets->getScore();  //Update the score for the playthrough
+	save->mapsBeaten++;
+	if (UGameplayStatics::SaveGameToSlot(save, save->SaveName, 0)) { //this saves the load object
+		//SHOULD display win widget, is causing an error
+		class APlayerController* Mouse;
+		Mouse = world->GetFirstPlayerController();
+		paused = true;
+		//Reveals mouse and enables clicking
+		Mouse->bShowMouseCursor = true;
+		Mouse->bEnableClickEvents = true;
+		Mouse->bEnableMouseOverEvents = true;
+		m_WinWidget->setScore(save->score); //Sets score for adding to the high scores tab
+		m_WinWidget->AddToViewport(); //Displays the win screen
+		m_WinWidget->PlayFadeInAnimation();
+		//Pauses Game
+		HideHUD(true);
+		UGameplayStatics::SetGamePaused(world, true);
 	}
 }
 
 void ARunnerHUD::YouLose() 
 {
-	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
-		if (load->gamemodeSelection == TEXT("Freeplay")) {
-            Practice();
-			return;
-		}
-		load->score += m_Widgets->getScore();  //Update the score for the playthrough
-		m_LoseWidget->setScore(load->score); //Sets score to display on the lose screen
+	if (save->gamemodeSelection == TEXT("Freeplay")) {
+        Practice();
+		return;
 	}
+	save->score += m_Widgets->getScore();  //Update the score for the playthrough
+	m_LoseWidget->setScore(save->score); //Sets score to display on the lose screen
 	class APlayerController* Mouse;
 	Mouse = world->GetFirstPlayerController();
 	paused = true;
