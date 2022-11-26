@@ -273,19 +273,18 @@ void ARunner::ThrottleInput(float in)
 	}
 	Mover->SetTargetGear(targetGear, true);
 	Mover->SetBrakeInput(0.f);
-	Mover->SetThrottleInput(in); // throttle input is limited in range -1.0 to 1.0, any value above or below is clipped to the maximum
 
 	const float speed = Mover->GetForwardSpeedMPH();
 	if (speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeedWithBoost) {
 		Mover->SetThrottleInput(0.f);
 	} else if (!speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeed) {
 		Mover->SetThrottleInput(0.f);
+	} else {
+		Mover->SetThrottleInput(in); // throttle input is limited in range -1.0 to 1.0, any value above or below is clipped to the maximum
 	}
 
 	// Set engine audio param to Mover's
 	engineAudioComponent->SetFloatParameter(FName("EnginePower"), Mover->GetEngineRotationSpeed() / Mover->GetEngineMaxRotationSpeed());
-
-	//if (!isAI) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, FString::Printf(TEXT("Input: %1.1f"), in));
 }
 
 // Enables a speed boost (uncaps throttle) this happens when a speed powerup is picked up and lasts for duration
