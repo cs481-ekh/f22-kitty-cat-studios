@@ -201,6 +201,7 @@ private:
 	void QueryLockOnEngage();
 	void QueryLockOnDisengage();
 	void Pause();
+	bool paused = false;
 	void FlashRed();
 	UFUNCTION(BlueprintCallable)
 	void SkipCutscene();
@@ -223,6 +224,13 @@ public:
 	void AddToDamage(int addedDamage); //Can change damage
 	void obstainShotAbsorbPower(int hits); //ShotAbsorb 
 	void obstainKillBallPower(int shots); //KillBall
+	void EnableSpeedBoost(float duration); // speed boost
+	void DisableSpeedBoost();
+	bool speedBoost = false;
+	FTimerHandle SpeedBoostTimerHandler;
+	float defaultThrottle = 0.3f; // This is the default throttle input (30%) when not under effect of speed boost powerup (max throttle is 1.0 or 100% of throttle input)
+	float maxSpeed = 30.f; // speed in mph
+	float maxSpeedWithBoost = 45.f; // speed in mph with speed boost active
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = ARunner)
 	void SpawnParticles();

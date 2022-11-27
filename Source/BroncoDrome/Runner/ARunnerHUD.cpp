@@ -171,7 +171,7 @@ void ARunnerHUD::YouWin(){
 	//Need to see how many maps have been beaten
 	int mapsBeat = 0;
 	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
-		if (load->gamemodeSelection == FName(TEXT("Freeplay"))) {
+		if (load->gamemodeSelection == TEXT("Freeplay")) {
             Practice();
 			return;
 		}
@@ -200,7 +200,7 @@ void ARunnerHUD::YouWin(){
 void ARunnerHUD::YouLose() 
 {
 	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
-		if (load->gamemodeSelection == FName(TEXT("Freeplay"))) {
+		if (load->gamemodeSelection == TEXT("Freeplay")) {
             Practice();
 			return;
 		}
