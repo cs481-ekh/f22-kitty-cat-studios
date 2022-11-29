@@ -12,6 +12,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Sound/SoundCue.h"
 #include "Math/Vector.h"
+#include "Components/ActorComponent.h"
 
 //Orbs
 #include "../StageActors/OrbProjectile.h"
@@ -25,6 +26,10 @@ ARunner::ARunner()
 	  MovementSM(), MovementS_Straight(this), MovementS_Drift(this)
 {
 	PrimaryActorTick.bCanEverTick = true;
+	if (UBroncoSaveGame *load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) 
+	{
+		runnerSelected = load->runnerSelection;
+    }
 
 	// Set up audio 
 	static ConstructorHelpers::FObjectFinder<USoundCue> thudCue(
@@ -94,10 +99,16 @@ ARunner::ARunner()
 	// Init main skeletal mesh
 	RootMesh = GetMesh();
 	RootMesh->SetSimulatePhysics(true);
-
+													     
 	// Init body mesh
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Mesh"));
 	BodyMesh->SetupAttachment(RootMesh);
+
+	//Init new mesh
+    //NewMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Var 1"));
+    //NewMesh2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Var 2"));
+    //NewMesh3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body Var 3"));
+
 
 	// Init vehicle mover
 	Mover = (UChaosWheeledVehicleMovementComponent*)GetMovementComponent();
@@ -106,7 +117,7 @@ ARunner::ARunner()
 
 	// Init blaster
 	BlasterBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blaster Base"));
-	BlasterBase->SetupAttachment(BodyMesh);
+	BlasterBase->SetupAttachment(RootMesh);
 	BlasterBase->SetRelativeLocation(FVector(0.f, 0.f, 70.f));
 	BlasterBase->SetWorldScale3D(FVector(0.5f));
 	BlasterBase->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -140,6 +151,14 @@ void ARunner::BeginPlay()
 	//For player characters
 	if (!isAI)
 	{
+		if (runnerSelected == TEXT("speed")) 
+		{
+            BodyMesh->SetStaticMesh(NewMesh2);
+        } 
+		else if (runnerSelected == TEXT("traction"))
+		{
+            BodyMesh->SetStaticMesh(NewMesh3);
+		}
 		ChangeMIntensity(1);
 		Super::BeginPlay();
 		Visible(false);

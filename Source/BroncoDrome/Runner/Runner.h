@@ -28,6 +28,9 @@ class BRONCODROME_API ARunner : public AWheeledVehiclePawn
 
 public: // Constructors
 	ARunner();
+	// for runner selection
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FName runnerSelected;
 
 protected: // Inherrited
 	virtual void BeginPlay() override;
@@ -53,6 +56,18 @@ public: // Components
 	// Mesh in addition to frame
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent *BodyMesh;
+
+	//reference to other meshes
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh, meta = (AllowPrivateAccess = "true"))
+    class UStaticMeshComponent *NewMesh;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh,
+              meta = (AllowPrivateAccess = "true"))
+    class UStaticMesh *NewMesh2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mesh,
+              meta = (AllowPrivateAccess = "true"))
+    class UStaticMesh *NewMesh3;
 
 	// Movement component for vehicle
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
