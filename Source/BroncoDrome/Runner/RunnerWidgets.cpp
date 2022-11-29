@@ -88,7 +88,7 @@ int URunnerWidgets::getScore() {
 //Calculate the player score on a loss (specifically, ignore game time remaining)
 int URunnerWidgets::getScoreLoss() {
 	if (survivalMode) {
-		playerScore *= (difficultyScoreModifier * 10.f); // Give boost since player always has no time and/or lives remaining on survival loss
+		playerScore *= (difficultyScoreModifier * 3.f); // Give boost since player always has no time and/or lives remaining on survival loss
 	}
 	else {
 		playerScore *= difficultyScoreModifier; // Factor in the difficulty modifier
