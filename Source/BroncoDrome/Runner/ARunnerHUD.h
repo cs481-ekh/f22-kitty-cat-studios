@@ -13,6 +13,7 @@
 #include "../StageActors/PowerUp/PowerupWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "../BroncoSaveGame.h"
+#include "../StageActors/AISpawnerController.h"
 #include "ARunnerHUD.generated.h"
 
 /**
@@ -87,6 +88,8 @@ private:	// Members
 	UPROPERTY()
 		UBroncoSaveGame *save;
 
+	bool validSave = false;
+	AAISpawnerController* spawnController;
 		
 
 public:		// Interface
@@ -103,6 +106,7 @@ public:		// Interface
 	inline void SetGameTimeRemaining(int currentGameTime) {m_Widgets->SetGameTimeRemaining(currentGameTime);}
 	inline void RenderLockOnReticle(FVector worldSpace, bool hide) { m_Widgets->OnRenderLockOnReticle(worldSpace, hide); }
 	inline void SetAutoTarget(bool enabled) { m_Widgets->setAutoTarget(enabled); }
+	void InitializeEnemiesLeft();
 
 public: 
 	void Pause();
@@ -116,5 +120,6 @@ public:
 	void DecrementAnemonies();
 	int getLives();
 	int getEnemiesLeft();
+	bool IsSurvivalMode();
 	void ShowPowerupWidget(FString powerupText);
 };
