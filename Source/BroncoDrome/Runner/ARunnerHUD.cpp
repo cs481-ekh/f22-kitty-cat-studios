@@ -170,6 +170,20 @@ void ARunnerHUD::Pause() {
 	
 }
 
+void ARunnerHUD::InitializeEnemiesLeft() {
+	if (save->gamemodeSelection == TEXT("Survival")) {
+		SetEnemiesLeft(spawnController->GetWaveSize());
+	} else {
+		if (save->difficultySetting == TEXT("Easy")) {
+			SetEnemiesLeft(4);
+		} else if (save->difficultySetting == TEXT("Medium")) {
+			SetEnemiesLeft(6);
+		} else {
+			SetEnemiesLeft(8);
+		}
+	}
+}
+
 void ARunnerHUD::SetAnemonies(int anemonies) {
 	anemoniesLeft = anemonies;
 }
@@ -179,8 +193,10 @@ void ARunnerHUD::DecrementAnemonies() {
 	if (anemoniesLeft == 0 && save->gamemodeSelection != TEXT("Survival")) {
 		YouWin();
 	}
-	else {
+	else if (anemoniesLeft == 0) {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Spawn new wave"));
+		SetEnemiesLeft(spawnController->GetWaveSize());
+		m_Widgets->IncrementCurrentWave();
 	}
 }
 
