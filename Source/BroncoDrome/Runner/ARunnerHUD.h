@@ -106,6 +106,7 @@ public:		// Interface
 	inline void SetGameTimeRemaining(int currentGameTime) {m_Widgets->SetGameTimeRemaining(currentGameTime);}
 	inline void RenderLockOnReticle(FVector worldSpace, bool hide) { m_Widgets->OnRenderLockOnReticle(worldSpace, hide); }
 	inline void SetAutoTarget(bool enabled) { m_Widgets->setAutoTarget(enabled); }
+	void InitializeEnemiesLeft();
 
 public: 
 	void Pause();

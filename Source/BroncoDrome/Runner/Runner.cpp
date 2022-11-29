@@ -146,7 +146,7 @@ void ARunner::BeginPlay()
 		DisableInput(GetWorld()->GetFirstPlayerController());
 		HUD = Cast<ARunnerHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 		HUD->HideHUD(true);
-		HUD->SetEnemiesLeft(3);
+		HUD->InitializeEnemiesLeft();
 		GetWorldTimerManager().SetTimer(RunnerStatusHandler, this, &ARunner::ReinstateAll, 12.0f, false);
 		InitStateMachines();
 		// Begin looping engine audio
