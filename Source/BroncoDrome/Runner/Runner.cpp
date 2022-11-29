@@ -113,7 +113,7 @@ ARunner::ARunner()
 	// Init vehicle mover
 	Mover = (UChaosWheeledVehicleMovementComponent*)GetMovementComponent();
 	Mover->SetThrottleInput(1.0f);
-	Mover->bReverseAsBrake = true;
+	//Mover->bReverseAsBrake = true;
 
 	// Init blaster
 	BlasterBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Blaster Base"));
@@ -282,22 +282,45 @@ void ARunner::ThrottleInput(float in)
 {
 	// Determine target gear
 	int32 targetGear = 0;
-	if (in > 0.f)
+	if (in > 0.f) {
 		targetGear = 1;
-	else if (in < 0.f)
+		if (!speedBoost) in = defaultThrottle; // standard acceleration when not under effect of speed boost powerup
+	}
+	else if (in < 0.f) {
 		targetGear = -1;
+		if (!speedBoost) in = defaultThrottle; // standard acceleration when not under effect of speed boost powerup
+	}
 	Mover->SetTargetGear(targetGear, true);
+	Mover->SetBrakeInput(0.f);
 
-	// If current speed sign is opposite of target gear, apply brakes
-	const float speed = Mover->GetForwardSpeed();
-	if ((targetGear == 1 && speed < 0.f) || (targetGear == -1 && speed > 0.f))
-		Mover->SetBrakeInput(in);
+	const float speed = Mover->GetForwardSpeedMPH();
+	if (speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeedWithBoost) { // Prevent further acceleration if at max speed with speed boost
+		Mover->SetThrottleInput(0.f);
+	} else if (!speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeed) { // Prevent further acceleration if at max speed
+		Mover->SetThrottleInput(0.f);
+	} else {
+		Mover->SetThrottleInput(in); // throttle input is limited in range -1.0 to 1.0, any value above or below is clipped to the maximum
+	}
 
 	// Set engine audio param to Mover's
 	engineAudioComponent->SetFloatParameter(FName("EnginePower"), Mover->GetEngineRotationSpeed() / Mover->GetEngineMaxRotationSpeed());
+}
 
-	// Finally, set throttle input
-	Mover->SetThrottleInput(in);
+// Enables a speed boost (uncaps throttle) this happens when a speed powerup is picked up and lasts for duration
+void ARunner::EnableSpeedBoost(float duration) {
+	speedBoost = true;
+
+	if (GetWorld()->GetTimerManager().IsTimerActive(SpeedBoostTimerHandler)) {
+		GetWorld()->GetTimerManager().ClearTimer(SpeedBoostTimerHandler); // Disable any pre-existing timers (in the event a second speed power up is collected before this one expires)
+	} else if (!isAI) ChangeMIntensity(2); // intense music
+
+	GetWorld()->GetTimerManager().SetTimer(SpeedBoostTimerHandler, this, &ARunner::DisableSpeedBoost, duration, false);
+}
+
+// Disables any active speed boost
+void ARunner::DisableSpeedBoost() {
+	if (!isAI) ChangeMIntensity(1); // less intense music
+	speedBoost = false;
 }
 
 void ARunner::SteeringInput(float in)
@@ -485,7 +508,6 @@ void ARunner::Fire()
 
 	//check for Kill Ball
 	if (killBallOn) {
-		ChangeMIntensity(2);
 		AKillBallProjectile* projectile = World->SpawnActor<AKillBallProjectile>(KillBallProjectileClass, loc, rot, SpawnParams); // Spawn KillBal
 		
 		//Fires shot and turn off if we run out of shots
@@ -510,7 +532,6 @@ void ARunner::Fire()
 		}
 	}
 	else { //Fire a regular orb ball
-		ChangeMIntensity(1);
 		AOrbProjectile*  projectile = World->SpawnActor<AOrbProjectile>(ProjectileClass, loc, rot, SpawnParams); //Regular orb
 		if (projectile) {
 			//Projectile variables
@@ -606,14 +627,24 @@ void ARunner::AimBlaster(FVector targetLocation, const float deltaTime)
 }
 
 void ARunner::Pause() {
-	ChangeMIntensity(0);
+	paused = !paused;
+	if (paused) {// Pause/UnPause speed boost when paused/resumed
+		GetWorld()->GetTimerManager().PauseTimer(SpeedBoostTimerHandler);
+		ChangeMIntensity(0);
+	} else {
+		GetWorld()->GetTimerManager().UnPauseTimer(SpeedBoostTimerHandler);
+		ChangeMIntensity(1);
+	}
 	HUD->Pause(); 
-	//AddToHealth(-40);	// Temporarily make it so that pausing hurts you a lot for testing purposes ;)))
 }
 
 //Callable function to display on the HUD upon reaching win condition
 void ARunner::WinScreen(){
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	if (GetWorld()->GetTimerManager().IsTimerActive(SpeedBoostTimerHandler)) { // Disable speed boost and clear speed boost timer if it exists
+		GetWorld()->GetTimerManager().ClearTimer(SpeedBoostTimerHandler); 
+		speedBoost = false;
+	}
 	ChangeMIntensity(2);
 	HUD->YouWin();
 }
@@ -621,6 +652,10 @@ void ARunner::WinScreen(){
 //Callable function to display on the HUD upon reaching lose condition
 void ARunner::LoseScreen() {
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	if (GetWorld()->GetTimerManager().IsTimerActive(SpeedBoostTimerHandler)) { // Disable speed boost and clear speed boost timer if it exists
+		GetWorld()->GetTimerManager().ClearTimer(SpeedBoostTimerHandler); 
+		speedBoost = false;
+	}
 	ChangeMIntensity(0);
 	HUD->YouLose();
 }
@@ -650,6 +685,14 @@ void ARunner::AddToHealth(int newHealth, bool damageOriginatedFromPlayer) {
 		//ShotAbsorb PowerUp
 		shotAbsorbOn = false;
 		shotAbsorbHits = 0;
+
+		if (GetWorld()->GetTimerManager().IsTimerActive(SpeedBoostTimerHandler)) { // Disable speed boost and clear speed boost timer if it exists
+			GetWorld()->GetTimerManager().ClearTimer(SpeedBoostTimerHandler); 
+			speedBoost = false;
+		}
+		else {
+			ChangeMIntensity(2);
+		}
 
 		/* This code will make it seem to disappear. Source: https://forums.unrealengine.com/t/disable-an-actor/4738/22 */
 
@@ -726,6 +769,7 @@ void ARunner::Respawn() {
 			HUD->SetHealth(health);
 			HUD->SetDead(false);
     		HUD->DecrementLivesLeft();
+			ChangeMIntensity(1);
 			lives--;
 			return;
 		} else {
