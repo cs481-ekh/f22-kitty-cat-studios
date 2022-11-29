@@ -188,6 +188,22 @@ void ARunner::ReinstateAll()
 	HUD->HideHUD(false);
 	HUD->SetAutoTarget(autoTarget);
 
+	if (save = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) { // Check if a gamemode save is initialized
+		if (save->gamemodeSelection == TEXT("Survival")) {
+			gameTime = 120; // change allotted game time to 120 secs instead of default (180) this is because the player adds time to the clock for each kill they get
+			HUD->SetGameTimeRemaining(gameTime);
+
+			// Change amount of time that is added to the clock on runner kills
+			if (save->difficultySetting == TEXT("Easy")) {
+				timeAddedOnKill = 3;
+			} else if (save->difficultySetting == TEXT("Medium")) {
+				timeAddedOnKill = 4;
+			} else {
+				timeAddedOnKill = 5;
+			}
+		}
+	}
+
 	//Commence game timer
 	GetWorld()->GetTimerManager().SetTimer(
 		GameTimeHandler, this, &ARunner::DecrementGameTime, 1, false);
@@ -239,6 +255,12 @@ void ARunner::DecrementGameTime()
 	HUD->SetGameTimeRemaining(gameTime);
 
 	gameTime >= 1 ? GetWorld()->GetTimerManager().SetTimer(GameTimeHandler, this, &ARunner::DecrementGameTime, 1, false) : LoseScreen();
+}
+
+void ARunner::IncrementGameTime()
+{
+	gameTime += timeAddedOnKill;
+	HUD->SetGameTimeRemaining(gameTime);
 }
 
 void ARunner::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -653,7 +675,12 @@ void ARunner::AddToHealth(int newHealth, bool damageOriginatedFromPlayer) {
         health = 0;
 		PlaySound(runnerExplosionAudioCue);
         if (this->isAI) {  // If an AI just died, destroy the actor and move on, otherwise update player accordingly
-			if (damageOriginatedFromPlayer) { HUD->DecrementEnemiesLeft(); } // Only decrement enemies left if the kill is attributed to the player 
+			if (damageOriginatedFromPlayer) { 
+				HUD->DecrementEnemiesLeft(); // Only decrement enemies left if the kill is attributed to the player 
+				if (HUD->IsSurvivalMode()) { // Add time to the timer on a kill if playing survival mode
+					((ARunner*)spawnController->GetPlayer())->IncrementGameTime();
+				}
+			} 
 			spawnController->DecrementActiveAI(this);
 			SpawnParticles();
 			Destroy();			

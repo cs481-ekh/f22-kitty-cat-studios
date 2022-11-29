@@ -120,5 +120,6 @@ public:
 	void DecrementAnemonies();
 	int getLives();
 	int getEnemiesLeft();
+	bool IsSurvivalMode();
 	void ShowPowerupWidget(FString powerupText);
 };

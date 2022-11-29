@@ -3,6 +3,7 @@
 
 #include "ARunnerHUD.h"
 #include "Sound/SoundCue.h"
+#include "Runner.h"
 
 #include "GameFramework/GameUserSettings.h"
 
@@ -170,6 +171,10 @@ void ARunnerHUD::Pause() {
 	
 }
 
+bool ARunnerHUD::IsSurvivalMode() {
+	return save->gamemodeSelection == TEXT("Survival");
+}
+
 void ARunnerHUD::InitializeEnemiesLeft() {
 	if (save->gamemodeSelection == TEXT("Survival")) {
 		SetEnemiesLeft(spawnController->GetWaveSize());
@@ -197,6 +202,7 @@ void ARunnerHUD::DecrementAnemonies() {
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Spawn new wave"));
 		SetEnemiesLeft(spawnController->GetWaveSize());
 		m_Widgets->IncrementCurrentWave();
+		// ((ARunner*)spawnController->GetPlayer())->IncrementGameTime(m_Widgets->getWave() * 10); // optional feature to add additional scaling time to the clock based on the current wave
 	}
 }
 
