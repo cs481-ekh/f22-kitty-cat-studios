@@ -20,7 +20,13 @@ public:		// Constructors
 	// UUserWidget does not have a constructor :(
 	// Instead, NativePreConstruct() and NativeConstruct() overrides to init variables
 	UPROPERTY(BlueprintReadOnly)
-	int playerScore = 0; 
+	int playerScore = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+	int currentWave = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool survivalMode = false;
 
 	UPROPERTY(BlueprintReadOnly)
 	float healthFloat = 1.0; 
@@ -51,7 +57,7 @@ protected:	// Overrides
 
 private:	// Members
 
-
+	float difficultyScoreModifier = 1;
 
 public:		// Interface
 
@@ -73,6 +79,8 @@ public:		// Interface
 	void SetEnemiesLeft(int newAmount);
 	void DecrementEnemiesLeft(void);
 
+	void IncrementCurrentWave(void); 
+
 	bool autoTarget = true;
 
 	int getAnemoniesLeft();
@@ -88,4 +96,11 @@ public:		// Interface
 	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)
 		int getScore();
 
+	//Function to return the current player score
+	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)
+		int getScoreLoss();
+
+	//Function to return the current player score
+	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)
+		int getWave();
 };

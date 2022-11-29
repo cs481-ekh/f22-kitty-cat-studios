@@ -1,5 +1,6 @@
 // // Copyright (C) Team Gregg 2022. All Rights Reserved.
-
+#include "BroncoDrome/BroncoSaveGame.h"
+#include "Kismet/GameplayStatics.h"
 #include "LoseWidget.h"
 
 void ULoseWidget::NativePreConstruct()
@@ -13,6 +14,12 @@ void ULoseWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// Check if survival mode is active (to update HUD)
+	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		if (load->gamemodeSelection == TEXT("Survival")) {
+			survivalMode = true;
+		}
+	}
 }
 
 void ULoseWidget::hScoreSubmit(FText initials) 
@@ -92,6 +99,11 @@ void ULoseWidget::hScoreSubmit(FText initials)
 void ULoseWidget::setScore(int score) 
 {
 	pscore = score;
+}
+
+void ULoseWidget::setWave(int wave) 
+{
+	pwave = wave;
 }
 
 void ULoseWidget::showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText, UTextBlock* totalScore) 

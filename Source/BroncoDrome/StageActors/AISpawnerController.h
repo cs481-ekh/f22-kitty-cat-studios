@@ -21,6 +21,9 @@ public:
     TArray<AActor*> GetValidSpawnPoints();
     int GetNumValidSpawnPoints();
     void SkipCutscene();
+    void EnableWaveSpawning();
+    int GetActiveAI();
+    int GetWaveSize();
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,7 +35,7 @@ private:
     void SpawnCheck();
     void UpdateRunners();
     void InitializeDifficulty();
-    void AttemptSpawn(AActor* spawnPoint);
+    bool AttemptSpawn(AActor* spawnPoint);
     bool initialized = false;
     // Total number of spawn points on this map
     int numSpawnPoints = 0;
