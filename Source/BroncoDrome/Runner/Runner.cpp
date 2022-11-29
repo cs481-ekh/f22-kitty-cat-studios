@@ -677,6 +677,7 @@ void ARunner::AddToHealth(int newHealth, bool damageOriginatedFromPlayer) {
         if (this->isAI) {  // If an AI just died, destroy the actor and move on, otherwise update player accordingly
 			if (damageOriginatedFromPlayer) { 
 				HUD->DecrementEnemiesLeft(); // Only decrement enemies left if the kill is attributed to the player 
+				HUD->AddToScore(50); // add to player score on kill
 				if (HUD->IsSurvivalMode()) { // Add time to the timer on a kill if playing survival mode
 					((ARunner*)spawnController->GetPlayer())->IncrementGameTime();
 				}

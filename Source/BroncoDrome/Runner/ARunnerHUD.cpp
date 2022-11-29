@@ -250,8 +250,11 @@ void ARunnerHUD::YouLose()
 	}
 	if (save->gamemodeSelection == TEXT("Survival")) {
 		m_LoseWidget->setWave(m_Widgets->getWave());
+		save->score = m_Widgets->getScoreLoss();  //Update the score for the playthrough
 	}
-	save->score += m_Widgets->getScore();  //Update the score for the playthrough
+	else {
+		save->score += m_Widgets->getScoreLoss();  //Update the score for the playthrough
+	}
 	m_LoseWidget->setScore(save->score); //Sets score to display on the lose screen
 	class APlayerController* Mouse;
 	Mouse = world->GetFirstPlayerController();

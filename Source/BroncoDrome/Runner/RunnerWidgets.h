@@ -57,7 +57,7 @@ protected:	// Overrides
 
 private:	// Members
 
-
+	float difficultyScoreModifier = 1;
 
 public:		// Interface
 
@@ -95,6 +95,10 @@ public:		// Interface
 	//Function to return the current player score
 	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)
 		int getScore();
+
+	//Function to return the current player score
+	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)
+		int getScoreLoss();
 
 	//Function to return the current player score
 	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)
