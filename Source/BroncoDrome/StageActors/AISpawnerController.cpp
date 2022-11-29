@@ -68,6 +68,17 @@ void AAISpawnerController::SkipCutscene() {
 
 void AAISpawnerController::EnableWaveSpawning() {
 	waveSpawning = true;
+
+	if (difficultySetting == TEXT("Easy")) {
+		waveSize = 3;
+		waveIncrement = 1;
+	} else if (difficultySetting == TEXT("Medium")) {
+		waveSize = 4;
+		waveIncrement = 2;
+	} else {
+		waveSize = 5;
+		waveIncrement = 3;
+	}
 }
 
 int AAISpawnerController::GetActiveAI() {
@@ -93,8 +104,7 @@ void AAISpawnerController::SpawnCheck() {
 			
 			for (auto &sp : spawnPoints) {
 				if (totalSpawned < maxRespawns && currentWaveAmountSpawned < waveSize) { // Keep spawning AI until wave size is reached
-					AAISpawnerController::AttemptSpawn(sp);
-					currentWaveAmountSpawned++;
+					if (AAISpawnerController::AttemptSpawn(sp))	currentWaveAmountSpawned++;
 				} else { // Wave spawning is complete, reset variables and increment next wave size
                     waveSpawningInProgress = false;
 					currentWaveAmountSpawned = 0;
@@ -183,7 +193,7 @@ int AAISpawnerController::GetNumValidSpawnPoints() {
 }
 
 // Spawns an AI at the provided spawnPoint when called
-void AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
+bool AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
 	AActor *newAI = ((AAISpawner *)spawnPoint)->Spawn(difficultySetting);    
 
 	if (IsValid(newAI)) {
@@ -211,8 +221,9 @@ void AAISpawnerController::AttemptSpawn(AActor* spawnPoint) {
 		}
         activeAI++;
         totalSpawned++;
+		return true;
     } else {
-        //spawnPoints.Remove(spawnPoint);
+		return false;
 	}
 }
 
