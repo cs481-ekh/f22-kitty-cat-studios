@@ -20,6 +20,10 @@ public:		// Constructors
 	//player score
 	UPROPERTY(BlueprintReadOnly)
 		int pscore = 0;
+	UPROPERTY(BlueprintReadOnly)
+		int pwave = 0;
+	UPROPERTY(BlueprintReadOnly)
+		bool survivalMode = false;
 	//Array for scores
 	UPROPERTY()
 		TArray<FString> Result;
@@ -28,6 +32,7 @@ public:		// Constructors
 		UVerticalBox* sBox;
 	UPROPERTY()
 		UTextBlock* pText;
+
 
 protected:	// Overrides
 
@@ -43,6 +48,9 @@ public:		// Interface
 	//Function to set the current players score
 	UFUNCTION(BlueprintCallable, Category = UWinWidget)
 		void setScore(int score);
+
+	UFUNCTION(BlueprintCallable, Category = UWinWidget)
+		void setWave(int wave);
 
 	UFUNCTION(BlueprintCallable, Category = UWinWidget)
 		void showHScore(UVerticalBox* scoreBox, UTextBlock* pleaseText, UTextBlock* totalScore);

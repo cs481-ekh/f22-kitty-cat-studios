@@ -96,4 +96,7 @@ public:		// Interface
 	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)
 		int getScore();
 
+	//Function to return the current player score
+	UFUNCTION(BlueprintCallable, Category = URunnerWidgets)
+		int getWave();
 };

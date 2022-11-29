@@ -72,6 +72,11 @@ int URunnerWidgets::getScore() {
 	return playerScore;
 }
 
+//Return the current wave the player has reached (in survival mode)
+int URunnerWidgets::getWave() {
+	return currentWave;
+}
+
 bool URunnerWidgets::getAutoTargetToggled() {
 	return autoTarget;
 }
