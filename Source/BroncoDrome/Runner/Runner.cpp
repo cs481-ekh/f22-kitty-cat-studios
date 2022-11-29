@@ -811,7 +811,12 @@ void ARunner::hitMe(int damage, AActor* shotOrigin) {
 			AddToHealth(damage, true); //Damage should be negative when passed into function
 		}
 		else {
-			AddToHealth(damage, false); //Damage should be negative when passed into function
+			if (!this->isAI) { // If shot is from an AI and hitting the player
+				AddToHealth(damage, false);
+			}
+			else if (((ARunner*)shotOrigin)->friendlyFire) { // Check if the AI is allowed to deal damage to other AI
+				AddToHealth(damage, false);
+			}
 		}
 		
 	}

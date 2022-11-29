@@ -139,6 +139,7 @@ public: // Attributes
 	int shotAbsorbHits;
 	//Designate Player-AI
 	bool isAI = false;
+	bool friendlyFire = false; // if friendly fire is on (if AI can damage/target other AI)
 	FTimerHandle RunnerStatusHandler;
 
 private:

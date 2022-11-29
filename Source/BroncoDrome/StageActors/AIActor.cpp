@@ -43,6 +43,15 @@ void AAIActor::BeginPlay()
     DifficultyParams = FDifficultyParameters();
 	UpdateDifficulty(FName(TEXT("Medium"))); // Set default difficulty
     reactionTime = 6;
+
+	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
+		if (load->gamemodeSelection == TEXT("Survival")) {
+			friendlyFire = false;
+		}
+		else {
+			friendlyFire = true;
+		}
+	}
 }
 
 // Updates relevant difficulty settings for this runner
@@ -360,7 +369,7 @@ void AAIActor::drawTargetLine(FVector location) {
 		Fire();
 
 	}
-	else if (aRunner) {
+	else if (aRunner && friendlyFire) {
 
 		setTargetRunner = aRunner;
 
