@@ -5,13 +5,10 @@ on:
     branches: [ "deployment" ]
   pull_request:
     branches: [ "deployment" ]
-    
   workflow_dispatch:
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
     steps:
     - name: Clone BroncoDrome
