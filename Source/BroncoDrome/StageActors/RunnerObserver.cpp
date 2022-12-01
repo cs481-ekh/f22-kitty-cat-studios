@@ -101,6 +101,7 @@ AActor* ARunnerObserver::GetClosestPowerup(const ARunner& fromRunner, float maxD
   // Iterate through observer register
   for (auto  &toPowerup : SingletonInstance->powerups)
   {
+	  if (!IsValid(toPowerup)) continue;
     // Mark as best if distance is best and visibility check passes
     const float distance = GetPowerupDistance(fromRunner, *toPowerup);
   
@@ -126,7 +127,7 @@ ARunner* ARunnerObserver::GetClosestRunner(const ARunner& fromRunner, float maxD
 	for (ARunner* toRunner : reg)
 	{
 		// Is this the fromRunner?
-		if (toRunner == &fromRunner)
+		if (toRunner == &fromRunner || !IsValid(toRunner))
 			continue;
 
 		// Mark as best if distance is best and visibility check passes
@@ -159,8 +160,9 @@ ARunner* ARunnerObserver::GetPlayer(const ARunner& fromRunner, float maxDistance
 
 float ARunnerObserver::GetRunnerDistance(const ARunner& fromRunner, const ARunner& toRunner)
 {
-	if (&fromRunner == &toRunner)
+	if (&fromRunner == &toRunner || !IsValid(&fromRunner) || !IsValid(&toRunner)) 
 		return 0.f;
+
 
 	const FVector& fromRunnerLocation = fromRunner.GetActorLocation();
 	const FVector& toRunnerLocation = toRunner.GetActorLocation();
@@ -279,6 +281,7 @@ void ARunnerObserver::UpdatePowerups() {
 bool ARunnerObserver::IsPowerupVisible(const ARunner& fromRunner, const AActor& toPowerup,
         float maxDistance, float angularThreshold, bool raycastTest)
 {
+	if (!IsValid(&fromRunner) || !IsValid(&toPowerup)) return false;
   // Is it within viewing distance?
   const float distance = GetPowerupDistance(fromRunner, toPowerup);
   if (distance > maxDistance)
