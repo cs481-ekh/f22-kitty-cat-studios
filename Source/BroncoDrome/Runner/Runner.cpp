@@ -193,6 +193,7 @@ void ARunner::BeginPlay()
 // Called externally via a level's blueprint when a cutscene is skipped
 void ARunner::SkipCutscene() {
 	if (initialized) return;
+	ARunnerObserver::externalUpdatePowerup();
 	GetWorldTimerManager().ClearTimer(RunnerStatusHandler);
 	ReinstateAll();
 	spawnController->SkipCutscene();
