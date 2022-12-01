@@ -8,7 +8,7 @@
 #include "PowerUpMaster.generated.h"
 
 UCLASS()
-class BRONCODROME_API APowerUpMaster : public APowerUp
+class BRONCODROME_API APowerUpMaster : public AActor
 {
 	GENERATED_BODY()
 

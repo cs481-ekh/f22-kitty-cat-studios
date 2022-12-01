@@ -10,6 +10,7 @@
 #include "AISpawner.h"
 #include "GameFramework/Character.h"
 #include "PowerUp.h"
+#include "PowerUp/PowerUpMaster.h"
 
 #include "Math/RandomStream.h"
 
@@ -227,7 +228,7 @@ void AAIActor::MoveDecision(FVector location) {
   
   // auto closest_runner = ARunnerObserver::GetPlayer(*this);
   auto player_location = closest_runner->GetActorLocation();
-  auto powerup_location = closest_powerup->GetActorLocation();
+  auto powerup_location = closest_powerup;
   auto player_direction = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation();
 
   auto curr_location = GetActorLocation();
@@ -268,33 +269,37 @@ void AAIActor::MoveDecision(FVector location) {
       }
     }
   
-   if (frameCounter >= reactionTime && player_runner != NULL) {
+   if (frameCounter >= reactionTime) {
             
-            // there are no nearby runners, should try to move towards 
+            // there are no nearby runners, should try to move towards a nearby power up
             if (ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 5000) {
-              MoveTowardsPowerUp(powerup_location);
+              //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("No nearby runners"), *GetDebugName(this)));
+              MoveTowardsPowerUp(powerup_location->GetActorLocation());
               lastDecision = 1;
               reactionTime = FMath::RandRange(4,12);
+              frameCounter = 0;
             }
         
         
             else if (defensive) {
               if(frameCounter >= reactionTime || lastDecision == 0) {
-                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("defensive: move away"), *GetDebugName(this)));
+               //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("defensive: move away"), *GetDebugName(this)));
                 MoveAwayFromPlayer(player_location, player_direction);
                 ThrottleInput(-1.0f);
                 lastDecision = 0;
                 reactionTime = FMath::RandRange(4,12);
+                frameCounter = 0;
 
               }
             }
             else {
               if(frameCounter >= reactionTime || lastDecision == 0) {
-                GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("move towards player"), *GetDebugName(this)));
+               // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("move towards player"), *GetDebugName(this)));
                 MoveTowardsPlayer(player_location, player_direction);
                 ThrottleInput(1.0f);
                 lastDecision = 0;
                 reactionTime = FMath::RandRange(4,12);
+                frameCounter = 0;
               }
             }
           }
@@ -388,13 +393,13 @@ void AAIActor::drawTargetLine(FVector location) {
 }
 
 void AAIActor::ShotDecision(FVector location) {
-	//if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
-		//shotCount++;
-		//return;
-	//}
-	//shotCount = 0; //Reset timer
-	// drawTargetLine(location);
-	//Fire();
+	if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
+		shotCount++;
+		return;
+	}
+	shotCount = 0; //Reset timer
+	 drawTargetLine(location);
+	Fire();
 }
 
 void AAIActor::Fire() {
@@ -468,16 +473,23 @@ void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direct
 
 	auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(player_location, curr_location);
 	auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
+     //  GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Cyan, FString::Printf(TEXT("Manhattan: %lf"), turn_angle_manhattan));
+  
+	 if (turn_angle_manhattan < max_angle && turn_angle_manhattan > min_angle) {
+	   
+	   Mover->SetSteeringInput(-turn_angle_manhattan);
+	//  GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("BETWEEN MIN AND MAX"), *GetDebugName(this)));
 
-        
-	if (turn_angle_manhattan < max_angle && turn_angle_manhattan > min_angle) {
-		Mover->SetSteeringInput(turn_angle_manhattan);
 	}
 	else if (turn_angle_manhattan > max_angle) {
 		Mover->SetSteeringInput(max_angle);
+	//  GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("GREATER THAN MAX"), *GetDebugName(this)));
+
 	}
 	else {
 		Mover->SetSteeringInput(min_angle);
+	 // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("LESS THAN MAX"), *GetDebugName(this)));
+
 	}
 }
 
@@ -485,14 +497,19 @@ void AAIActor::MoveTowardsPowerUp(FVector powerup_location)
 {
   auto curr_location = GetActorLocation();
   auto curr_direction = GetActorRotation();
+  //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("move towards powerup"), *GetDebugName(this)));
+
 
 
   auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(powerup_location, curr_location);
   auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
 
-        
-  if (turn_angle_manhattan < max_angle && turn_angle_manhattan > min_angle) {
-    Mover->SetSteeringInput(turn_angle_manhattan);
+  if (FVector::Dist(this->GetActorLocation(), powerup_location) < 300.f) {
+   // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("moving straight"), *GetDebugName(this)));
+
+  }
+  else if (turn_angle_manhattan < max_angle && turn_angle_manhattan > min_angle) {
+    Mover->SetSteeringInput(-turn_angle_manhattan);
   }
   else if (turn_angle_manhattan > max_angle) {
     Mover->SetSteeringInput(max_angle);

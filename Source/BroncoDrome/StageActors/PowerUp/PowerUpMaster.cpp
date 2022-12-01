@@ -43,7 +43,7 @@ APowerUpMaster::APowerUpMaster()
 void APowerUpMaster::BeginPlay()
 {
 	Super::BeginPlay();
-        ARunnerObserver::RegisterPowerup(*this);
+        //APowerUp* powerup = (APowerUp*) this;
 
 	if (canExpire)
 		GetWorldTimerManager().SetTimer(PowerUpStatusHandler, this, &APowerUpMaster::ShowExpiration, 9.0f, false);
@@ -89,7 +89,8 @@ void APowerUpMaster::HideActor()
 	if (timeTracker <= 0) {
 		SetActorEnableCollision(false);
 		Destroy(); //Remove actor when its time is up.
-	        ARunnerObserver::DeregisterPowerup(*this);
+	        //APowerUp* powerup = (APowerUp*) this;
+	       // ARunnerObserver::DeregisterPowerup(*powerup);
 	}
 
 	SetActorTickEnabled(!hidden);
@@ -158,6 +159,7 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
         
 		powerupSpawner->PowerUpDestroyed();
 		Destroy(); //Remove actor when picked up
+	        ARunnerObserver::externalUpdatePowerup();
 	}
 
 }

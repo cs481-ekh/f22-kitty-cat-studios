@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include <set>
-
+#include "PowerUp.h"
+#include"PowerUp/PowerUpMaster.h"
+#include"PowerUp/PowerUpSpawner.h"
 #include "RunnerObserver.generated.h"
 
 
@@ -30,7 +32,10 @@ private:	// Member
 
 	// Set of all managed Runners
 	std::set<class ARunner*> m_RunnerRegister;
-        std::set<class APowerUp*> m_PowerupRegister;
+        TArray<AActor*> powerups;
+        FTimerHandle GameTimeHandler;
+        int frameCount;
+
 
 public:		// Public Static API
 
@@ -38,13 +43,13 @@ public:		// Public Static API
 	static ARunnerObserver* SingletonInstance;
 
 
+
+
 	// Pretty much the DMV
 	static void RegisterRunner(class ARunner& runner);
 	static void DeregisterRunner(class ARunner& runner);
 
-        // Not the DMV
-        static void RegisterPowerup(class APowerUp& powerup);
-        static void DeregisterPowerup(class APowerUp& powerup);
+
 
         // get all actors of class
          template<typename T>
@@ -53,20 +58,24 @@ public:		// Public Static API
 
 	// Runner visibility tests
 	static class ARunner* GetClosestRunner(const class ARunner& fromRunner, float maxDistance = std::numeric_limits<float>::max(), 
-		float angularThreshold = 180.f, bool raycastTest = false);
-  static class APowerUp* GetClosestPowerup(const class ARunner& fromRunner, float maxDistance = std::numeric_limits<float>::max(), 
+	float angularThreshold = 180.f, bool raycastTest = false);
+        static AActor* GetClosestPowerup(const class ARunner& fromRunner, float maxDistance = std::numeric_limits<float>::max(), 
         float angularThreshold = 180.f, bool raycastTest = false);
 	static class ARunner* GetPlayer(const class ARunner& fromRunner, float maxDistance = std::numeric_limits<float>::max(),
-		float angularThreshold = 180.f, bool raycastTest = false);
+	float angularThreshold = 180.f, bool raycastTest = false);
 	static float GetRunnerDistance(const class ARunner& fromRunner, const class ARunner& toRunner);
-        static float GetPowerupDistance(const class ARunner& fromRunner, const class APowerUp& toPowerup);
+        static float GetPowerupDistance(const class ARunner& fromRunner, const class AActor& toPowerup);
 
 	static float GetAngleBetweenRunners(const class ARunner& fromRunner, const class ARunner& toRunner, bool fromCamera = true);
 	static bool RunnerRaycastTest(const class ARunner& fromRunner, const class ARunner& toRunner);
-        static float GetAngleBetweenPowerups(const class ARunner& fromRunner, const class APowerUp& toPowerup, bool fromCamera = true);
-        static bool PowerupRaycastTest(const class ARunner& fromRunner, const class APowerUp& toPowerup);
+        static float GetAngleBetweenPowerups(const class ARunner& fromRunner, const AActor& toPowerup, bool fromCamera = true);
+        static bool PowerupRaycastTest(const class ARunner& fromRunner, const class AActor& toPowerup);
 	static bool IsRunnerVisible(const class ARunner& fromRunner, const class ARunner& toRunner,
 		float maxDistance = std::numeric_limits<float>::max(), float angularThreshold = 180.f, bool raycastTest = false);
-        static bool IsPowerupVisible(const class ARunner& fromRunner, const class APowerUp& toRunner,
+      void UpdatePowerups();
+
+        static bool IsPowerupVisible(const class ARunner& fromRunner, const class AActor& toRunner,
               float maxDistance = std::numeric_limits<float>::max(), float angularThreshold = 180.f, bool raycastTest = false);
+        static void externalUpdatePowerup();
+
 };

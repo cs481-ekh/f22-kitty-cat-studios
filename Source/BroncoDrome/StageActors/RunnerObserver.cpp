@@ -8,13 +8,19 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "EngineUtils.h"
 #include "PowerUp.h"
+#include"PowerUp/PowerUpMaster.h"
+#include"PowerUp/PowerUpSpawner.h"
+#include "BroncoDrome/StageActors/PowerUp/PowerUpMaster.h"
+
 
 
 ARunnerObserver* ARunnerObserver::SingletonInstance = nullptr;
 
+
+
 // Sets default values
 ARunnerObserver::ARunnerObserver()
-	: m_RunnerRegister()
+
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -31,6 +37,10 @@ void ARunnerObserver::BeginPlay()
 
 	// Declare members
 	m_RunnerRegister.clear();
+        frameCount = 0;
+
+      GetWorld()->GetTimerManager().SetTimer(GameTimeHandler, this, &ARunnerObserver::UpdatePowerups, 1, false);
+
 	
 }
 
@@ -38,6 +48,15 @@ void ARunnerObserver::BeginPlay()
 void ARunnerObserver::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+        frameCount++;
+        if(frameCount > 1000) {
+          UpdatePowerups();
+          frameCount = 0;
+        }
+      
+        
+        
+  
 
 }
 
@@ -71,55 +90,29 @@ void ARunnerObserver::DeregisterRunner(ARunner& runner)
 	}
 }
 
-void ARunnerObserver::RegisterPowerup(APowerUp& powerup)
-{
-  std::set<APowerUp*>& reg = SingletonInstance->m_PowerupRegister;
 
-  if (reg.find(&powerup) == reg.end())
-  {
-    reg.insert(&powerup);
-  }
-  else
-  {
-    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARNING: RunnerObserver could not register "
-    //	"Runner %p because it is already being managed"), &runner));
-  }
-}
-
-void ARunnerObserver::DeregisterPowerup(APowerUp& powerup)
-{
-  std::set<APowerUp*>& reg = SingletonInstance->m_PowerupRegister;
-
-  if (reg.find(&powerup) != reg.end())
-  {
-    reg.erase(&powerup);
-  }
-  else
-  {
-    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("WARNING: RunnerObserver could not deregister "
-    //	"Runner %p because it is not being managed."), &runner));
-  }
-}
-APowerUp* ARunnerObserver::GetClosestPowerup(const ARunner& fromRunner, float maxDistance, float angularThreshold, bool raycastTest) {
-  const std::set<APowerUp*>& reg = SingletonInstance->m_PowerupRegister;
-
+AActor* ARunnerObserver::GetClosestPowerup(const ARunner& fromRunner, float maxDistance, float angularThreshold, bool raycastTest) {
+  
+  
   // Cache for closet runner + statistics
-  APowerUp* closestPower = nullptr;
+  AActor* closestPower = nullptr;
   float bestDistance = maxDistance;
-
+  
   // Iterate through observer register
-  for (APowerUp* toPowerup : reg)
+  for (auto  &toPowerup : SingletonInstance->powerups)
   {
     // Mark as best if distance is best and visibility check passes
     const float distance = GetPowerupDistance(fromRunner, *toPowerup);
-
-    if (distance <= bestDistance && IsPowerupVisible(fromRunner, *toPowerup, maxDistance, angularThreshold, raycastTest)){
+  
+    if (distance <= bestDistance){
       closestPower = toPowerup; 
       bestDistance = distance;
     }
-
+  
   }
   return closestPower;
+
+
 }
 
 ARunner* ARunnerObserver::GetClosestRunner(const ARunner& fromRunner, float maxDistance, float angularThreshold, bool raycastTest){
@@ -175,11 +168,10 @@ float ARunnerObserver::GetRunnerDistance(const ARunner& fromRunner, const ARunne
 	return FVector::Dist(fromRunnerLocation, toRunnerLocation);
 }
 
-float ARunnerObserver::GetPowerupDistance(const ARunner& fromRunner, const APowerUp& toPowerup)
+float ARunnerObserver::GetPowerupDistance(const ARunner& fromRunner, const AActor& toPowerup)
 {
-  const FVector& fromRunnerLocation = fromRunner.GetActorLocation();
-  const FVector& toRunnerLocation = toPowerup.GetActorLocation();
-  return FVector::Dist(fromRunnerLocation, toRunnerLocation);
+   const FVector& fromRunnerLocation = fromRunner.GetActorLocation();
+   return FVector::Dist(fromRunnerLocation, toPowerup.GetActorLocation());
 }
 
 float ARunnerObserver::GetAngleBetweenRunners(const ARunner& fromRunner, const ARunner& toRunner, bool fromCamera)
@@ -199,19 +191,19 @@ float ARunnerObserver::GetAngleBetweenRunners(const ARunner& fromRunner, const A
 	return UKismetMathLibrary::DegAcos(FVector::DotProduct(fromCameraForward, fromToForward));
 }
 
-float ARunnerObserver::GetAngleBetweenPowerups(const ARunner& fromRunner, const APowerUp& toPowerup, bool fromCamera)
+float ARunnerObserver::GetAngleBetweenPowerups(const ARunner& fromRunner, const AActor& toPowerup, bool fromCamera)
 {
   // Forward vector of fromRunner (projected onto 2D plane)
   const FVector fromCameraForward = UKismetMathLibrary::ProjectVectorOnToPlane(
           (fromCamera ? fromRunner.Camera->GetForwardVector() : fromRunner.GetActorForwardVector()), FVector::UpVector)
           .GetSafeNormal();
-
+  
   // Direction that toRunner is relative to fromRunner
   const FVector fromToForward = UKismetMathLibrary::ProjectVectorOnToPlane(
           UKismetMathLibrary::GetDirectionUnitVector(
                   fromRunner.GetActorLocation(), toPowerup.GetActorLocation()), FVector::UpVector)
           .GetSafeNormal();
-
+  
   // The min angle offset between these two directional vectors [0.f, 180.f]
   return UKismetMathLibrary::DegAcos(FVector::DotProduct(fromCameraForward, fromToForward));
 }
@@ -232,7 +224,7 @@ bool ARunnerObserver::RunnerRaycastTest(const ARunner& fromRunner, const ARunner
 		outHit.Actor == &toRunner);
 }
 
-bool ARunnerObserver::PowerupRaycastTest(const ARunner& fromRunner, const APowerUp& toPowerup)
+bool ARunnerObserver::PowerupRaycastTest(const ARunner& fromRunner, const AActor& toPowerup)
 {
   // Buffer for raycast results
   FHitResult outHit;
@@ -275,7 +267,15 @@ bool ARunnerObserver::IsRunnerVisible(const ARunner& fromRunner, const ARunner& 
 	
 }
 
-bool ARunnerObserver::IsPowerupVisible(const ARunner& fromRunner, const APowerUp& toPowerup,
+// Updates the list of AI runners (add to end of runnerobserver.cpp)
+// @author Andrew 
+void ARunnerObserver::UpdatePowerups() {
+  UGameplayStatics::GetAllActorsOfClass(GetWorld(), APowerUpMaster::StaticClass(), powerups);
+  // numRunners should be equal to activeAI + 1 (since it includes player)
+
+}
+
+bool ARunnerObserver::IsPowerupVisible(const ARunner& fromRunner, const AActor& toPowerup,
         float maxDistance, float angularThreshold, bool raycastTest)
 {
   // Is it within viewing distance?
@@ -307,6 +307,12 @@ template <typename T> void ARunnerObserver::GetAllActorsOfClass(UWorld *World, T
   }    
 
 }
+
+ void ARunnerObserver::externalUpdatePowerup() {
+  SingletonInstance->UpdatePowerups();
+}
+
+
 
 
 
