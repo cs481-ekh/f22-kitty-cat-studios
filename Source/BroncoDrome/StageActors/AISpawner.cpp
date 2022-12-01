@@ -21,6 +21,7 @@ AActor* AAISpawner::Spawn(FName difficultySetting)
   FRotator rotator = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(),FVector(0.0f,0.0f,0.0f));
   AAIActor *ai = GetWorld()->SpawnActor<AAIActor>(ActorToSpawn, loc, rotator);
   amountSpawned++;
+  spawnEnabled = false;
   return ai;
 }
 
