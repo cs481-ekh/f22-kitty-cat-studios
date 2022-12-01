@@ -412,6 +412,7 @@ void ARunner::CameraInput(float in)
 				FHitResult outHit;
 				FCollisionQueryParams collisionParams(FName(TEXT("TestCast")), true, NULL);
 				collisionParams.bReturnPhysicalMaterial = true;
+                collisionParams.AddIgnoredActor(this);
 
 				FVector start = AimLocation;
 				bool hit = GetWorld()->LineTraceSingleByChannel(outHit, start, start + (AimDirection * 5000), ECC_GameTraceChannel3, collisionParams);
