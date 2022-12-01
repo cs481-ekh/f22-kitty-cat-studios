@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "Blueprint/UserWidget.h"
 #include "PowerUpSpawner.h"
+#include "BroncoDrome/StageActors/PowerUp.h"
 #include "PowerUpMaster.generated.h"
 
 UCLASS()

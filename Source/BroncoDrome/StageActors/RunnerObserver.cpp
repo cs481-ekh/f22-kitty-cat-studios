@@ -7,13 +7,20 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "EngineUtils.h"
+#include "PowerUp.h"
+#include"PowerUp/PowerUpMaster.h"
+#include"PowerUp/PowerUpSpawner.h"
+#include "BroncoDrome/StageActors/PowerUp/PowerUpMaster.h"
+
 
 
 ARunnerObserver* ARunnerObserver::SingletonInstance = nullptr;
 
+
+
 // Sets default values
 ARunnerObserver::ARunnerObserver()
-	: m_RunnerRegister()
+
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -30,6 +37,10 @@ void ARunnerObserver::BeginPlay()
 
 	// Declare members
 	m_RunnerRegister.clear();
+        frameCount = 0;
+
+      GetWorld()->GetTimerManager().SetTimer(GameTimeHandler, this, &ARunnerObserver::UpdatePowerups, 1, false);
+
 	
 }
 
@@ -37,6 +48,15 @@ void ARunnerObserver::BeginPlay()
 void ARunnerObserver::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+        frameCount++;
+        if(frameCount > 1000) {
+          UpdatePowerups();
+          frameCount = 0;
+        }
+      
+        
+        
+  
 
 }
 
@@ -70,9 +90,32 @@ void ARunnerObserver::DeregisterRunner(ARunner& runner)
 	}
 }
 
-ARunner* ARunnerObserver::GetClosestRunner(const ARunner& fromRunner, float maxDistance, 
-	float angularThreshold, bool raycastTest)
-{
+
+AActor* ARunnerObserver::GetClosestPowerup(const ARunner& fromRunner, float maxDistance, float angularThreshold, bool raycastTest) {
+  
+  
+  // Cache for closet runner + statistics
+  AActor* closestPower = nullptr;
+  float bestDistance = maxDistance;
+  
+  // Iterate through observer register
+  for (auto  &toPowerup : SingletonInstance->powerups)
+  {
+    // Mark as best if distance is best and visibility check passes
+    const float distance = GetPowerupDistance(fromRunner, *toPowerup);
+  
+    if (distance <= bestDistance){
+      closestPower = toPowerup; 
+      bestDistance = distance;
+    }
+  
+  }
+  return closestPower;
+
+
+}
+
+ARunner* ARunnerObserver::GetClosestRunner(const ARunner& fromRunner, float maxDistance, float angularThreshold, bool raycastTest){
 	const std::set<ARunner*>& reg = SingletonInstance->m_RunnerRegister;
 
 	// Cache for closet runner + statistics
@@ -125,6 +168,12 @@ float ARunnerObserver::GetRunnerDistance(const ARunner& fromRunner, const ARunne
 	return FVector::Dist(fromRunnerLocation, toRunnerLocation);
 }
 
+float ARunnerObserver::GetPowerupDistance(const ARunner& fromRunner, const AActor& toPowerup)
+{
+   const FVector& fromRunnerLocation = fromRunner.GetActorLocation();
+   return FVector::Dist(fromRunnerLocation, toPowerup.GetActorLocation());
+}
+
 float ARunnerObserver::GetAngleBetweenRunners(const ARunner& fromRunner, const ARunner& toRunner, bool fromCamera)
 {
 	// Forward vector of fromRunner (projected onto 2D plane)
@@ -142,6 +191,23 @@ float ARunnerObserver::GetAngleBetweenRunners(const ARunner& fromRunner, const A
 	return UKismetMathLibrary::DegAcos(FVector::DotProduct(fromCameraForward, fromToForward));
 }
 
+float ARunnerObserver::GetAngleBetweenPowerups(const ARunner& fromRunner, const AActor& toPowerup, bool fromCamera)
+{
+  // Forward vector of fromRunner (projected onto 2D plane)
+  const FVector fromCameraForward = UKismetMathLibrary::ProjectVectorOnToPlane(
+          (fromCamera ? fromRunner.Camera->GetForwardVector() : fromRunner.GetActorForwardVector()), FVector::UpVector)
+          .GetSafeNormal();
+  
+  // Direction that toRunner is relative to fromRunner
+  const FVector fromToForward = UKismetMathLibrary::ProjectVectorOnToPlane(
+          UKismetMathLibrary::GetDirectionUnitVector(
+                  fromRunner.GetActorLocation(), toPowerup.GetActorLocation()), FVector::UpVector)
+          .GetSafeNormal();
+  
+  // The min angle offset between these two directional vectors [0.f, 180.f]
+  return UKismetMathLibrary::DegAcos(FVector::DotProduct(fromCameraForward, fromToForward));
+}
+
 bool ARunnerObserver::RunnerRaycastTest(const ARunner& fromRunner, const ARunner& toRunner)
 {
 	// Buffer for raycast results
@@ -156,6 +222,22 @@ bool ARunnerObserver::RunnerRaycastTest(const ARunner& fromRunner, const ARunner
 	return (SingletonInstance->GetWorld()->LineTraceSingleByChannel(
 		outHit, fromRunnerLocation, toRunnerLocation, ECC_WorldDynamic, collisionParams) &&
 		outHit.Actor == &toRunner);
+}
+
+bool ARunnerObserver::PowerupRaycastTest(const ARunner& fromRunner, const AActor& toPowerup)
+{
+  // Buffer for raycast results
+  FHitResult outHit;
+  const FCollisionQueryParams collisionParams(FName("RunnerVisualRaycastTest"), false, &fromRunner);
+
+  // Get fromRunner camera and toRunner locations
+  const FVector& fromRunnerLocation = fromRunner.Camera->GetComponentLocation();
+  const FVector& toRunnerLocation = toPowerup.GetActorLocation();
+
+  // Return true if raycast was succesful (i.e., nothing was in the way)
+  return (SingletonInstance->GetWorld()->LineTraceSingleByChannel(
+          outHit, fromRunnerLocation, toRunnerLocation, ECC_WorldDynamic, collisionParams) &&
+          outHit.Actor == &toPowerup);
 }
 
 bool ARunnerObserver::IsRunnerVisible(const ARunner& fromRunner, const ARunner& toRunner,
@@ -185,6 +267,36 @@ bool ARunnerObserver::IsRunnerVisible(const ARunner& fromRunner, const ARunner& 
 	return true;
 	
 }
+
+// Updates the list of AI runners (add to end of runnerobserver.cpp)
+// @author Andrew 
+void ARunnerObserver::UpdatePowerups() {
+  UGameplayStatics::GetAllActorsOfClass(GetWorld(), APowerUpMaster::StaticClass(), powerups);
+  // numRunners should be equal to activeAI + 1 (since it includes player)
+
+}
+
+bool ARunnerObserver::IsPowerupVisible(const ARunner& fromRunner, const AActor& toPowerup,
+        float maxDistance, float angularThreshold, bool raycastTest)
+{
+  // Is it within viewing distance?
+  const float distance = GetPowerupDistance(fromRunner, toPowerup);
+  if (distance > maxDistance)
+    return false;
+
+  // Is the angle valid?
+  const float angle = GetAngleBetweenPowerups(fromRunner, toPowerup);
+  if (angle > angularThreshold)
+    return false;
+
+  // Is anything obstructing the view?
+  const bool raycastSuccessful = PowerupRaycastTest(fromRunner, toPowerup);
+  if (raycastTest && !raycastSuccessful)
+    return false;
+
+  // If all tests passed, return true
+  return true;
+}
 /**
  * UWorld - current world in play
  * TArray - array to be populated with actors
@@ -196,6 +308,12 @@ template <typename T> void ARunnerObserver::GetAllActorsOfClass(UWorld *World, T
   }    
 
 }
+
+ void ARunnerObserver::externalUpdatePowerup() {
+  SingletonInstance->UpdatePowerups();
+}
+
+
 
 
 

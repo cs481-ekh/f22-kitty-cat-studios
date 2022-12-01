@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "PowerUp.generated.h"
 
+
 UCLASS()
 class BRONCODROME_API APowerUp : public AActor
 {

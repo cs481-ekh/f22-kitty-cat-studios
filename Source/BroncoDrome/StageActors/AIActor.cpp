@@ -9,6 +9,9 @@
 #include "DrawDebugHelpers.h"
 #include "AISpawner.h"
 #include "GameFramework/Character.h"
+#include "PowerUp.h"
+#include "PowerUp/PowerUpMaster.h"
+
 #include "Math/RandomStream.h"
 
 
@@ -217,6 +220,7 @@ FVector AAIActor::GetDirection() {
 	return result;
 }
 
+
 void AAIActor::MoveDecision(FVector location) {
   if (count != update_rate) {
     count++;
@@ -226,12 +230,14 @@ void AAIActor::MoveDecision(FVector location) {
 
   // auto player_location = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
   auto closest_runner = ARunnerObserver::GetClosestRunner(*this);
+  auto closest_powerup = ARunnerObserver::GetClosestPowerup(*this);
   if (!closest_runner->isAI) {
     player_runner = closest_runner;
   }
   
   // auto closest_runner = ARunnerObserver::GetPlayer(*this);
   auto player_location = closest_runner->GetActorLocation();
+  auto powerup_location = closest_powerup;
   auto player_direction = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorRotation();
 
   auto curr_location = GetActorLocation();
@@ -244,60 +250,68 @@ void AAIActor::MoveDecision(FVector location) {
   reverse = dir.Equals(FVector::ForwardVector);
 
   //this vector may be coming from the center of objects, which is why runners used to continuously run into objects
-  if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
-
-    if (dir.Equals(FVector::ForwardVector)) {
-      Mover->SetSteeringInput(-1.0f);
-      ThrottleInput(-1.0f);
+    if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
+      if (dir.Equals(FVector::ForwardVector)) {
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("forward reverse"), *GetDebugName(this)));
+        Mover->SetSteeringInput(-0.3f);
+        ThrottleInput(-1.0f);
+      }
+      else if (dir.Equals(FVector::LeftVector)) {
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward"), *GetDebugName(this)));
+        Mover->SetSteeringInput(0.3f);
+        ThrottleInput(1.0f);
+      }
+      else if (dir.Equals(FVector::RightVector)) {
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward"), *GetDebugName(this)));
+        Mover->SetSteeringInput(-0.3f);
+        ThrottleInput(1.0f);
+      }
+      else if (dir.Equals((FVector::LeftVector + FVector::ForwardVector))) {
+        //Engine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward reverse"), *GetDebugName(this)));
+        Mover->SetSteeringInput(0.3f);
+        ThrottleInput(-1.0f);
+      }
+      else if (dir.Equals((FVector::RightVector + FVector::ForwardVector))) {
+        //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward reverse"), *GetDebugName(this)));
+        Mover->SetSteeringInput(-0.3f);
+        ThrottleInput(-1.0f);
+      }
     }
-    else if (dir.Equals(FVector::LeftVector)) {
-      Mover->SetSteeringInput(1.0f);
-      ThrottleInput(1.0f);
-    }
-    else if (dir.Equals(FVector::RightVector)) {
-      Mover->SetSteeringInput(-1.0f);
-      ThrottleInput(1.0f);
-    }
-    else if (dir.Equals((FVector::LeftVector + FVector::ForwardVector))) {
-      Mover->SetSteeringInput(1.0f);
-      ThrottleInput(-1.0f);
-    }
-    else if (dir.Equals((FVector::RightVector + FVector::ForwardVector))) {
-      Mover->SetSteeringInput(-1.0f);
-      ThrottleInput(-1.0f);
-    }
-  }
-
-          
-          if (frameCounter >= reactionTime && player_runner != NULL){
-          // there are no nearby runners, should try to move towards 
-          if (ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 1000) {
-            //TODO another nested if to check if there is a nearby power up, which is still a pain to do
-            //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("no nearby runners"), *GetDebugName(this)));
-            lastDecision = 1;
-            reactionTime = FMath::RandRange(4,12);
-          }
-        }
+  
+   if (frameCounter >= reactionTime) {
+            
+            // there are no nearby runners, should try to move towards a nearby power up
+            if (ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 5000) {
+              //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("No nearby runners"), *GetDebugName(this)));
+              MoveTowardsPowerUp(powerup_location->GetActorLocation());
+              lastDecision = 1;
+              reactionTime = FMath::RandRange(4,12);
+              frameCounter = 0;
+            }
         
-	else if (defensive) {
-	        if(frameCounter >= reactionTime || lastDecision == 0) {
-	         // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("defensive"), *GetDebugName(this)));
-	          MoveAwayFromPlayer(player_location, player_direction);
-	          ThrottleInput(-1.0f);
-	          lastDecision = 0;
-	          reactionTime = FMath::RandRange(4,12);
+        
+            else if (defensive) {
+              if(frameCounter >= reactionTime || lastDecision == 0) {
+               //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("defensive: move away"), *GetDebugName(this)));
+                MoveAwayFromPlayer(player_location, player_direction);
+                ThrottleInput(-1.0f);
+                lastDecision = 0;
+                reactionTime = FMath::RandRange(4,12);
+                frameCounter = 0;
 
-	        }
-	}
-	else {
-	  if(frameCounter >= reactionTime || lastDecision == 0) {
-	    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("!defensive"), *GetDebugName(this)));
-	    MoveTowardsPlayer(player_location, player_direction);
-	    ThrottleInput(1.0f);
-	    lastDecision = 0;
-            reactionTime = FMath::RandRange(4,12);
-	  }
-	}
+              }
+            }
+            else {
+              if(frameCounter >= reactionTime || lastDecision == 0) {
+               // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("move towards player"), *GetDebugName(this)));
+                MoveTowardsPlayer(player_location, player_direction);
+                ThrottleInput(1.0f);
+                lastDecision = 0;
+                reactionTime = FMath::RandRange(4,12);
+                frameCounter = 0;
+              }
+            }
+          }
 
 }
 
@@ -388,13 +402,13 @@ void AAIActor::drawTargetLine(FVector location) {
 }
 
 void AAIActor::ShotDecision(FVector location) {
-	//if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
-		//shotCount++;
-		//return;
-	//}
-	//shotCount = 0; //Reset timer
-	// drawTargetLine(location);
-	//Fire();
+	if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
+		shotCount++;
+		return;
+	}
+	shotCount = 0; //Reset timer
+	 drawTargetLine(location);
+	Fire();
 }
 
 void AAIActor::Fire() {
@@ -468,16 +482,50 @@ void AAIActor::MoveTowardsPlayer(FVector player_location, FRotator player_direct
 
 	auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(player_location, curr_location);
 	auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
+     //  GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Cyan, FString::Printf(TEXT("Manhattan: %lf"), turn_angle_manhattan));
+  
+	 if (turn_angle_manhattan < max_angle && turn_angle_manhattan > min_angle) {
+	   
+	   Mover->SetSteeringInput(-turn_angle_manhattan);
+	//  GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("BETWEEN MIN AND MAX"), *GetDebugName(this)));
 
-	if (turn_angle_manhattan < max_angle && turn_angle_manhattan > min_angle) {
-		Mover->SetSteeringInput(turn_angle_manhattan);
 	}
 	else if (turn_angle_manhattan > max_angle) {
 		Mover->SetSteeringInput(max_angle);
+	//  GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("GREATER THAN MAX"), *GetDebugName(this)));
+
 	}
 	else {
 		Mover->SetSteeringInput(min_angle);
+	 // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("LESS THAN MAX"), *GetDebugName(this)));
+
 	}
+}
+
+void AAIActor::MoveTowardsPowerUp(FVector powerup_location)
+{
+  auto curr_location = GetActorLocation();
+  auto curr_direction = GetActorRotation();
+  //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("move towards powerup"), *GetDebugName(this)));
+
+
+
+  auto turn_rotation = UKismetMathLibrary::FindLookAtRotation(powerup_location, curr_location);
+  auto turn_angle_manhattan = turn_rotation.GetManhattanDistance(curr_direction);
+
+  if (FVector::Dist(this->GetActorLocation(), powerup_location) < 300.f) {
+   // GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("moving straight"), *GetDebugName(this)));
+
+  }
+  else if (turn_angle_manhattan < max_angle && turn_angle_manhattan > min_angle) {
+    Mover->SetSteeringInput(-turn_angle_manhattan);
+  }
+  else if (turn_angle_manhattan > max_angle) {
+    Mover->SetSteeringInput(max_angle);
+  }
+  else {
+    Mover->SetSteeringInput(min_angle);
+  }
 }
 
 void AAIActor::UpdateLocation(FVector point)

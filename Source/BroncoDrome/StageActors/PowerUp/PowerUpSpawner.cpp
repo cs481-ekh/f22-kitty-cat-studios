@@ -3,6 +3,8 @@
 
 #include "PowerUpSpawner.h"
 #include "PowerUpMaster.h"
+#include "BroncoDrome/StageActors/RunnerObserver.h"
+
 #include <BroncoDrome/BroncoSaveGame.h>
 #include <Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 
