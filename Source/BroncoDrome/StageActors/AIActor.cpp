@@ -98,7 +98,7 @@ void AAIActor::Tick(float DeltaTime)
 		}
 		drawTargetLine(location);
 		MoveDecision(location);
-		ShotDecision(location);
+		//ShotDecision(location);
 		last_location = location;
 		// GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("Moving"), *GetDebugName(this)));
 	}
@@ -402,13 +402,13 @@ void AAIActor::drawTargetLine(FVector location) {
 }
 
 void AAIActor::ShotDecision(FVector location) {
-	if (shotCount < shot_rate) { //shot timer (currently set to one shot every 30 frames
+	/*if (shotCount < shot_rate) { 
 		shotCount++;
 		return;
 	}
 	shotCount = 0; //Reset timer
 	 drawTargetLine(location);
-	Fire();
+	Fire();*/
 }
 
 void AAIActor::Fire() {
