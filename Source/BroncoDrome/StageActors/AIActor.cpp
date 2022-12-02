@@ -253,27 +253,27 @@ void AAIActor::MoveDecision(FVector location) {
     if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
       if (dir.Equals(FVector::ForwardVector)) {
         //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("forward reverse"), *GetDebugName(this)));
-        Mover->SetSteeringInput(-0.3f);
+        Mover->SetSteeringInput(-0.7f);
         ThrottleInput(-1.0f);
       }
       else if (dir.Equals(FVector::LeftVector)) {
         //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward"), *GetDebugName(this)));
-        Mover->SetSteeringInput(0.3f);
+        Mover->SetSteeringInput(0.7f);
         ThrottleInput(1.0f);
       }
       else if (dir.Equals(FVector::RightVector)) {
         //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward"), *GetDebugName(this)));
-        Mover->SetSteeringInput(-0.3f);
+        Mover->SetSteeringInput(-0.7f);
         ThrottleInput(1.0f);
       }
       else if (dir.Equals((FVector::LeftVector + FVector::ForwardVector))) {
         //Engine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward reverse"), *GetDebugName(this)));
-        Mover->SetSteeringInput(0.3f);
+        Mover->SetSteeringInput(0.7f);
         ThrottleInput(-1.0f);
       }
       else if (dir.Equals((FVector::RightVector + FVector::ForwardVector))) {
         //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward reverse"), *GetDebugName(this)));
-        Mover->SetSteeringInput(-0.3f);
+        Mover->SetSteeringInput(-0.7f);
         ThrottleInput(-1.0f);
       }
     }
