@@ -199,7 +199,7 @@ void ARunnerHUD::DecrementAnemonies() {
 		YouWin();
 	}
 	else if (anemoniesLeft == 0) {
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Spawn new wave"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Spawn new wave"));
 		SetEnemiesLeft(spawnController->GetWaveSize());
 		m_Widgets->IncrementCurrentWave();
 		// ((ARunner*)spawnController->GetPlayer())->IncrementGameTime(m_Widgets->getWave() * 10); // optional feature to add additional scaling time to the clock based on the current wave
