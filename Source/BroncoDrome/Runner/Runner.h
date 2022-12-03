@@ -248,7 +248,7 @@ public:
 	void DisableSpeedBoost();
 	bool speedBoost = false;
 	FTimerHandle SpeedBoostTimerHandler;
-	float defaultThrottle = 0.3f; // This is the default throttle input (30%) when not under effect of speed boost powerup (max throttle is 1.0 or 100% of throttle input)
+	float defaultThrottle = 0.4f; // This is the default throttle input (30%) when not under effect of speed boost powerup (max throttle is 1.0 or 100% of throttle input)
 	float maxSpeed = 35.f; // speed in mph
 	float maxSpeedWithBoost = 50.f; // speed in mph with speed boost active
 
