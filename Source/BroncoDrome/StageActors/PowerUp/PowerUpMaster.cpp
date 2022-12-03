@@ -118,31 +118,31 @@ void APowerUpMaster::ExecuteFunction(UPrimitiveComponent* OverlappedComp, AActor
 			case 0:
 				dynamic_cast<ARunner*>(OtherActor)->AddToHealth(20, false); //Health
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(healthAudioCue);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Health"), *GetDebugName(this)));
 				selectedPowerUp = FString("HEALTH");
 				break;
 			case 1:
 				dynamic_cast<ARunner*>(OtherActor)->EnableSpeedBoost(10.0f); // Enable speed boost for 10 seconds
                 dynamic_cast<ARunner*>(OtherActor)->PlaySound(speedAudioCue);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Speed"), *GetDebugName(this)));
 				selectedPowerUp = FString("SPEED");
 				break;
 			case 2:
 				dynamic_cast<ARunner*>(OtherActor)->AddToDamage(10); //Damage
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(damageUpAudioCue);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power Extra Damage"), *GetDebugName(this)));
 				selectedPowerUp = FString("EXTRA DAMAGE");
 				break;
 			case 3:
 				dynamic_cast<ARunner*>(OtherActor)->obstainShotAbsorbPower(5); //ShotAbsorb default 5
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(spongeAudioCue);				
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power ShotAbsorb"), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power ShotAbsorb"), *GetDebugName(this)));
 				selectedPowerUp = FString("SHOT ABSORB");
 				break;
 			case 4:
 				dynamic_cast<ARunner*>(OtherActor)->obstainKillBallPower(1); //KillBall default 1
 				dynamic_cast<ARunner*>(OtherActor)->PlaySound(killBallAudioCue);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power KillBall!"), *GetDebugName(this)));
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Collected power KillBall!"), *GetDebugName(this)));
 				selectedPowerUp = FString("KILL BALL");
 				break;
 			default:

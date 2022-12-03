@@ -88,9 +88,8 @@ void AAIActor::Tick(float DeltaTime)
 	if (IsGrounded()) {
 		// Mover->SetThrottleInput(1.0f);
 		auto location = GetActorLocation(); //Obtains the (x,y,z) vector loction of the AI
-
-		curr_speed = FVector::Distance(location, last_location) / DeltaTime;
-		if (curr_speed < max_speed && !reverse) {
+		const float speed = Mover->GetForwardSpeedMPH();
+		if (speed < maxSpeed && !reverse) { // Max speed is defined in runner.cpp
 			ThrottleInput(1.0f);
 		}
 		else {

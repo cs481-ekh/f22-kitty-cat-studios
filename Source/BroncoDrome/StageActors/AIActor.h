@@ -110,8 +110,6 @@ public:
 	float min_angle = 165.0f;
 	float max_angle = 195.0f;
 	FVector last_location;
-	float curr_speed = 0.0;
-	float max_speed = 300.0f; //0=700.0f; 1=400.0f; 2=550.0f //was 450.0f
 	float max_distance = 800.0f; //was 450.0f
 	float fwd_dist = 30.0f;
 	float car_distance = 1000.0f;

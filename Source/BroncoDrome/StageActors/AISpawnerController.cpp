@@ -98,8 +98,8 @@ void AAISpawnerController::SpawnCheck() {
         if (activeAI == 0 || waveSpawningInProgress) { // Wave spawning will spawn AI in complete waves. No more AI will spawn once they reach the wave size limit, until the entire wave is destroyed, then a new wave spawns and the process restarts.
             if (!waveSpawningInProgress) { // Check if this is first iteration of wave spawning
 				waveSpawningInProgress = true;
-				GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("New wave spawning...")));
-				GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("Wave Size: %d"), waveSize));
+				//GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("New wave spawning...")));
+				//GEngine->AddOnScreenDebugMessage(-1, 7.f, FColor::Cyan, FString::Printf(TEXT("Wave Size: %d"), waveSize));
 			}
 			
 			for (auto &sp : spawnPoints) {
@@ -162,7 +162,7 @@ TArray<AActor*> AAISpawnerController::GetValidSpawnPoints() {
     bool validSpawn = true;
 	for (int32 i = 0; i < runners.Num(); ++i) {
 		if (runners.Num() != activeAI + 1) {
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Runner array size changed during iteration. VERY BAD TELL ANDREW")));
+			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Cyan, FString::Printf(TEXT("Runner array size changed during iteration. VERY BAD TELL ANDREW")));
 			break;
 		}
 		auto &runner = runners[i];
