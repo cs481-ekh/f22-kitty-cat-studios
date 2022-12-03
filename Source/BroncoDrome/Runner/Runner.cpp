@@ -213,7 +213,7 @@ void ARunner::ReinstateAll()
 			gameTime = 120; // change allotted game time to 120 secs instead of default (180) this is because the player adds time to the clock for each kill they get
 			HUD->SetGameTimeRemaining(gameTime);
 
-			// Change amount of time that is added to the clock on runner kills
+			// Change amount of time that is added to the clock on runner kills (this only applies to survival)
 			if (save->difficultySetting == TEXT("Easy")) {
 				timeAddedOnKill = 3;
 			} else if (save->difficultySetting == TEXT("Medium")) {
@@ -222,6 +222,15 @@ void ARunner::ReinstateAll()
 				timeAddedOnKill = 5;
 			}
 		}
+
+		if (save->runnerSelection == TEXT("traction")) { // lower max speed but increased throttle
+			defaultThrottle = 0.6f;
+			maxSpeed = 30.f;
+		} else if (save->runnerSelection == TEXT("speed")) { // higher max speed, slightly slower acceleration
+			defaultThrottle = 0.3f;
+			maxSpeed = 40.f;
+			maxSpeedWithBoost = 60.f;
+		} // else runner is balanced and default properties are used (balanced max speed with acceleration)
 	}
 
 	//Commence game timer
@@ -314,9 +323,15 @@ void ARunner::ThrottleInput(float in)
 		if (!speedBoost) in = defaultThrottle; // standard acceleration when not under effect of speed boost powerup
 	}
 	Mover->SetTargetGear(targetGear, true);
-	Mover->SetBrakeInput(0.f);
 
 	const float speed = Mover->GetForwardSpeedMPH();
+
+	if ((targetGear == 1 && speed < -0.1f) || (targetGear == -1 && speed > 0.1f)) {
+		Mover->SetBrakeInput(1.f);
+	} else {
+		Mover->SetBrakeInput(0.f);
+	}
+
 	if (speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeedWithBoost) { // Prevent further acceleration if at max speed with speed boost
 		Mover->SetThrottleInput(0.f);
 	} else if (!speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeed) { // Prevent further acceleration if at max speed
