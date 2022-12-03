@@ -314,9 +314,15 @@ void ARunner::ThrottleInput(float in)
 		if (!speedBoost) in = defaultThrottle; // standard acceleration when not under effect of speed boost powerup
 	}
 	Mover->SetTargetGear(targetGear, true);
-	Mover->SetBrakeInput(0.f);
 
 	const float speed = Mover->GetForwardSpeedMPH();
+
+	if ((targetGear == 1 && speed < -0.1f) || (targetGear == -1 && speed > 0.1f)) {
+		Mover->SetBrakeInput(1.f);
+	} else {
+		Mover->SetBrakeInput(0.f);
+	}
+
 	if (speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeedWithBoost) { // Prevent further acceleration if at max speed with speed boost
 		Mover->SetThrottleInput(0.f);
 	} else if (!speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeed) { // Prevent further acceleration if at max speed
