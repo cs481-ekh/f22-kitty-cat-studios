@@ -207,8 +207,8 @@ void ARunner::ReinstateAll()
 	EnableInput(GetWorld()->GetFirstPlayerController());
 	HUD->HideHUD(false);
 	HUD->SetAutoTarget(autoTarget);
-
-	if (save = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) { // Check if a gamemode save is initialized
+	save = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0));
+	if (save) { // Check if a gamemode save is initialized
 		if (save->gamemodeSelection == TEXT("Survival")) {
 			gameTime = 120; // change allotted game time to 120 secs instead of default (180) this is because the player adds time to the clock for each kill they get
 			HUD->SetGameTimeRemaining(gameTime);

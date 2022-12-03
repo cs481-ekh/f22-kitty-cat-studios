@@ -103,8 +103,8 @@ void ARunnerHUD::BeginPlay()
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Could not find TSubclassOf<UUserWidget>"));
     }
 
-
-	if (save = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) { // Check if a gamemode save is initialized
+	save = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0));
+	if (save) { // Check if a gamemode save is initialized
 		validSave = true;
 	}
 	else {
