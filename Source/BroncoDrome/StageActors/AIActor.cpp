@@ -42,10 +42,14 @@ void AAIActor::BeginPlay()
 	Super::BeginPlay();
 	last_location = GetActorLocation();
 	NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
+        currPos = this->GetActorLocation();
+        prevPos = this->GetActorLocation();
   
     DifficultyParams = FDifficultyParameters();
 	UpdateDifficulty(FName(TEXT("Medium"))); // Set default difficulty
     reactionTime = 6;
+    pos_counter = 0;
+    pos_buffer = 0;
 
 	if (UBroncoSaveGame* load = Cast<UBroncoSaveGame>(UGameplayStatics::LoadGameFromSlot("curr", 0))) {
 		if (load->gamemodeSelection == TEXT("Survival")) {
@@ -84,6 +88,35 @@ FVector AAIActor::GetAccuracyVector() {
 void AAIActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+  
+        currPos = this->GetActorLocation();
+
+        if(pos_buffer > 0 && pos_buffer < 60) {
+          ThrottleInput(-1.0f);
+          pos_buffer++;
+          if(pos_buffer == 59)
+            pos_buffer = 0;
+        //  GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("STUCK! REVERSE"), *GetDebugName(this)));
+          return;
+        }
+        if(currPos.Equals(prevPos,8)) {
+          pos_counter++;
+          if(pos_counter > 50) {
+            ThrottleInput(-1.0f);
+            pos_buffer = 1;
+         //   GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("STUCK! REVERSE"), *GetDebugName(this)));
+            return;
+          }
+          
+        }
+        else {
+          pos_counter = 0;
+        }
+  
+  
+        
+        
+        
         frameCounter++;
 	if (IsGrounded()) {
 		// Mover->SetThrottleInput(1.0f);
@@ -127,6 +160,7 @@ void AAIActor::Tick(float DeltaTime)
           }
           
         }
+        prevPos = this->GetActorLocation();
 }
 
 FHitResult* AAIActor::Raycast(FVector to)
@@ -252,27 +286,27 @@ void AAIActor::MoveDecision(FVector location) {
     if (!dir.Equals(FVector(0.0f, 0.0f, 0.0f))) {
       if (dir.Equals(FVector::ForwardVector)) {
         //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("forward reverse"), *GetDebugName(this)));
-        Mover->SetSteeringInput(-0.7f);
+        Mover->SetSteeringInput(-0.6f);
         ThrottleInput(-1.0f);
       }
       else if (dir.Equals(FVector::LeftVector)) {
         //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward"), *GetDebugName(this)));
-        Mover->SetSteeringInput(0.7f);
+        Mover->SetSteeringInput(0.6f);
         ThrottleInput(1.0f);
       }
       else if (dir.Equals(FVector::RightVector)) {
         //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward"), *GetDebugName(this)));
-        Mover->SetSteeringInput(-0.7f);
+        Mover->SetSteeringInput(-0.6f);
         ThrottleInput(1.0f);
       }
       else if (dir.Equals((FVector::LeftVector + FVector::ForwardVector))) {
         //Engine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("left forward reverse"), *GetDebugName(this)));
-        Mover->SetSteeringInput(0.7f);
+        Mover->SetSteeringInput(0.6f);
         ThrottleInput(-1.0f);
       }
       else if (dir.Equals((FVector::RightVector + FVector::ForwardVector))) {
         //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("right forward reverse"), *GetDebugName(this)));
-        Mover->SetSteeringInput(-0.7f);
+        Mover->SetSteeringInput(-0.6f);
         ThrottleInput(-1.0f);
       }
     }
@@ -280,7 +314,7 @@ void AAIActor::MoveDecision(FVector location) {
    if (frameCounter >= reactionTime) {
             
             // there are no nearby runners, should try to move towards a nearby power up
-            if (ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 5000) {
+            if (player_runner && ARunnerObserver::GetRunnerDistance(*this, *player_runner) > 5000) {
               //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("No nearby runners"), *GetDebugName(this)));
               MoveTowardsPowerUp(powerup_location->GetActorLocation());
               lastDecision = 1;
