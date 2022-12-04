@@ -161,6 +161,10 @@ public:
 private:
 	float angleBetweenTwoVectors(FVector v1, FVector v2);
         bool hasReduced = false;
+        FVector currPos;
+        FVector prevPos;
+        int pos_counter;
+        int pos_buffer;
 	void Fire();
 	void drawTargetLine(FVector location);
 	void QueryLockOnEngage();
