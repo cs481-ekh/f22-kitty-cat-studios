@@ -103,7 +103,7 @@ public: // Constants
 
 	// Input
 	const float LOOK_BEHIND_THRESHOLD = .7f;
-	const float HOP_FORCE_AMOUNT = 68000.f;
+	const float HOP_FORCE_AMOUNT = 35000.f;
 	const float ROTATION_FIX_THRESHOLD = 32.5f;
 	const float ROTATION_FIX_FORCE = 1000.f;
 
