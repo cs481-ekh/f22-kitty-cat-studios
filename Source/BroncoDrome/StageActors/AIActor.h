@@ -122,6 +122,8 @@ public:
 	int aiId;
 	int shot_rate = 90; //interval for AI shots //0=90; 1= 50; 2= 70;
 	float accuracyRange; // sets accuracy of AI Runners shot
+	float pos_buffer_threshold = 60.0f;
+	float pos_counter_threshold = 50.0f;
 
         // reaction time variables
         int frameCounter = 0;
