@@ -1,5 +1,10 @@
 // // Copyright (C) Dromies 2021. All Rights Reserved.
 // // Copyright (C) Team Gregg 2022. All Rights Reserved.
+// // Copyright (C) Kitty Cat Studios 2022. All Rights Reserved.
+
+// NOTE (fall 2022): UE4 Chaos Vehicles physics is based on system FRAMERATE. This means that jumping (and car handling) will behave different at different FPS
+// The only workaround I could come up with was to use an FPS cap so that behavior is at least more similar across systems (currently set to 60fps)
+// Otherwise, it is necessary to rebuild the vehicle system with your own physics system or a different plugin that utilizes physics substepping
 #pragma once
 
 #include "CoreMinimal.h"
@@ -103,7 +108,7 @@ public: // Constants
 
 	// Input
 	const float LOOK_BEHIND_THRESHOLD = .7f;
-	const float HOP_FORCE_AMOUNT = 68000.f;
+	const float HOP_FORCE_AMOUNT = 35000.f;
 	const float ROTATION_FIX_THRESHOLD = 32.5f;
 	const float ROTATION_FIX_FORCE = 1000.f;
 

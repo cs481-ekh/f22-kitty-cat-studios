@@ -1,7 +1,7 @@
 // // Copyright (C) Team Gregg 2022. All Rights Reserved.
+#include "LoseWidget.h"
 #include "BroncoDrome/BroncoSaveGame.h"
 #include "Kismet/GameplayStatics.h"
-#include "LoseWidget.h"
 
 void ULoseWidget::NativePreConstruct()
 {
