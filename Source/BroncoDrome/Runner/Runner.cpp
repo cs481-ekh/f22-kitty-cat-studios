@@ -478,6 +478,9 @@ void ARunner::ResetCamera()
 	SpringArm->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
 }
 
+// NOTE: UE4 Chaos Vehicles physics is based on system FRAMERATE. This means that jumping (and car handling) will behave different at different FPS
+// The only workaround I could come up with was to use an FPS cap so that behavior is at least more similar across systems (currently set to 60fps)
+// Otherwise, it is necessary to rebuild the vehicle system with your own physics system or a different plugin that utilizes physics substepping
 void ARunner::Hop()
 {
 	// Only hop if Runner is grounded

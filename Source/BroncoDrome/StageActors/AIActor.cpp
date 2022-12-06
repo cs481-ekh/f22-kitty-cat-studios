@@ -91,17 +91,17 @@ void AAIActor::Tick(float DeltaTime)
   
         currPos = this->GetActorLocation();
 
-        if(pos_buffer > 0 && pos_buffer < 60) {
+        if(pos_buffer > 0 && pos_buffer < pos_buffer_threshold) {
           ThrottleInput(-1.0f);
-          pos_buffer++;
-          if(pos_buffer == 59)
+          pos_buffer += (pos_buffer_threshold * DeltaTime);
+          if(pos_buffer >= 59)
             pos_buffer = 0;
         //  GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("STUCK! REVERSE"), *GetDebugName(this)));
           return;
         }
         if(currPos.Equals(prevPos,8)) {
-          pos_counter++;
-          if(pos_counter > 50) {
+          pos_counter += (pos_counter_threshold * DeltaTime);
+          if(pos_counter > pos_counter_threshold) {
             ThrottleInput(-1.0f);
             pos_buffer = 1;
          //   GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan, FString::Printf(TEXT("STUCK! REVERSE"), *GetDebugName(this)));
