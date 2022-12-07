@@ -333,9 +333,9 @@ void ARunner::ThrottleInput(float in)
 	}
 
 	if (speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeedWithBoost) { // Prevent further acceleration if at max speed with speed boost
-		Mover->SetThrottleInput(0.f);
+		Mover->SetTargetGear(targetGear*-1, true);
 	} else if (!speedBoost && UKismetMathLibrary::Abs(speed) > maxSpeed) { // Prevent further acceleration if at max speed
-		Mover->SetThrottleInput(0.f);
+		Mover->SetTargetGear(targetGear*-1, true);
 	} else {
 		Mover->SetThrottleInput(in); // throttle input is limited in range -1.0 to 1.0, any value above or below is clipped to the maximum
 	}
@@ -369,14 +369,14 @@ void ARunner::SteeringInput(float in)
 	if (AerialSM.IsInState(&AerialS_Grounded))
 		Mover->SetSteeringInput(in);
 	else if (AerialSM.IsInState(&AerialS_Air))
-		m_TorqueInput.X = -in * ROTATION_FIX_FORCE;
+		m_TorqueInput.X = -in * ROTATION_FORCE;
 }
 
 void ARunner::RotateInput(float in)
 {
 	// Modify pitch, but only if Runner is in air.
 	if (AerialSM.IsInState(&AerialS_Air))
-		m_TorqueInput.Y = in * ROTATION_FIX_FORCE;
+		m_TorqueInput.Y = in * ROTATION_FORCE;
 }
 
 // Rotate the camera left/right. Expects a value [-1, 1].
