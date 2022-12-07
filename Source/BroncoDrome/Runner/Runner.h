@@ -110,7 +110,8 @@ public: // Constants
 	const float LOOK_BEHIND_THRESHOLD = .7f;
 	const float HOP_FORCE_AMOUNT = 35000.f;
 	const float ROTATION_FIX_THRESHOLD = 32.5f;
-	const float ROTATION_FIX_FORCE = 1000.f;
+	const float ROTATION_FIX_FORCE = 500.f;
+	const float ROTATION_FORCE = 500.f;
 
 	// Raycasts
 	const float GROUNDING_RAYCAST_DIST = 25.f;
